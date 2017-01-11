@@ -111,7 +111,7 @@ scmVersion {
     ]
 }
 
-group = 'org.mnode.ical4j'
+group = 'org.bedework.ical4j'
 version = scmVersion.version
 description = '''
 A Java library for reading and writing iCalendar (*.ics) files
