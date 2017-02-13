@@ -220,6 +220,11 @@ public abstract class Property extends Content {
     public static final String TZURL = "TZURL";
 
     /**
+     * VPOLL accept response property name.
+     */
+    public static final String ACCEPT_RESPONSE = "ACCEPT-RESPONSE";
+
+    /**
      * Alarm action property name.
      */
     public static final String ACTION = "ACTION";
@@ -284,7 +289,27 @@ public abstract class Property extends Content {
      */
     public static final String EXRULE = "EXRULE";
 
-    /**
+  /**
+   * Poll item id property name.
+   */
+  public static final String POLL_ITEM_ID = "POLL-ITEM-ID";
+
+  /**
+   * Poll mode property name.
+   */
+  public static final String POLL_MODE = "POLL-MODE";
+
+  /**
+   * Poll properties list property name.
+   */
+  public static final String POLL_PROPERTIES = "POLL-PROPERTIES";
+
+  /**
+   * Poll winner property name.
+   */
+  public static final String POLL_WINNER = "POLL-WINNER";
+
+  /**
      * Relationship property name.
      */
     public static final String RELATED_TO = "RELATED-TO";
@@ -303,6 +328,11 @@ public abstract class Property extends Content {
      * Recurrence rule property name.
      */
     public static final String RRULE = "RRULE";
+
+    /**
+     * Voter property name.
+     */
+    public static final String VOTER = "VOTER";
 
     /**
      * Prefix for non-standard properties.

@@ -99,6 +99,19 @@ public class Method extends Property {
             "DECLINE-COUNTER");
 
     /**
+     * The Confirm method is used by the "Organizer" to indicate the poll is
+     * complete
+     */
+    public static final Method CONFIRM = new ImmutableMethod("CONFIRM");
+  
+    /**
+     * Used to send the current state of the poll to all voters. The VPOLL
+     * can contain a reduced set of properties but MUST contain DTSTAMP,
+     * SEQUENCE (if not 0), UID, ORGANIZER and VOTER.
+     */
+    public static final Method POLLSTATUS = new ImmutableMethod("POLLSTATUS");
+
+    /**
      * @author Ben Fortuna An immutable instance of Method.
      */
     private static final class ImmutableMethod extends Method {

@@ -119,6 +119,11 @@ public abstract class Parameter extends Content {
     public static final String PARTSTAT = "PARTSTAT";
 
     /**
+     * Voter public comment.
+     */
+    public static final String PUBLIC_COMMENT = "PUBLIC-COMMENT";
+
+    /**
      * Recurrence identifier range.
      */
     public static final String RANGE = "RANGE";
@@ -157,6 +162,11 @@ public abstract class Parameter extends Content {
      * Sent by.
      */
     public static final String SENT_BY = "SENT-BY";
+
+    /**
+     * Type.
+     */
+    public static final String STAY_INFORMED = "STAY-INFORMED";
 
     /**
      * Type.

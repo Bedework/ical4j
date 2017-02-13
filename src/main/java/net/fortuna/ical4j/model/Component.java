@@ -74,6 +74,21 @@ public abstract class Component implements Serializable {
     /**
      * Component token.
      */
+    public static final String VPOLL = "VPOLL";
+
+    /**
+     * Component token.
+     */
+    public static final String VVOTER = "VVOTER";
+
+    /**
+     * Component token.
+     */
+    public static final String VOTE = "VOTE";
+
+    /**
+     * Component token.
+     */
     public static final String VTODO = "VTODO";
 
     /**

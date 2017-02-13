@@ -51,6 +51,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -83,14 +84,9 @@ public class CalendarBuilder {
     protected Calendar calendar;
 
     /**
-     * The current component instance created by the builder.
+   * The current component instances created by the builder.
      */
-    protected CalendarComponent component;
-
-    /**
-     * The current sub-component instance created by the builder.
-     */
-    protected Component subComponent;
+  private LinkedList<Component> components = new LinkedList<Component>();
 
     /**
      * The current property instance created by the builder.
@@ -124,6 +120,21 @@ public class CalendarBuilder {
         this(CalendarParserFactory.getInstance().createParser(), new PropertyFactoryRegistry(),
                 new ParameterFactoryRegistry(), tzRegistry);
     }
+
+  public Component getComponent() {
+    if (components.size() == 0) {
+      return null;
+    }
+    return components.peek();
+  }
+
+  public void startComponent(final Component component) {
+    components.push(component);
+  }
+
+  public void endComponent() {
+    components.pop();
+  }
 
     /**
      * Constructs a new instance using the specified parser and registry.
@@ -190,8 +201,7 @@ public class CalendarBuilder {
             ParserException {
         // re-initialise..
         calendar = null;
-        component = null;
-        subComponent = null;
+        components.clear();
         property = null;
         datesMissingTimezones = new ArrayList<Property>();
 
@@ -225,26 +235,42 @@ public class CalendarBuilder {
         }
 
         public void endComponent(final String name) {
-            assertComponent(component);
+          assertComponent(getComponent());
 
-            if (subComponent != null) {
-                if (component instanceof VTimeZone) {
-                    ((VTimeZone) component).getObservances().add((Observance) subComponent);
-                } else if (component instanceof VEvent) {
-                    ((VEvent) component).getAlarms().add((VAlarm) subComponent);
-                } else if (component instanceof VToDo) {
-                    ((VToDo) component).getAlarms().add((VAlarm) subComponent);
-                } else if (component instanceof VAvailability) {
-                    ((VAvailability) component).getAvailable().add((Available) subComponent);
+          final Component component = getComponent();
+
+          CalendarBuilder.this.endComponent();
+
+          final Component parent = getComponent();
+
+          if (parent != null) {
+            // This is a sub-component of another component
+            if (parent instanceof VTimeZone) {
+                    ((VTimeZone) parent).getObservances().add((Observance) component);
+                } else if (parent instanceof VEvent) {
+                    ((VEvent) parent).getAlarms().add((VAlarm) component);
+                } else if (parent instanceof VToDo) {
+                    ((VToDo) parent).getAlarms().add((VAlarm) component);
+                } else if (parent instanceof VAvailability) {
+                  ((VAvailability)parent).getAvailable()
+                                            .add((Available)component);
+                } else if (parent instanceof VVoter) {
+                    ((VVoter) parent).getVotes().add((Vote) component);
+                  } else if (parent instanceof VPoll) {
+                    if (component instanceof VAlarm) {
+                      ((VPoll) parent).getAlarms().add((VAlarm) component);
+                    } else if (component instanceof VVoter) {
+                      ((VPoll) parent).getVoters().add((VVoter) component);
+                    } else {
+                      ((VPoll) parent).getCandidates().add(component);
+                    }
                 }
-                subComponent = null;
             } else {
-                calendar.getComponents().add(component);
+                calendar.getComponents().add((CalendarComponent)component);
                 if (component instanceof VTimeZone && tzRegistry != null) {
                     // register the timezone for use with iCalendar objects..
                     tzRegistry.register(new TimeZone((VTimeZone) component));
                 }
-                component = null;
             }
         }
 
@@ -253,12 +279,8 @@ public class CalendarBuilder {
 
             // replace with a constant instance if applicable..
             property = Constants.forProperty(property);
-            if (component != null) {
-                if (subComponent != null) {
-                    subComponent.getProperties().add(property);
-                } else {
-                    component.getProperties().add(property);
-                }
+            if (getComponent() != null) {
+              getComponent().getProperties().add(property);
             } else if (calendar != null) {
                 calendar.getProperties().add(property);
             }
@@ -311,11 +333,7 @@ public class CalendarBuilder {
          * {@inheritDoc}
          */
         public void startComponent(final String name) {
-            if (component != null) {
-                subComponent = componentFactory.createComponent(name);
-            } else {
-                component = componentFactory.createComponent(name);
-            }
+          CalendarBuilder.this.startComponent(componentFactory.createComponent(name));
         }
 
         /**
