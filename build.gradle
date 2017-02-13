@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '1.4.0'
+        classpath group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '1.4.1'
         classpath 'org.hidetake:gradle-ssh-plugin:1.1.3'
     }
 }
