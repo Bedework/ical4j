@@ -200,9 +200,14 @@ public abstract class Property extends Content {
     public static final String TZID = "TZID";
 
     /**
-     * Equivalent timezone identifier property name.
+     * Timezone upper bound property name.
      */
-    public static final String EQUIVALENT_TZID = "EQUIVALENT-TZID";
+    public static final String TZUNTIL = "TZUNTIL";
+
+    /**
+     * Timezone identifier alias target property name.
+     */
+    public static final String TZID_ALIAS_OF = "TZID-ALIAS-OF";
 
     /**
      * Timezone name property name.
