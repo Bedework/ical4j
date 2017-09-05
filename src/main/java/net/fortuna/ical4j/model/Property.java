@@ -150,9 +150,34 @@ public abstract class Property extends Content {
     public static final String SEQUENCE = "SEQUENCE";
 
     /**
+     * Source property name.
+     */
+    public static final String SOURCE = "SOURCE";
+
+    /**
      * Status property name.
      */
     public static final String STATUS = "STATUS";
+
+    /**
+     * Structured data property name.
+     */
+    public static final String STRUCTURED_DATA = "STRUCTURED-DATA";
+
+    /**
+     * Structured location property name.
+     */
+    public static final String STRUCTURED_LOCATION = "STRUCTURED-LOCATION";
+
+    /**
+     * Structured resource property name.
+     */
+    public static final String STRUCTURED_RESOURCE = "STRUCTURED-RESOURCE";
+
+    /**
+     * Styled description property name.
+     */
+    public static final String STYLED_DESCRIPTION = "STYLED-DESCRIPTION";
 
     /**
      * Summary property name.
@@ -299,27 +324,32 @@ public abstract class Property extends Content {
      */
     public static final String EXRULE = "EXRULE";
 
-  /**
-   * Poll item id property name.
-   */
-  public static final String POLL_ITEM_ID = "POLL-ITEM-ID";
+    /**
+     * Participant type.
+     */
+    public static final String PARTICIPANT_TYPE = "PARTICIPANT-TYPE";
 
-  /**
-   * Poll mode property name.
-   */
-  public static final String POLL_MODE = "POLL-MODE";
+    /**
+     * Poll item id property name.
+     */
+    public static final String POLL_ITEM_ID = "POLL-ITEM-ID";
 
-  /**
-   * Poll properties list property name.
-   */
-  public static final String POLL_PROPERTIES = "POLL-PROPERTIES";
+    /**
+     * Poll mode property name.
+     */
+    public static final String POLL_MODE = "POLL-MODE";
 
-  /**
-   * Poll winner property name.
-   */
-  public static final String POLL_WINNER = "POLL-WINNER";
+    /**
+     * Poll properties list property name.
+     */
+    public static final String POLL_PROPERTIES = "POLL-PROPERTIES";
 
-  /**
+    /**
+     * Poll winner property name.
+     */
+    public static final String POLL_WINNER = "POLL-WINNER";
+
+    /**
      * Relationship property name.
      */
     public static final String RELATED_TO = "RELATED-TO";
@@ -338,6 +368,11 @@ public abstract class Property extends Content {
      * Recurrence rule property name.
      */
     public static final String RRULE = "RRULE";
+
+    /**
+     * Schedule address property name.
+     */
+    public static final String SCHEDULE_ADDRESS = "SCHEDULE-ADDRESS";
 
     /**
      * Voter property name.

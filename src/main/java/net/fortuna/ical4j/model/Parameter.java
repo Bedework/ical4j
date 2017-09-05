@@ -104,14 +104,29 @@ public abstract class Parameter extends Content {
     public static final String FBTYPE = "FBTYPE";
 
     /**
+     * Label.
+     */
+    public static final String LABEL = "LABEL";
+
+    /**
      * Language for text.
      */
     public static final String LANGUAGE = "LANGUAGE";
 
     /**
+     * Location type.
+     */
+    public static final String LOCTYPE = "LOCTYPE";
+
+    /**
      * Group or list membership.
      */
     public static final String MEMBER = "MEMBER";
+
+    /**
+     * Order.
+     */
+    public static final String ORDER = "ORDER";
 
     /**
      * Participation status.
@@ -139,6 +154,11 @@ public abstract class Parameter extends Content {
     public static final String RELTYPE = "RELTYPE";
 
     /**
+     * Resource type.
+     */
+    public static final String RESTYPE = "RESTYPE";
+
+    /**
      * Participation role.
      */
     public static final String ROLE = "ROLE";
@@ -157,6 +177,11 @@ public abstract class Parameter extends Content {
      * Schedule status.
      */
     public static final String SCHEDULE_STATUS = "SCHEDULE-STATUS";
+
+    /**
+     * Schema for structured data.
+     */
+    public static final String SCHEMA = "SCHEMA";
 
     /**
      * Sent by.
