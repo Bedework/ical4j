@@ -31,10 +31,7 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Voter;
@@ -246,5 +243,27 @@ public class VVoter extends CalendarComponent {
         final VVoter copy = (VVoter) super.copy();
         copy.votes = new ComponentList(votes);
         return copy;
+    }
+
+    public static class Factory extends Content.Factory implements ComponentFactory<VVoter> {
+
+        public Factory() {
+            super(VVOTER);
+        }
+
+        @Override
+        public VVoter createComponent() {
+            return new VVoter();
+        }
+
+        @Override
+        public VVoter createComponent(PropertyList properties) {
+            return new VVoter(properties);
+        }
+
+        @Override
+        public VVoter createComponent(PropertyList properties, ComponentList subComponents) {
+            throw new UnsupportedOperationException(String.format("%s does not support sub-components", VVOTER));
+        }
     }
 }

@@ -474,4 +474,27 @@ public class VPoll extends CalendarComponent {
         copy.alarms = new ComponentList(alarms);
         return copy;
     }
+
+    public static class Factory extends Content.Factory implements ComponentFactory<VPoll> {
+
+        public Factory() {
+            super(VPOLL);
+        }
+
+        @Override
+        public VPoll createComponent() {
+            return new VPoll();
+        }
+
+        @Override
+        public VPoll createComponent(PropertyList properties) {
+            return new VPoll(properties);
+        }
+
+        @Override
+        public VPoll createComponent(PropertyList properties, ComponentList subComponents) {
+//            return new VPoll(properties, subComponents);
+            throw new UnsupportedOperationException(String.format("%s does not support sub-components", VPOLL));
+        }
+    }
 }

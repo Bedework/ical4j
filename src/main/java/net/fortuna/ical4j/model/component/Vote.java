@@ -31,26 +31,8 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
-import net.fortuna.ical4j.model.property.Clazz;
-import net.fortuna.ical4j.model.property.Completed;
-import net.fortuna.ical4j.model.property.Created;
-import net.fortuna.ical4j.model.property.Description;
-import net.fortuna.ical4j.model.property.DtStamp;
-import net.fortuna.ical4j.model.property.DtStart;
-import net.fortuna.ical4j.model.property.Geo;
-import net.fortuna.ical4j.model.property.LastModified;
-import net.fortuna.ical4j.model.property.Location;
-import net.fortuna.ical4j.model.property.Method;
-import net.fortuna.ical4j.model.property.PercentComplete;
-import net.fortuna.ical4j.model.property.PollItemId;
-import net.fortuna.ical4j.model.property.RecurrenceId;
-import net.fortuna.ical4j.model.property.Sequence;
-import net.fortuna.ical4j.model.property.Status;
-import net.fortuna.ical4j.model.property.Summary;
-import net.fortuna.ical4j.model.property.Voter;
+import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.property.*;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.validate.PropertyValidator;
@@ -899,5 +881,27 @@ public class Vote extends CalendarComponent {
     public Component copy() throws ParseException, IOException, URISyntaxException {
         final Vote copy = (Vote) super.copy();
         return copy;
+    }
+
+    public static class Factory extends Content.Factory implements ComponentFactory<Vote> {
+
+        public Factory() {
+            super(VOTE);
+        }
+
+        @Override
+        public Vote createComponent() {
+            return new Vote(false);
+        }
+
+        @Override
+        public Vote createComponent(PropertyList properties) {
+            return new Vote(properties);
+        }
+
+        @Override
+        public Vote createComponent(PropertyList properties, ComponentList subComponents) {
+            throw new UnsupportedOperationException(String.format("%s does not support sub-components", VOTE));
+        }
     }
 }
