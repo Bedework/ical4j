@@ -1,5 +1,6 @@
 net.fortuna.ical4j.model.component.Available$Factory
 net.fortuna.ical4j.model.component.Daylight$Factory
+net.fortuna.ical4j.model.component.Participant$Factory
 net.fortuna.ical4j.model.component.Standard$Factory
 net.fortuna.ical4j.model.component.VAlarm$Factory
 net.fortuna.ical4j.model.component.VAvailability$Factory
