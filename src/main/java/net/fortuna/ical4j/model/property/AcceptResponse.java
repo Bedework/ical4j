@@ -31,11 +31,12 @@
  */
 package net.fortuna.ical4j.model.property;
 
-import net.fortuna.ical4j.model.ParameterList;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyFactoryImpl;
-import net.fortuna.ical4j.model.TextList;
+import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.validate.ValidationException;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.text.ParseException;
 
 /**
  * $Id: Categories.java,v 1.18 2010/03/06 12:57:23 fortuna Exp $
@@ -125,5 +126,23 @@ public class AcceptResponse extends Property {
      */
     public final String getValue() {
         return getComponentNames().toString();
+    }
+
+    public static class Factory extends Content.Factory implements
+            PropertyFactory {
+        private static final long serialVersionUID = 1L;
+
+        public Factory() {
+            super(POLL_ITEM_ID);
+        }
+
+        public Property createProperty(final ParameterList parameters, final String value)
+                throws IOException, URISyntaxException, ParseException {
+            return new AcceptResponse(parameters, value);
+        }
+
+        public Property createProperty() {
+            return new AcceptResponse();
+        }
     }
 }

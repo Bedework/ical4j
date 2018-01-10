@@ -33,6 +33,10 @@ package net.fortuna.ical4j.model.property;
 
 import net.fortuna.ical4j.model.*;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+
 /**
  *
  * Created: [Mar 19, 2017]
@@ -125,5 +129,22 @@ public class TzidAliasOf extends Property implements Escapable {
      */
     public final String getValue() {
         return value;
+    }
+
+    public static class Factory extends Content.Factory implements PropertyFactory {
+        private static final long serialVersionUID = 1L;
+
+        public Factory() {
+            super(STRUCTURED_DATA);
+        }
+
+        public Property createProperty(final ParameterList parameters, final String value)
+                throws IOException, URISyntaxException, ParseException {
+            return new TzidAliasOf(parameters, value);
+        }
+
+        public Property createProperty() {
+            return new TzidAliasOf();
+        }
     }
 }

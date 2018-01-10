@@ -31,10 +31,12 @@
  */
 package net.fortuna.ical4j.model.property;
 
-import net.fortuna.ical4j.model.ParameterList;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyFactoryImpl;
+import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.validate.ValidationException;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.text.ParseException;
 
 /**
  * 
@@ -123,5 +125,23 @@ public class PollMode extends Property {
      */
     public final void validate() throws ValidationException {
         // TODO: Auto-generated method stub
+    }
+
+    public static class Factory extends Content.Factory implements
+            PropertyFactory {
+        private static final long serialVersionUID = 1L;
+
+        public Factory() {
+            super(POLL_ITEM_ID);
+        }
+
+        public Property createProperty(final ParameterList parameters, final String value)
+                throws IOException, URISyntaxException, ParseException {
+            return new PollMode(parameters, value);
+        }
+
+        public Property createProperty() {
+            return new PollMode();
+        }
     }
 }
