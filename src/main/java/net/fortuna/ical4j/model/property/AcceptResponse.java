@@ -133,7 +133,7 @@ public class AcceptResponse extends Property {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(POLL_ITEM_ID);
+            super(ACCEPT_RESPONSE);
         }
 
         public Property createProperty(final ParameterList parameters, final String value)
