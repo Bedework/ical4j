@@ -70,11 +70,12 @@ public class ParticipantTest extends ComponentTest {
         TestSuite suite = new TestSuite();
 
         Participant part = new Participant();
-        part.getProperties().add(new ParticipantType("ACTIVE"));
-        
+
         suite.addTest(new ParticipantTest("testIsCalendarComponent", part));
         suite.addTest(new ParticipantTest("testValidationException", part));
 
+        part = (Participant) part.copy();
+        part.getProperties().add(new ParticipantType("ACTIVE"));
         part.getProperties().add(new DtStamp());
 
         suite.addTest(new ParticipantTest("testValidation", part));

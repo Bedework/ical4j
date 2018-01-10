@@ -219,7 +219,7 @@ public class Participant extends CalendarComponent {
     public static class Factory extends Content.Factory implements ComponentFactory<Participant> {
 
         public Factory() {
-            super(VALARM);
+            super(PARTICIPANT);
         }
 
         @Override
@@ -234,7 +234,7 @@ public class Participant extends CalendarComponent {
 
         @Override
         public Participant createComponent(PropertyList properties, ComponentList subComponents) {
-            throw new UnsupportedOperationException(String.format("%s does not support sub-components", VALARM));
+            throw new UnsupportedOperationException(String.format("%s does not support sub-components", PARTICIPANT));
         }
     }
 }
