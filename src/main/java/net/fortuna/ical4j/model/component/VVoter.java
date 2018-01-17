@@ -120,12 +120,17 @@ public class VVoter extends CalendarComponent {
      */
     public final void validate(final boolean recurse)
             throws ValidationException {
+        /* Dtstamp and Voter are required once only */
+
+        PropertyValidator.getInstance().assertOne(Property.DTSTAMP,
+                getProperties());
+        PropertyValidator.getInstance().assertOne(Property.VOTER,
+                getProperties());
+
         /*
-         * ; 'last-mod' and 'voter' are optional, but MUST NOT occur more than once
+         * ; 'last-mod' and '?' are optional, but MUST NOT occur more than once
          */
         PropertyValidator.getInstance().assertOneOrLess(Property.LAST_MODIFIED,
-                getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.VOTER,
                 getProperties());
 
         /*

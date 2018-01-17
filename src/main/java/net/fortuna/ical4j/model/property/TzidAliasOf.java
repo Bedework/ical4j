@@ -135,7 +135,7 @@ public class TzidAliasOf extends Property implements Escapable {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(STRUCTURED_DATA);
+            super(TZID_ALIAS_OF);
         }
 
         public Property createProperty(final ParameterList parameters, final String value)
