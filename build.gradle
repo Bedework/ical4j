@@ -144,9 +144,9 @@ uploadArchives {
                 url 'http://ical4j.sourceforge.net'
 
                 scm {
-                    url 'https://github.com/ical4j/ical4j'
-                    connection 'scm:git@github.com:ical4j/ical4j.git'
-                    developerConnection 'scm:git@github.com:ical4j/ical4j.git'
+                    url 'https://github.com/Bedework/ical4j'
+                    connection 'scm:git@github.com:Bedework/ical4j.git'
+                    developerConnection 'scm:git@github.com:Bedework/ical4j.git'
                 }
 
                 licenses {
