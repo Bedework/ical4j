@@ -4,12 +4,10 @@
 package net.fortuna.ical4j.validate.component;
 
 import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VPoll;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
-import net.fortuna.ical4j.validate.Validator;
 
 /**
  * <pre>
@@ -70,7 +68,7 @@ import net.fortuna.ical4j.validate.Validator;
  * </pre>
  *
  */
-public class VPollRequestValidator implements Validator<VPoll> {
+public class VPollRequestValidator extends VPollItipValidator {
 
     private static final long serialVersionUID = 1L;
 
@@ -103,8 +101,9 @@ public class VPollRequestValidator implements Validator<VPoll> {
 
         PropertyValidator.getInstance().assertNone(Property.REQUEST_STATUS, target.getProperties());
 
-        for (final VAlarm alarm: target.getAlarms()) {
-            alarm.validate(Method.REQUEST);
-        }
+        // validate that getAlarms() only contains VAlarm components
+        validateAlarms(target, Method.REQUEST);
+
+        validateParticipants(target, Method.REQUEST);
     }
 }

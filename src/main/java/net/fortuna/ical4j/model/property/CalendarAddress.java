@@ -34,23 +34,27 @@ package net.fortuna.ical4j.model.property;
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.util.Uris;
+import net.fortuna.ical4j.validate.ParameterValidator;
 import net.fortuna.ical4j.validate.ValidationException;
+import org.apache.commons.collections4.Closure;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.Arrays;
 
 /**
  * $Id$
  * <p/>
  * Created: [Apr 6, 2004]
  * <p/>
- * Defines an ATTENDEE iCalendar component property.
+ * Defines a CALENDAR-ADDRESS iCalendar component property.
  *
  * @author benf
  */
-public class ScheduleAddress extends Property {
+public class CalendarAddress extends Property {
 
     private static final long serialVersionUID = 8430929418723298803L;
 
@@ -59,35 +63,35 @@ public class ScheduleAddress extends Property {
     /**
      * Default constructor.
      */
-    public ScheduleAddress() {
-        super(SCHEDULE_ADDRESS, PropertyFactoryImpl.getInstance());
+    public CalendarAddress() {
+        super(CALENDAR_ADDRESS, PropertyFactoryImpl.getInstance());
     }
 
     /**
-     * @param aValue a value string for this component
+     * @param aValue a value string for this property
      * @throws URISyntaxException where the specified value string is not a valid uri
      */
-    public ScheduleAddress(final String aValue) throws URISyntaxException {
-        super(SCHEDULE_ADDRESS, PropertyFactoryImpl.getInstance());
+    public CalendarAddress(final String aValue) throws URISyntaxException {
+        super(CALENDAR_ADDRESS, PropertyFactoryImpl.getInstance());
         setValue(aValue);
     }
 
     /**
-     * @param aList  a list of parameters for this component
-     * @param aValue a value string for this component
+     * @param aList  a list of parameters for this property
+     * @param aValue a value string for this property
      * @throws URISyntaxException where the specified value string is not a valid uri
      */
-    public ScheduleAddress(final ParameterList aList, final String aValue)
+    public CalendarAddress(final ParameterList aList, final String aValue)
             throws URISyntaxException {
-        super(SCHEDULE_ADDRESS, aList, PropertyFactoryImpl.getInstance());
+        super(CALENDAR_ADDRESS, aList, PropertyFactoryImpl.getInstance());
         setValue(aValue);
     }
 
     /**
      * @param aUri a URI
      */
-    public ScheduleAddress(final URI aUri) {
-        super(SCHEDULE_ADDRESS, PropertyFactoryImpl.getInstance());
+    public CalendarAddress(final URI aUri) {
+        super(CALENDAR_ADDRESS, PropertyFactoryImpl.getInstance());
         calAddress = aUri;
     }
 
@@ -95,8 +99,8 @@ public class ScheduleAddress extends Property {
      * @param aList a list of parameters for this component
      * @param aUri  a URI
      */
-    public ScheduleAddress(final ParameterList aList, final URI aUri) {
-        super(SCHEDULE_ADDRESS, aList, PropertyFactoryImpl.getInstance());
+    public CalendarAddress(final ParameterList aList, final URI aUri) {
+        super(CALENDAR_ADDRESS, aList, PropertyFactoryImpl.getInstance());
         calAddress = aUri;
     }
 
@@ -111,6 +115,30 @@ public class ScheduleAddress extends Property {
      * {@inheritDoc}
      */
     public final void validate() throws ValidationException {
+
+        /*
+         * ; the following are optional, ; but MUST NOT occur more than once (";" cutypeparam) / (";"memberparam) / (";"
+         * roleparam) / (";" partstatparam) / (";" rsvpparam) / (";" deltoparam) / (";" delfromparam) / (";"
+         * sentbyparam) / (";"cnparam) / (";" dirparam) / (";" languageparam) /
+         */
+        CollectionUtils.forAllDo(Arrays.asList(Parameter.CUTYPE, Parameter.MEMBER, Parameter.ROLE, Parameter.PARTSTAT,
+                Parameter.RSVP, Parameter.DELEGATED_TO, Parameter.DELEGATED_FROM, Parameter.SENT_BY, Parameter.CN,
+                Parameter.DIR, Parameter.LANGUAGE), new Closure<String>() {
+            @Override
+            public void execute(String input) {
+                ParameterValidator.getInstance().assertOneOrLess(input, getParameters());
+            }
+        });
+
+        /* scheduleagent and schedulestatus added for CalDAV scheduling
+         */
+        ParameterValidator.getInstance().assertOneOrLess(Parameter.SCHEDULE_AGENT,
+                getParameters());
+        ParameterValidator.getInstance().assertOneOrLess(Parameter.SCHEDULE_STATUS,
+                getParameters());
+        /*
+         * ; the following is optional, ; and MAY occur more than once (";" xparam)
+         */
     }
 
     /**
@@ -139,23 +167,23 @@ public class ScheduleAddress extends Property {
      */
     public final Property copy() throws IOException, URISyntaxException, ParseException {
         // URI are immutable
-        return new ScheduleAddress(new ParameterList(getParameters(), false), calAddress);
+        return new CalendarAddress(new ParameterList(getParameters(), false), calAddress);
     }
 
     public static class Factory extends Content.Factory implements PropertyFactory {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(SCHEDULE_ADDRESS);
+            super(ATTENDEE);
         }
 
         public Property createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
-            return new ScheduleAddress(parameters, value);
+            return new CalendarAddress(parameters, value);
         }
 
         public Property createProperty() {
-            return new ScheduleAddress();
+            return new CalendarAddress();
         }
     }
 

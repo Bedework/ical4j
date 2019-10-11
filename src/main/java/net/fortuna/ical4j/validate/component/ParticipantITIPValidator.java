@@ -42,13 +42,13 @@ public class ParticipantITIPValidator implements Validator<Participant> {
             }
         });
 
-        CollectionUtils.forAllDo(Arrays.asList(Property.CREATED, 
-                Property.DESCRIPTION, 
+        CollectionUtils.forAllDo(Arrays.asList(Property.CALENDAR_ADDRESS,
+                Property.CREATED,
+                Property.DESCRIPTION,
                 Property.LAST_MODIFIED, 
                 Property.SEQUENCE,
                 Property.SOURCE,
                 Property.STATUS,
-                Property.SCHEDULE_ADDRESS,
                 Property.SUMMARY,
                 Property.URL),
                 new Closure<String>() {

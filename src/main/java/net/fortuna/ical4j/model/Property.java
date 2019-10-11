@@ -300,6 +300,11 @@ public abstract class Property extends Content {
     public static final String ATTENDEE = "ATTENDEE";
 
     /**
+     * Attendee property name.
+     */
+    public static final String CALENDAR_ADDRESS = "CALENDAR-ADDRESS";
+
+    /**
      * Categories property name.
      */
     public static final String CATEGORIES = "CATEGORIES";
@@ -368,11 +373,6 @@ public abstract class Property extends Content {
      * Recurrence rule property name.
      */
     public static final String RRULE = "RRULE";
-
-    /**
-     * Schedule address property name.
-     */
-    public static final String SCHEDULE_ADDRESS = "SCHEDULE-ADDRESS";
 
     /**
      * Voter property name.

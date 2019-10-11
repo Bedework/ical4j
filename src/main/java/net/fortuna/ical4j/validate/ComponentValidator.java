@@ -59,7 +59,18 @@ public final class ComponentValidator {
             throw new ValidationException(ASSERT_NONE_MESSAGE, new Object[] {componentName});
         }
     }
-    
+
+    /**
+     * @param componentName a component name used in the assertion
+     * @param components a list of components
+     * @throws ValidationException where the assertion fails
+     */
+    public static void assertOne(String componentName, ComponentList<?> components) throws ValidationException {
+        if (components.getComponents(componentName).size() != 1) {
+            throw new ValidationException(ASSERT_ONE_OR_LESS_MESSAGE, new Object[] {componentName});
+        }
+    }
+
     /**
      * @param componentName a component name used in the assertion
      * @param components a list of components

@@ -17,7 +17,7 @@ import net.fortuna.ical4j.validate.Validator;
  * -------------------  ---------------------------------------------
  * METHOD               1      MUST be "REPLY"
  * VTODO                1+     All component MUST have the same UID
- *     ATTENDEE         1+
+ *     PARTICIPANT      1
  *     DTSTAMP          1
  *     ORGANIZER        1
  *     UID              1      MUST must be the address of the replying
@@ -97,5 +97,6 @@ public class VPollReplyValidator implements Validator<VPoll> {
         PropertyValidator.getInstance().assertOneOrLess(Property.URL, target.getProperties());
 
         ComponentValidator.assertNone(Component.VALARM, target.getAlarms());
+        ComponentValidator.assertOne(Component.PARTICIPANT, target.getVoters());
     }
 }

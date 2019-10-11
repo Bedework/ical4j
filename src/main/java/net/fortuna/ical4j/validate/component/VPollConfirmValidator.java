@@ -4,13 +4,10 @@
 package net.fortuna.ical4j.validate.component;
 
 import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VPoll;
-import net.fortuna.ical4j.model.component.VVoter;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
-import net.fortuna.ical4j.validate.Validator;
 
 /**
  * <pre>
@@ -68,7 +65,7 @@ import net.fortuna.ical4j.validate.Validator;
  * </pre>
  *
  */
-public class VPollConfirmValidator implements Validator<VPoll> {
+public class VPollConfirmValidator extends VPollItipValidator {
 
     private static final long serialVersionUID = 1L;
 
@@ -98,12 +95,7 @@ public class VPollConfirmValidator implements Validator<VPoll> {
         PropertyValidator.getInstance().assertNone(Property.REQUEST_STATUS, target.getProperties());
         PropertyValidator.getInstance().assertNone(Property.VOTER, target.getProperties());
 
-        for (final VVoter voter: target.getVoters()) {
-            voter.validate(Method.CONFIRM);
-        }
-
-        for (final VAlarm alarm: target.getAlarms()) {
-            alarm.validate(Method.CONFIRM);
-        }
+        validateAlarms(target, Method.CONFIRM);
+        validateParticipants(target, Method.CONFIRM);
     }
 }

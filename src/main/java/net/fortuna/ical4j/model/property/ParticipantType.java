@@ -51,6 +51,9 @@ public class ParticipantType extends Property implements Escapable {
 
     private static final long serialVersionUID = 7753849118575885600L;
 
+    public static final ParticipantType VOTER =
+            new ParticipantType("voter");
+
     private String value;
 
     /**

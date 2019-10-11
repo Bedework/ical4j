@@ -46,8 +46,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+
+import static net.fortuna.ical4j.model.property.ParticipantType.VOTER;
 
 /**
  *
@@ -74,7 +75,7 @@ public class VPoll extends CalendarComponent {
         methodValidators.put(Method.REQUEST, new VPollRequestValidator());
     }
 
-    private ComponentList<VVoter> voters = new ComponentList<VVoter>();
+    private ComponentList<Participant> voters = new ComponentList<Participant>();
 
     private ComponentList candidates = new ComponentList();
 
@@ -139,7 +140,7 @@ public class VPoll extends CalendarComponent {
      * Returns the list of voters for this poll.
      * @return a component list
      */
-    public final ComponentList<VVoter> getVoters() {
+    public final ComponentList<Participant> getVoters() {
         return voters;
     }
 
@@ -186,20 +187,19 @@ public class VPoll extends CalendarComponent {
             throws ValidationException {
 
         // validate that getAlarms() only contains VAlarm components
-        final Iterator iterator = getAlarms().iterator();
-        while (iterator.hasNext()) {
-            final Component component = (Component) iterator.next();
-            if (component instanceof VAlarm) {
-                ((VAlarm)component).validate(recurse);
-                continue;
+        for (final VAlarm vAlarm : getAlarms()) {
+            vAlarm.validate(recurse);
+        }
+
+        for (final Participant participant : getVoters()) {
+            if (!VOTER.equals(participant.getParticipantType())) {
+                throw new ValidationException("VPOLL voter" +
+                        " must have type "
+                        + VOTER + ": found " +
+                        participant.getParticipantType());
             }
-            if (component instanceof VVoter) {
-                ((VVoter)component).validate(recurse);
-                continue;
-            }
-                throw new ValidationException("Component ["
-                        + component.getName() + "] may not occur in VPOLL");
-            }
+            participant.validate(recurse);
+        }
 
         if (!CompatibilityHints
                 .isHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION)) {

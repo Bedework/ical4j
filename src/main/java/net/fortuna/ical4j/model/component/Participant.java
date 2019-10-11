@@ -38,6 +38,8 @@ import net.fortuna.ical4j.validate.ValidationException;
 import net.fortuna.ical4j.validate.Validator;
 import net.fortuna.ical4j.validate.component.ParticipantITIPValidator;
 
+import static net.fortuna.ical4j.model.Property.PARTICIPANT_TYPE;
+
 /**
  * $Id$ [May 1 2017]
  *
@@ -111,7 +113,9 @@ public class Participant extends CalendarComponent {
     private static final long serialVersionUID = -8193965477414653802L;
     
     private final Validator itipValidator = new ParticipantITIPValidator();
-    
+
+    private ComponentList components = new ComponentList();
+
     /**
      * Default constructor.
      */
@@ -127,6 +131,14 @@ public class Participant extends CalendarComponent {
         super(PARTICIPANT, properties);
     }
 
+    public ParticipantType getParticipantType() {
+        return (ParticipantType)getProperty(PARTICIPANT_TYPE);
+    }
+
+    public ComponentList getComponents() {
+        return components;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -138,12 +150,12 @@ public class Participant extends CalendarComponent {
          * ; but MUST NOT occur more than once 
          */
         PropertyValidator.getInstance().assertOne(Property.DTSTAMP, getProperties());
-        PropertyValidator.getInstance().assertOne(Property.PARTICIPANT_TYPE, getProperties());
+        PropertyValidator.getInstance().assertOne(PARTICIPANT_TYPE, getProperties());
 
+        PropertyValidator.getInstance().assertOneOrLess(Property.CALENDAR_ADDRESS, getProperties());
         PropertyValidator.getInstance().assertOneOrLess(Property.DURATION, getProperties());
         PropertyValidator.getInstance().assertOneOrLess(Property.SOURCE, getProperties());
         PropertyValidator.getInstance().assertOneOrLess(Property.STATUS, getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.SCHEDULE_ADDRESS, getProperties());
         PropertyValidator.getInstance().assertOneOrLess(Property.SUMMARY, getProperties());
         PropertyValidator.getInstance().assertOneOrLess(Property.URL, getProperties());
         

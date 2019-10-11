@@ -4,6 +4,7 @@ net.fortuna.ical4j.model.property.Attach$Factory
 net.fortuna.ical4j.model.property.Attendee$Factory
 net.fortuna.ical4j.model.property.BusyType$Factory
 net.fortuna.ical4j.model.property.CalScale$Factory
+net.fortuna.ical4j.model.property.CalendarAddress$Factory
 net.fortuna.ical4j.model.property.Categories$Factory
 net.fortuna.ical4j.model.property.Clazz$Factory
 net.fortuna.ical4j.model.property.Comment$Factory
