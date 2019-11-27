@@ -134,7 +134,7 @@ public abstract class Parameter extends Content {
     public static final String PARTSTAT = "PARTSTAT";
 
     /**
-     * Voter public comment.
+     * Voter public comment - on PARTICIPANT CALENDAR-ADDRESS.
      */
     public static final String PUBLIC_COMMENT = "PUBLIC-COMMENT";
 

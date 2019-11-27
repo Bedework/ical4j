@@ -121,8 +121,10 @@ public class CalendarAddress extends Property {
          * roleparam) / (";" partstatparam) / (";" rsvpparam) / (";" deltoparam) / (";" delfromparam) / (";"
          * sentbyparam) / (";"cnparam) / (";" dirparam) / (";" languageparam) /
          */
-        CollectionUtils.forAllDo(Arrays.asList(Parameter.CUTYPE, Parameter.MEMBER, Parameter.ROLE, Parameter.PARTSTAT,
-                Parameter.RSVP, Parameter.DELEGATED_TO, Parameter.DELEGATED_FROM, Parameter.SENT_BY, Parameter.CN,
+        CollectionUtils.forAllDo(Arrays.asList(Parameter.CUTYPE, Parameter.MEMBER,
+                Parameter.ROLE, Parameter.PARTSTAT,
+                Parameter.RSVP, Parameter.DELEGATED_TO,
+                Parameter.DELEGATED_FROM, Parameter.SENT_BY, Parameter.CN,
                 Parameter.DIR, Parameter.LANGUAGE), new Closure<String>() {
             @Override
             public void execute(String input) {
@@ -135,6 +137,8 @@ public class CalendarAddress extends Property {
         ParameterValidator.getInstance().assertOneOrLess(Parameter.SCHEDULE_AGENT,
                 getParameters());
         ParameterValidator.getInstance().assertOneOrLess(Parameter.SCHEDULE_STATUS,
+                getParameters());
+        ParameterValidator.getInstance().assertOneOrLess(Parameter.PUBLIC_COMMENT,
                 getParameters());
         /*
          * ; the following is optional, ; and MAY occur more than once (";" xparam)

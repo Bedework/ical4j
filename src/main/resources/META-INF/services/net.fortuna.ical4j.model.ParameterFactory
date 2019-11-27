@@ -10,6 +10,7 @@ net.fortuna.ical4j.model.parameter.FbType$Factory
 net.fortuna.ical4j.model.parameter.Language$Factory
 net.fortuna.ical4j.model.parameter.Member$Factory
 net.fortuna.ical4j.model.parameter.PartStat$Factory
+net.fortuna.ical4j.model.parameter.PublicComment$Factory
 net.fortuna.ical4j.model.parameter.Range$Factory
 net.fortuna.ical4j.model.parameter.Related$Factory
 net.fortuna.ical4j.model.parameter.RelType$Factory

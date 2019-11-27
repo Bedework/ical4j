@@ -68,4 +68,3 @@ net.fortuna.ical4j.model.property.TzUrl$Factory
 net.fortuna.ical4j.model.property.Uid$Factory
 net.fortuna.ical4j.model.property.Url$Factory
 net.fortuna.ical4j.model.property.Version$Factory
-net.fortuna.ical4j.model.property.Voter$Factory
