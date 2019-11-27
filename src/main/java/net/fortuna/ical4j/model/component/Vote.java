@@ -96,7 +96,7 @@ public class Vote extends CalendarComponent {
      * {@inheritDoc}
      */
     public final String toString() {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         buffer.append(BEGIN);
         buffer.append(':');
         buffer.append(getName());
@@ -107,6 +107,11 @@ public class Vote extends CalendarComponent {
         buffer.append(getName());
         buffer.append(Strings.LINE_SEPARATOR);
         return buffer.toString();
+    }
+
+    @Override
+    public ComponentList<Component> getComponents() {
+        return new ComponentList<>();
     }
 
     /**

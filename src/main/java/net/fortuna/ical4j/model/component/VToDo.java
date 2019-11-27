@@ -221,6 +221,13 @@ public class VToDo extends CalendarComponent {
         return buffer;
     }
 
+    @Override
+    public ComponentList<Component> getComponents() {
+        final ComponentList<Component> res = new ComponentList<>();
+        res.addAll(alarms);
+        return res;
+    }
+
     /**
      * {@inheritDoc}
      */

@@ -150,6 +150,11 @@ public class VJournal extends CalendarComponent {
         getProperties().add(new Summary(summary));
     }
 
+    @Override
+    public ComponentList<Component> getComponents() {
+        return new ComponentList<>();
+    }
+
     /**
      * {@inheritDoc}
      */

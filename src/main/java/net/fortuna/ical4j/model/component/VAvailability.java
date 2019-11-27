@@ -137,6 +137,13 @@ public class VAvailability extends CalendarComponent {
         this.available = available;
     }
 
+    @Override
+    public ComponentList<Component> getComponents() {
+        final ComponentList<Component> res = new ComponentList<>();
+        res.addAll(available);
+        return res;
+    }
+
     /**
      * Returns the list of available times.
      * @return a component list

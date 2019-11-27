@@ -32,6 +32,7 @@
 package net.fortuna.ical4j.filter;
 
 import junit.framework.TestSuite;
+import net.fortuna.ical4j.TestComponent;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Organizer;
@@ -66,7 +67,7 @@ public class HasPropertyRuleTest extends ComponentRuleTest {
         Organizer organiser = new Organizer(URI.create("Mailto:B@example.com"));
         Attendee attendee = new Attendee(URI.create("Mailto:A@example.com"));
         @SuppressWarnings("serial")
-		Component component = new Component("test") {
+		Component component = new TestComponent() {
             public void validate(boolean recurse) throws ValidationException {
             }
         };

@@ -180,6 +180,11 @@ public abstract class Component implements Serializable {
     }
 
     /**
+     * @return list of all immediately contained components. e.g alarms
+     */
+    public abstract ComponentList<Component> getComponents();
+
+    /**
      * @return Returns the properties.
      */
     public final PropertyList getProperties() {

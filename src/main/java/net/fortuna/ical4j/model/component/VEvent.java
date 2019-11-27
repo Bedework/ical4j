@@ -307,6 +307,13 @@ public class VEvent extends CalendarComponent {
         return b;
     }
 
+    @Override
+    public ComponentList<Component> getComponents() {
+        final ComponentList<Component> res = new ComponentList<>();
+        res.addAll(alarms);
+        return res;
+    }
+
     /**
      * {@inheritDoc}
      */

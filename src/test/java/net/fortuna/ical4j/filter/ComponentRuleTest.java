@@ -33,6 +33,7 @@ package net.fortuna.ical4j.filter;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import net.fortuna.ical4j.TestComponent;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.validate.ValidationException;
 
@@ -81,7 +82,7 @@ public class ComponentRuleTest extends TestCase {
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
         @SuppressWarnings("serial")
-		Component component = new Component("test") {
+		Component component = new TestComponent() {
             public void validate(boolean recurse) throws ValidationException {
             }
         };

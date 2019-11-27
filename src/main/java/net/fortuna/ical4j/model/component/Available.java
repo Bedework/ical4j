@@ -108,6 +108,11 @@ public class Available extends Component {
         super(AVAILABLE, properties);
     }
 
+    @Override
+    public ComponentList<Component> getComponents() {
+        return new ComponentList<>();
+    }
+
     /**
      * {@inheritDoc}
      */

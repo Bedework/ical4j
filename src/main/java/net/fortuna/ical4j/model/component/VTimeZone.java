@@ -183,6 +183,13 @@ public class VTimeZone extends CalendarComponent {
         return b;
     }
 
+    @Override
+    public ComponentList<Component> getComponents() {
+        final ComponentList<Component> res = new ComponentList<>();
+        res.addAll(observances);
+        return res;
+    }
+
     /**
      * {@inheritDoc}
      */

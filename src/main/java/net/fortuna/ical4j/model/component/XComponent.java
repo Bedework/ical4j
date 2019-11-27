@@ -31,6 +31,8 @@
  */
 package net.fortuna.ical4j.model.component;
 
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.util.CompatibilityHints;
@@ -64,6 +66,11 @@ public class XComponent extends CalendarComponent {
      */
     public XComponent(final String name, final PropertyList properties) {
         super(name, properties);
+    }
+
+    @Override
+    public ComponentList<Component> getComponents() {
+        return new ComponentList<>();
     }
 
     /**

@@ -127,6 +127,11 @@ public class VVenue extends CalendarComponent {
         return b;
     }
 
+    @Override
+    public ComponentList<Component> getComponents() {
+        return new ComponentList<>();
+    }
+
     /**
      * {@inheritDoc}
      */

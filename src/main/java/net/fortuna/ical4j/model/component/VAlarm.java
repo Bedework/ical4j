@@ -237,6 +237,11 @@ public class VAlarm extends CalendarComponent {
         getProperties().add(new Trigger(trigger));
     }
 
+    @Override
+    public ComponentList<Component> getComponents() {
+        return new ComponentList<>();
+    }
+
     /**
      * {@inheritDoc}
      */

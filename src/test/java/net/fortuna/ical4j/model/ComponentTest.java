@@ -33,6 +33,7 @@ package net.fortuna.ical4j.model;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import net.fortuna.ical4j.TestComponent;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.property.DtEnd;
@@ -140,7 +141,7 @@ public class ComponentTest extends TestCase {
         assertEquals("Wrong number of periods", expectedPeriods.size(), periods.size());
         assertEquals(expectedPeriods, periods);
     }
-    
+
     /**
      * @return
      */
@@ -148,13 +149,13 @@ public class ComponentTest extends TestCase {
 	public static TestSuite suite() throws ValidationException, ParseException, IOException, URISyntaxException, ParserException  {
         TestSuite suite = new TestSuite();
         
-        Component component = new Component("test") {
+        Component component = new TestComponent() {
             public void validate(boolean recurse) throws ValidationException {
             }
         };
         suite.addTest(new ComponentTest("testCalculateRecurrenceSet", component, new Period(new DateTime(), new Dur(1, 0, 0, 0)), new PeriodList()));
         
-        component = new Component("test") {
+        component = new TestComponent() {
             public void validate(boolean recurse) throws ValidationException {
             }
         };
@@ -173,7 +174,7 @@ public class ComponentTest extends TestCase {
         expectedPeriods.add(new Period("20080607T100000Z/PT2H"));
         suite.addTest(new ComponentTest("testCalculateRecurrenceSet", component, new Period(new DateTime("20080601T000000Z"), new Dur(7, 0, 0, 0)), expectedPeriods));
 
-        component = new Component("test") {
+        component = new TestComponent() {
             public void validate(boolean recurse) throws ValidationException {
             }
         };

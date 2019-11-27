@@ -75,11 +75,11 @@ public class VPoll extends CalendarComponent {
         methodValidators.put(Method.REQUEST, new VPollRequestValidator());
     }
 
-    private ComponentList<Participant> voters = new ComponentList<Participant>();
+    private ComponentList<Participant> voters = new ComponentList<>();
 
     private ComponentList candidates = new ComponentList();
 
-    private ComponentList<VAlarm> alarms = new ComponentList<VAlarm>();
+    private ComponentList<VAlarm> alarms = new ComponentList<>();
 
     /**
      * Default constructor.
@@ -164,7 +164,7 @@ public class VPoll extends CalendarComponent {
      * {@inheritDoc}
      */
     public final String toString() {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         buffer.append(BEGIN);
         buffer.append(':');
         buffer.append(getName());
@@ -178,6 +178,15 @@ public class VPoll extends CalendarComponent {
         buffer.append(getName());
         buffer.append(Strings.LINE_SEPARATOR);
         return buffer.toString();
+    }
+
+    @Override
+    public ComponentList<Component> getComponents() {
+        final ComponentList<Component> res = new ComponentList<>();
+        res.addAll(voters);
+        res.addAll(candidates);
+        res.addAll(alarms);
+        return res;
     }
 
     /**

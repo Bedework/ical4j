@@ -480,6 +480,11 @@ public class VFreeBusy extends CalendarComponent {
         return periods.normalise();
     }
 
+    @Override
+    public ComponentList<Component> getComponents() {
+        return new ComponentList<>();
+    }
+
     /**
      * {@inheritDoc}
      */
