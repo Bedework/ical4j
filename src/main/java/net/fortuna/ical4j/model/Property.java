@@ -140,6 +140,11 @@ public abstract class Property extends Content {
     public static final String PRIORITY = "PRIORITY";
 
     /**
+     * Response property name.
+     */
+    public static final String RESPONSE = "RESPONSE";
+
+    /**
      * Date-stamp property name.
      */
     public static final String DTSTAMP = "DTSTAMP";
@@ -300,7 +305,7 @@ public abstract class Property extends Content {
     public static final String ATTENDEE = "ATTENDEE";
 
     /**
-     * Attendee property name.
+     * Participant cua property name.
      */
     public static final String CALENDAR_ADDRESS = "CALENDAR-ADDRESS";
 
@@ -373,11 +378,6 @@ public abstract class Property extends Content {
      * Recurrence rule property name.
      */
     public static final String RRULE = "RRULE";
-
-    /**
-     * Voter property name.
-     */
-    public static final String VOTER = "VOTER";
 
     /**
      * Prefix for non-standard properties.

@@ -93,7 +93,6 @@ public class VPollConfirmValidator extends VPollItipValidator {
         PropertyValidator.getInstance().assertNone(Property.CLASS, target.getProperties());
         PropertyValidator.getInstance().assertNone(Property.RECURRENCE_ID, target.getProperties());
         PropertyValidator.getInstance().assertNone(Property.REQUEST_STATUS, target.getProperties());
-        PropertyValidator.getInstance().assertNone(Property.VOTER, target.getProperties());
 
         validateAlarms(target, Method.CONFIRM);
         validateParticipants(target, Method.CONFIRM);
