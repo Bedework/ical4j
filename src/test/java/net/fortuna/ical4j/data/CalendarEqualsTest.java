@@ -37,11 +37,8 @@ import junit.framework.TestSuite;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.validate.ValidationException;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.NotFileFilter;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -88,8 +85,6 @@ public class CalendarEqualsTest extends TestCase {
 
     /**
      *
-     * @param file
-     * @param valid true if file is supposed to be valid
      * @throws Exception
      */ 
     public void testCalendarEquals() throws Exception {

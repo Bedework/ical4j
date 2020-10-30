@@ -59,7 +59,7 @@ public class CalendarParserImplTest extends TestCase {
     private int expectedErrorLineNo;
 
     /**
-     * @param resouces a calendar resource
+     * @param resourceString a calendar resource
      * @param expectedErrorLineNo
      */
     public CalendarParserImplTest(String resourceString, int expectedErrorLineNo) {

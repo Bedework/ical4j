@@ -16,7 +16,7 @@
 
 ## System Requirements
 
- - Java 6 or later
+ - Java 8 or later
  
 See [here](https://github.com/ical4j/ical4j/docs/Dependencies.md) for further details.
 
