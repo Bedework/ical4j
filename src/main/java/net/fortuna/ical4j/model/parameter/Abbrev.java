@@ -43,9 +43,11 @@ import java.net.URISyntaxException;
  * $Id$ [18-Apr-2004]
  * <p/>
  * Defines an Abbreviation parameter.
+ * @deprecated Was for vvenue
  *
  * @author benfortuna
  * @author Mike Douglass
+ *
  */
 public class Abbrev extends Parameter {
 
