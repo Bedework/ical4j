@@ -34,7 +34,6 @@ package net.fortuna.ical4j.model.parameter;
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactory;
-import net.fortuna.ical4j.model.ParameterFactoryImpl;
 
 import java.net.URISyntaxException;
 
@@ -61,7 +60,7 @@ public class Order extends Parameter {
      * @param aValue an Integer value
      */
     public Order(final Integer aValue) {
-        super(ORDER, ParameterFactoryImpl.getInstance());
+        super(ORDER, new Factory());
         this.order = aValue;
     }
 

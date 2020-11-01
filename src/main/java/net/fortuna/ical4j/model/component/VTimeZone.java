@@ -31,7 +31,13 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentFactory;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.TzId;
@@ -40,13 +46,13 @@ import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
 import net.fortuna.ical4j.validate.Validator;
-import net.fortuna.ical4j.validate.component.VTimeZoneITIPValidator;
-import org.apache.commons.lang3.ObjectUtils;
+import net.fortuna.ical4j.validate.component.VTimeZoneValidator;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.Objects;
 
 /**
  * $Id$ [Apr 5, 2004]
@@ -125,7 +131,7 @@ public class VTimeZone extends CalendarComponent {
 
     private static final long serialVersionUID = 5629679741050917815L;
 
-    private final Validator itipValidator = new VTimeZoneITIPValidator();
+    private final Validator itipValidator = new VTimeZoneValidator();
     
     private ComponentList<Observance> observances;
 
@@ -169,8 +175,9 @@ public class VTimeZone extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String toString() {
-        String b = BEGIN +
+        return BEGIN +
                 ':' +
                 getName() +
                 Strings.LINE_SEPARATOR +
@@ -180,7 +187,6 @@ public class VTimeZone extends CalendarComponent {
                 ':' +
                 getName() +
                 Strings.LINE_SEPARATOR;
-        return b;
     }
 
     @Override
@@ -193,21 +199,22 @@ public class VTimeZone extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void validate(final boolean recurse)
             throws ValidationException {
 
         /*
          * ; 'tzid' is required, but MUST NOT occur more ; than once tzid /
          */
-        PropertyValidator.getInstance().assertOne(Property.TZID,
+        PropertyValidator.assertOne(Property.TZID,
                 getProperties());
 
         /*
          * ; 'last-mod' and 'tzurl' are optional, but MUST NOT occur more than once last-mod / tzurl /
          */
-        PropertyValidator.getInstance().assertOneOrLess(Property.LAST_MODIFIED,
+        PropertyValidator.assertOneOrLess(Property.LAST_MODIFIED,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.TZURL,
+        PropertyValidator.assertOneOrLess(Property.TZURL,
                 getProperties());
 
         /*
@@ -236,6 +243,7 @@ public class VTimeZone extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Validator getValidator(Method method) {
         return itipValidator;
     }
@@ -271,30 +279,31 @@ public class VTimeZone extends CalendarComponent {
      * @return the mandatory timezone identifier property
      */
     public final TzId getTimeZoneId() {
-        return (TzId) getProperty(Property.TZID);
+        return getProperty(Property.TZID);
     }
 
     /**
      * @return the optional last-modified property
      */
     public final LastModified getLastModified() {
-        return (LastModified) getProperty(Property.LAST_MODIFIED);
+        return getProperty(Property.LAST_MODIFIED);
     }
 
     /**
      * @return the optional timezone url property
      */
     public final TzUrl getTimeZoneUrl() {
-        return (TzUrl) getProperty(Property.TZURL);
+        return getProperty(Property.TZURL);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(final Object arg0) {
         if (arg0 instanceof VTimeZone) {
             return super.equals(arg0)
-                    && ObjectUtils.equals(observances, ((VTimeZone) arg0)
+                    && Objects.equals(observances, ((VTimeZone) arg0)
                             .getObservances());
         }
         return super.equals(arg0);
@@ -303,6 +312,7 @@ public class VTimeZone extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode() {
         return new HashCodeBuilder().append(getName()).append(getProperties())
                 .append(getObservances()).toHashCode();
@@ -316,6 +326,7 @@ public class VTimeZone extends CalendarComponent {
      * @throws URISyntaxException where an invalid URI is encountered
      * @see net.fortuna.ical4j.model.Component#copy()
      */
+    @Override
     public Component copy() throws ParseException, IOException, URISyntaxException {
         final VTimeZone copy = (VTimeZone) super.copy();
         copy.observances = new ComponentList<Observance>(observances);

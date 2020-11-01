@@ -39,6 +39,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -271,6 +272,11 @@ public class DateTime extends Date {
 		}
 	}
 
+	public DateTime(final java.util.Date date, TimeZone timeZone) {
+		this(date);
+		setTimeZone(timeZone);
+	}
+
 	/**
 	 * Constructs a new DateTime instance from parsing the specified string
 	 * representation in the default (local) timezone.
@@ -295,7 +301,7 @@ public class DateTime extends Date {
 	/**
 	 * Creates a new date-time instance from the specified value in the given
 	 * timezone. If a timezone is not specified, the default timezone (as
-	 * returned by {@link java.util.TimeZone#getDefault()}) is used.
+	 * returned by {@link TimeZones#getDefault()}) is used.
 	 * 
 	 * @param value
 	 *            a string representation of a date-time
@@ -307,8 +313,7 @@ public class DateTime extends Date {
 	public DateTime(final String value, final TimeZone timezone)
 			throws ParseException {
 		// setting the time to 0 since we are going to reset it anyway
-		super(0, Dates.PRECISION_SECOND, timezone != null ? timezone
-				: java.util.TimeZone.getDefault());
+		super(0, Dates.PRECISION_SECOND, timezone != null ? timezone : TimeZones.getDefault());
 		this.time = new Time(getTime(), getFormat().getTimeZone());
 
         try {
@@ -362,8 +367,7 @@ public class DateTime extends Date {
 	public DateTime(String value, String pattern, TimeZone timezone)
 			throws ParseException {
 		// setting the time to 0 since we are going to reset it anyway
-		super(0, Dates.PRECISION_SECOND, timezone != null ? timezone
-				: java.util.TimeZone.getDefault());
+		super(0, Dates.PRECISION_SECOND, timezone != null ? timezone : TimeZones.getDefault());
 		this.time = new Time(getTime(), getFormat().getTimeZone());
 
 		final DateFormat format = CalendarDateFormatFactory
@@ -417,6 +421,7 @@ public class DateTime extends Date {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public final void setTime(final long time) {
 		super.setTime(time);
 		// need to check for null time due to Android java.util.Date(long)
@@ -477,7 +482,7 @@ public class DateTime extends Date {
 	private void resetTimeZone() {
 		// use GMT timezone to avoid daylight savings rules affecting floating
 		// time values..
-		getFormat().setTimeZone(TimeZone.getDefault());
+		getFormat().setTimeZone(TimeZones.getDefault());
 		// getFormat().setTimeZone(TimeZone.getTimeZone(TimeZones.GMT_ID));
 	}
 
@@ -493,15 +498,16 @@ public class DateTime extends Date {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public final String toString() {
-		String b = super.toString() + 'T' +
+		return super.toString() + 'T' +
 				time.toString();
-		return b;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean equals(final Object arg0) {
 		// TODO: what about compareTo, before, after, etc.?
 
@@ -515,13 +521,25 @@ public class DateTime extends Date {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
 
+	/**
+	 * This cache class is a workaround for DateFormat not being threadsafe.
+	 * We maintain map from Thread to DateFormat instance so that the instances
+	 * are not shared between threads (effectively a ThreadLocal).
+	 * TODO: once the project targets Java 8+, the new date utilities are
+	 * thread-safe and we should remove this code.
+	 */
 	private static class DateFormatCache {
 
-		private final Map<Thread, DateFormat> threadMap = new WeakHashMap<Thread, DateFormat>();
+		/**
+		 * This map needs to keep weak references (to avoid memory leaks - see r1.37)
+		 * and be thread-safe (since it may be concurrently modified in get() below).
+		 */
+		private final Map<Thread, DateFormat> threadMap = Collections.synchronizedMap(new WeakHashMap<Thread, DateFormat>());
 
 		private final DateFormat templateFormat;
 
@@ -529,7 +547,7 @@ public class DateTime extends Date {
 			this.templateFormat = dateFormat;
 		}
 
-		public synchronized DateFormat get() {
+		public DateFormat get() {
 			DateFormat dateFormat = threadMap.get(Thread.currentThread());
 			if (dateFormat == null) {
 				dateFormat = (DateFormat) templateFormat.clone();

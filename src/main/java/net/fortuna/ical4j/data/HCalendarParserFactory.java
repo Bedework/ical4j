@@ -48,7 +48,8 @@ public class HCalendarParserFactory extends CalendarParserFactory {
     /**
      * {@inheritDoc}
      */
-    public CalendarParser createParser() {
+    @Override
+    public CalendarParser get() {
         return new HCalendarParser();
     }
 

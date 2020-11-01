@@ -57,7 +57,7 @@ public class Response extends Property {
      * Default constructor.
      */
     public Response() {
-        super(RESPONSE, PropertyFactoryImpl.getInstance());
+        super(RESPONSE, new ParticipantType.Factory());
     }
 
     /**
@@ -65,7 +65,7 @@ public class Response extends Property {
      * @param aValue a value string for this component
      */
     public Response(final ParameterList aList, final String aValue) {
-        super(RESPONSE, aList, PropertyFactoryImpl.getInstance());
+        super(RESPONSE, aList, new ParticipantType.Factory());
         setValue(aValue);
     }
 
@@ -73,7 +73,7 @@ public class Response extends Property {
      * @param response an int 0-100
      */
     public Response(final int response) {
-        super(RESPONSE, PropertyFactoryImpl.getInstance());
+        super(RESPONSE, new ParticipantType.Factory());
         this.response = response;
     }
 
@@ -82,7 +82,7 @@ public class Response extends Property {
      * @param response an int 0-100
      */
     public Response(final ParameterList aList, final int response) {
-        super(RESPONSE, aList, PropertyFactoryImpl.getInstance());
+        super(RESPONSE, aList, new ParticipantType.Factory());
         this.response = response;
     }
 

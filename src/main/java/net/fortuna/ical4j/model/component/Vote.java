@@ -108,8 +108,8 @@ public class Vote extends Component {
         if (!CompatibilityHints
                 .isHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION)) {
 
-            PropertyValidator.getInstance().assertOne(Property.POLL_ITEM_ID,
-                                                      getProperties());
+          PropertyValidator.assertOne(Property.POLL_ITEM_ID,
+                                      getProperties());
         }
 
         /*
@@ -117,9 +117,9 @@ public class Vote extends Component {
          * dtstamp / dtstart / geo / last-mod / location / organizer / percent / priority / recurid / seq / status /
          * summary / uid / url /
          */
-        PropertyValidator.getInstance().assertOneOrLess(Property.COMMENT,
+        PropertyValidator.assertOneOrLess(Property.COMMENT,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.RESPONSE,
+        PropertyValidator.assertOneOrLess(Property.RESPONSE,
                 getProperties());
 
         if (recurse) {
@@ -131,21 +131,21 @@ public class Vote extends Component {
      * @return the optional access classification property
      */
     public final Comment getComment() {
-        return (Comment) getProperty(Property.COMMENT);
+        return getProperty(Property.COMMENT);
     }
 
     /**
      * @return the optional date completed property
      */
     public final Response getResponse() {
-        return (Response) getProperty(Property.RESPONSE);
+        return getProperty(Property.RESPONSE);
     }
 
     /**
      * @return the required poll-item-id property
      */
     public final PollItemId getPollItemId() {
-        return (PollItemId) getProperty(Property.POLL_ITEM_ID);
+        return getProperty(Property.POLL_ITEM_ID);
     }
 
     public static class Factory extends Content.Factory implements ComponentFactory<Vote> {

@@ -31,15 +31,38 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.*;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentFactory;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.property.Action;
+import net.fortuna.ical4j.model.property.Attach;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.Repeat;
+import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Trigger;
+import net.fortuna.ical4j.validate.ComponentValidator;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
+import net.fortuna.ical4j.validate.ValidationRule;
 import net.fortuna.ical4j.validate.Validator;
-import net.fortuna.ical4j.validate.component.*;
 
+import java.time.temporal.TemporalAmount;
 import java.util.HashMap;
 import java.util.Map;
+
+import static net.fortuna.ical4j.model.Property.ATTACH;
+import static net.fortuna.ical4j.model.Property.ATTENDEE;
+import static net.fortuna.ical4j.model.Property.DESCRIPTION;
+import static net.fortuna.ical4j.model.Property.SUMMARY;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.One;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrMore;
 
 /**
  * $Id$ [Apr 5, 2004]
@@ -196,14 +219,14 @@ public class VAlarm extends CalendarComponent {
 
     private final Map<Action, Validator> actionValidators = new HashMap<Action, Validator>();
     {
-        actionValidators.put(Action.AUDIO, new VAlarmAudioValidator());
-        actionValidators.put(Action.DISPLAY, new VAlarmDisplayValidator());
-        actionValidators.put(Action.EMAIL, new VAlarmEmailValidator());
-        actionValidators.put(Action.PROCEDURE, new VAlarmProcedureValidator());
+        actionValidators.put(Action.AUDIO, new ComponentValidator<VAlarm>(new ValidationRule(OneOrLess, ATTACH)));
+        actionValidators.put(Action.DISPLAY, new ComponentValidator<VAlarm>(new ValidationRule(One, DESCRIPTION)));
+        actionValidators.put(Action.EMAIL, new ComponentValidator<VAlarm>(new ValidationRule(One, DESCRIPTION, SUMMARY),
+                new ValidationRule(OneOrMore, ATTENDEE)));
+        actionValidators.put(Action.PROCEDURE, new ComponentValidator<VAlarm>(new ValidationRule(One, ATTACH),
+                new ValidationRule(OneOrLess, DESCRIPTION)));
     }
-    
-    private final Validator itipValidator = new VAlarmITIPValidator();
-    
+
     /**
      * Default constructor.
      */
@@ -232,7 +255,7 @@ public class VAlarm extends CalendarComponent {
      * Constructs a new VALARM instance that will trigger at the specified time relative to the event/todo component.
      * @param trigger a duration of time relative to the parent component that the alarm will trigger at
      */
-    public VAlarm(final Dur trigger) {
+    public VAlarm(final TemporalAmount trigger) {
         this();
         getProperties().add(new Trigger(trigger));
     }
@@ -245,29 +268,30 @@ public class VAlarm extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void validate(final boolean recurse)
             throws ValidationException {
 
         /*
          * ; 'action' and 'trigger' are both REQUIRED, ; but MUST NOT occur more than once action / trigger /
          */
-        PropertyValidator.getInstance().assertOne(Property.ACTION, getProperties());
-        PropertyValidator.getInstance().assertOne(Property.TRIGGER, getProperties());
+        PropertyValidator.assertOne(Property.ACTION, getProperties());
+        PropertyValidator.assertOne(Property.TRIGGER, getProperties());
 
         /*
          * ; 'duration' and 'repeat' are both optional, ; and MUST NOT occur more than once each, ; but if one occurs,
          * so MUST the other duration / repeat /
          */
-        PropertyValidator.getInstance().assertOneOrLess(Property.DURATION, getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.REPEAT, getProperties());
+        PropertyValidator.assertOneOrLess(Property.DURATION, getProperties());
+        PropertyValidator.assertOneOrLess(Property.REPEAT, getProperties());
 
         try {
-            PropertyValidator.getInstance().assertNone(Property.DURATION, getProperties());
-            PropertyValidator.getInstance().assertNone(Property.REPEAT, getProperties());
+            PropertyValidator.assertNone(Property.DURATION, getProperties());
+            PropertyValidator.assertNone(Property.REPEAT, getProperties());
         }
         catch (ValidationException ve) {
-            PropertyValidator.getInstance().assertOne(Property.DURATION, getProperties());
-            PropertyValidator.getInstance().assertOne(Property.REPEAT, getProperties());
+            PropertyValidator.assertOne(Property.DURATION, getProperties());
+            PropertyValidator.assertOne(Property.REPEAT, getProperties());
         }
         
         /*
@@ -287,8 +311,9 @@ public class VAlarm extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Validator getValidator(Method method) {
-        return itipValidator;
+        throw new UnsupportedOperationException("VALARM validation included in VEVENT or VTODO method validator.");
     }
 
     /**
@@ -296,7 +321,7 @@ public class VAlarm extends CalendarComponent {
      * @return the ACTION property or null if not specified
      */
     public final Action getAction() {
-        return (Action) getProperty(Property.ACTION);
+        return getProperty(Property.ACTION);
     }
 
     /**
@@ -304,7 +329,7 @@ public class VAlarm extends CalendarComponent {
      * @return the TRIGGER property or null if not specified
      */
     public final Trigger getTrigger() {
-        return (Trigger) getProperty(Property.TRIGGER);
+        return getProperty(Property.TRIGGER);
     }
 
     /**
@@ -312,7 +337,7 @@ public class VAlarm extends CalendarComponent {
      * @return the DURATION property or null if not specified
      */
     public final Duration getDuration() {
-        return (Duration) getProperty(Property.DURATION);
+        return getProperty(Property.DURATION);
     }
 
     /**
@@ -320,7 +345,7 @@ public class VAlarm extends CalendarComponent {
      * @return the REPEAT property or null if not specified
      */
     public final Repeat getRepeat() {
-        return (Repeat) getProperty(Property.REPEAT);
+        return getProperty(Property.REPEAT);
     }
 
     /**
@@ -328,7 +353,7 @@ public class VAlarm extends CalendarComponent {
      * @return the ATTACH property or null if not specified
      */
     public final Attach getAttachment() {
-        return (Attach) getProperty(Property.ATTACH);
+        return getProperty(ATTACH);
     }
 
     /**
@@ -336,7 +361,7 @@ public class VAlarm extends CalendarComponent {
      * @return the DESCRIPTION property or null if not specified
      */
     public final Description getDescription() {
-        return (Description) getProperty(Property.DESCRIPTION);
+        return getProperty(DESCRIPTION);
     }
 
     /**
@@ -344,7 +369,7 @@ public class VAlarm extends CalendarComponent {
      * @return the SUMMARY property or null if not specified
      */
     public final Summary getSummary() {
-        return (Summary) getProperty(Property.SUMMARY);
+        return getProperty(SUMMARY);
     }
 
     public static class Factory extends Content.Factory implements ComponentFactory<VAlarm> {

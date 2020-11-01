@@ -31,11 +31,12 @@
  */
 package net.fortuna.ical4j.model;
 
+import java.text.ParseException;
+import java.time.temporal.TemporalAmount;
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import java.text.ParseException;
-import java.util.Date;
 
 /**
  * $Id$ [Apr 14, 2004]
@@ -52,7 +53,8 @@ public class Period extends DateRange implements Comparable<Period> {
     
     private static final long serialVersionUID = 7321090422911676490L;
 
-    private Dur duration;
+    private TemporalAmountAdapter duration;
+    private Component component;
 
     /**
      * Constructor.
@@ -91,15 +93,28 @@ public class Period extends DateRange implements Comparable<Period> {
 
     /**
      * Constructs a new period with the specified start date and duration.
+     *
+     * @param start
+     *            the start date of the period
+     * @param duration
+     *            the duration of the period
+     */
+    @Deprecated
+    public Period(final DateTime start, final Dur duration) {
+        this(start, TemporalAmountAdapter.from(duration).getDuration());
+    }
+
+    /**
+     * Constructs a new period with the specified start date and duration.
      * 
      * @param start
      *            the start date of the period
      * @param duration
      *            the duration of the period
      */
-    public Period(final DateTime start, final Dur duration) {
-        super(start, new DateTime(duration.getTime(start)));
-        this.duration = duration;
+    public Period(final DateTime start, final TemporalAmount duration) {
+        super(start, new DateTime(Date.from(start.toInstant().plus(duration))));
+        this.duration = new TemporalAmountAdapter(duration);
         normalise();
     }
 
@@ -114,8 +129,8 @@ public class Period extends DateRange implements Comparable<Period> {
         }
         catch (ParseException e) {
             if (resolve) {
-                final Dur duration = parseDuration(value);
-                end = new DateTime(duration.getTime(parseStartDate(value)));
+                final TemporalAmount duration = parseDuration(value).getDuration();
+                end = new DateTime(Date.from(parseStartDate(value).toInstant().plus(duration)));
             }
             else {
                 throw e;
@@ -124,8 +139,9 @@ public class Period extends DateRange implements Comparable<Period> {
         return end;
     }
     
-    private static Dur parseDuration(String value) {
-        return new Dur(value.substring(value.indexOf('/') + 1));
+    private static TemporalAmountAdapter parseDuration(String value) {
+        String durationString = value.substring(value.indexOf('/') + 1);
+        return TemporalAmountAdapter.parse(durationString);
     }
     
     private void normalise() {
@@ -144,11 +160,11 @@ public class Period extends DateRange implements Comparable<Period> {
      * 
      * @return the duration of this period in milliseconds.
      */
-    public final Dur getDuration() {
+    public final TemporalAmount getDuration() {
         if (duration == null) {
-            return new Dur(getStart(), getEnd());
+            return TemporalAmountAdapter.fromDateRange(getStart(), getEnd()).getDuration();
         }
-        return duration;
+        return duration.getDuration();
     }
 
     /**
@@ -174,7 +190,8 @@ public class Period extends DateRange implements Comparable<Period> {
      * @return true if the specified date occurs within the current period
      * @deprecated use {@link Period#includes(Date, int)} instead.
      */
-    public final boolean includes(final Date date, final boolean inclusive) {
+    @Deprecated
+	public final boolean includes(final Date date, final boolean inclusive) {
         if (inclusive) {
             return includes(date, INCLUSIVE_START | INCLUSIVE_END);
         }
@@ -297,7 +314,8 @@ public class Period extends DateRange implements Comparable<Period> {
     /**
      * {@inheritDoc}
      */
-    public final String toString() {
+    @Override
+	public final String toString() {
         final StringBuilder b = new StringBuilder();
         b.append(getStart());
         b.append('/');
@@ -319,7 +337,8 @@ public class Period extends DateRange implements Comparable<Period> {
      * @return a postive value if this period is greater, negative if the other is
      * greater, or zero if they are equal
      */
-    public final int compareTo(final Period arg0) {
+    @Override
+	public final int compareTo(final Period arg0) {
         // Throws documented exception if type is wrong or parameter is null
         if (arg0 == null) {
             throw new ClassCastException("Cannot compare this object to null");
@@ -336,13 +355,14 @@ public class Period extends DateRange implements Comparable<Period> {
             }
         }
         // ..or durations
-        return getDuration().compareTo(arg0.getDuration());
+        return new TemporalAmountComparator().compare(getDuration(), arg0.getDuration());
     }
 
     /**
      * {@inheritDoc}
      */
-    public final boolean equals(final Object o) {
+    @Override
+	public final boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -352,14 +372,25 @@ public class Period extends DateRange implements Comparable<Period> {
 
         final Period period = (Period) o;
         return new EqualsBuilder().append(getStart(), period.getStart())
-            .append(getEnd(), period.getEnd()).isEquals();
+            .append((duration == null) ? getEnd() : duration,
+                    (period.duration == null) ? period.getEnd() : period.duration).isEquals();
     }
 
     /**
      * {@inheritDoc}
      */
-    public final int hashCode() {
+    @Override
+	public final int hashCode() {
         return new HashCodeBuilder().append(getStart())
-            .append((duration == null) ? (Object) getEnd() : duration).toHashCode();
+            .append((duration == null) ? getEnd() : duration)
+                .toHashCode();
     }
+
+	public Component getComponent() {
+		return component;
+	}
+
+	public void setComponent(Component component) {
+		this.component = component;
+	}
 }

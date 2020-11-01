@@ -89,9 +89,24 @@ public abstract class Parameter extends Content {
     public static final String DIR = "DIR";
 
     /**
+     * Display format.
+     */
+    public static final String DISPLAY = "DISPLAY";
+
+    /**
+     * Email address.
+     */
+    public static final String EMAIL = "EMAIL";
+
+    /**
      * Inline encoding.
      */
     public static final String ENCODING = "ENCODING";
+
+    /**
+     * Feature specification.
+     */
+    public static final String FEATURE = "FEATURE";
 
     /**
      * Format type.
@@ -220,13 +235,13 @@ public abstract class Parameter extends Content {
 
     private String name;
 
-    private final ParameterFactoryImpl factory;
+    private final ParameterFactory factory;
 
     /**
      * @param aName   the parameter identifier
      * @param factory the factory used to create the parameter
      */
-    public Parameter(final String aName, ParameterFactoryImpl factory) {
+    public Parameter(final String aName, ParameterFactory factory) {
         this.name = aName;
         this.factory = factory;
     }
@@ -234,6 +249,7 @@ public abstract class Parameter extends Content {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String toString() {
         final StringBuilder b = new StringBuilder();
         b.append(getName());
@@ -259,6 +275,7 @@ public abstract class Parameter extends Content {
     /**
      * @return Returns the name.
      */
+    @Override
     public final String getName() {
         return name;
     }
@@ -266,6 +283,7 @@ public abstract class Parameter extends Content {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean equals(final Object arg0) {
         if (arg0 instanceof Parameter) {
             final Parameter p = (Parameter) arg0;
@@ -278,6 +296,7 @@ public abstract class Parameter extends Content {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final int hashCode() {
         // as parameter name is case-insensitive generate hash for uppercase..
         return new HashCodeBuilder().append(getName().toUpperCase()).append(
@@ -290,10 +309,10 @@ public abstract class Parameter extends Content {
      * @return new parameter
      * @throws URISyntaxException where an invalid URI is encountered
      */
-    public Parameter copy() throws URISyntaxException {
+    public <T extends Parameter> T copy() throws URISyntaxException {
         if (factory == null) {
             throw new UnsupportedOperationException("No factory specified");
         }
-        return factory.createParameter(getName(), getValue());
+        return (T) factory.createParameter(getValue());
     }
 }

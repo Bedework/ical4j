@@ -31,25 +31,86 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.*;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentFactory;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.property.Clazz;
+import net.fortuna.ical4j.model.property.Completed;
+import net.fortuna.ical4j.model.property.Created;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.DtStamp;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.Due;
+import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.Geo;
+import net.fortuna.ical4j.model.property.LastModified;
+import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.Organizer;
+import net.fortuna.ical4j.model.property.PercentComplete;
+import net.fortuna.ical4j.model.property.Priority;
+import net.fortuna.ical4j.model.property.RecurrenceId;
+import net.fortuna.ical4j.model.property.Sequence;
+import net.fortuna.ical4j.model.property.Status;
+import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
+import net.fortuna.ical4j.validate.ValidationRule;
 import net.fortuna.ical4j.validate.Validator;
-import net.fortuna.ical4j.validate.component.*;
-import org.apache.commons.collections4.Closure;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ObjectUtils;
+import net.fortuna.ical4j.validate.component.VToDoValidator;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import static net.fortuna.ical4j.model.Property.ATTACH;
+import static net.fortuna.ical4j.model.Property.ATTENDEE;
+import static net.fortuna.ical4j.model.Property.CATEGORIES;
+import static net.fortuna.ical4j.model.Property.CLASS;
+import static net.fortuna.ical4j.model.Property.CONTACT;
+import static net.fortuna.ical4j.model.Property.CREATED;
+import static net.fortuna.ical4j.model.Property.DESCRIPTION;
+import static net.fortuna.ical4j.model.Property.DTSTAMP;
+import static net.fortuna.ical4j.model.Property.DTSTART;
+import static net.fortuna.ical4j.model.Property.DUE;
+import static net.fortuna.ical4j.model.Property.DURATION;
+import static net.fortuna.ical4j.model.Property.EXDATE;
+import static net.fortuna.ical4j.model.Property.EXRULE;
+import static net.fortuna.ical4j.model.Property.GEO;
+import static net.fortuna.ical4j.model.Property.LAST_MODIFIED;
+import static net.fortuna.ical4j.model.Property.LOCATION;
+import static net.fortuna.ical4j.model.Property.ORGANIZER;
+import static net.fortuna.ical4j.model.Property.PERCENT_COMPLETE;
+import static net.fortuna.ical4j.model.Property.PRIORITY;
+import static net.fortuna.ical4j.model.Property.RDATE;
+import static net.fortuna.ical4j.model.Property.RECURRENCE_ID;
+import static net.fortuna.ical4j.model.Property.RELATED_TO;
+import static net.fortuna.ical4j.model.Property.REQUEST_STATUS;
+import static net.fortuna.ical4j.model.Property.RESOURCES;
+import static net.fortuna.ical4j.model.Property.RRULE;
+import static net.fortuna.ical4j.model.Property.SEQUENCE;
+import static net.fortuna.ical4j.model.Property.STATUS;
+import static net.fortuna.ical4j.model.Property.SUMMARY;
+import static net.fortuna.ical4j.model.Property.UID;
+import static net.fortuna.ical4j.model.Property.URL;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.None;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.One;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrMore;
 
 /**
  * $Id$ [Apr 5, 2004]
@@ -124,14 +185,44 @@ public class VToDo extends CalendarComponent {
 
     private final Map<Method, Validator> methodValidators = new HashMap<Method, Validator>();
     {
-        methodValidators.put(Method.ADD, new VToDoAddValidator());
-        methodValidators.put(Method.CANCEL, new VToDoCancelValidator());
-        methodValidators.put(Method.COUNTER, new VToDoCounterValidator());
-        methodValidators.put(Method.DECLINE_COUNTER, new VToDoDeclineCounterValidator());
-        methodValidators.put(Method.PUBLISH, new VToDoPublishValidator());
-        methodValidators.put(Method.REFRESH, new VToDoRefreshValidator());
-        methodValidators.put(Method.REPLY, new VToDoReplyValidator());
-        methodValidators.put(Method.REQUEST, new VToDoRequestValidator());
+        methodValidators.put(Method.ADD, new VToDoValidator(new ValidationRule(One, DTSTAMP, ORGANIZER, PRIORITY, SEQUENCE, SUMMARY, UID),
+                                                            new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTSTART, DUE, DURATION, GEO,
+                        LAST_MODIFIED, LOCATION, PERCENT_COMPLETE, RESOURCES, STATUS, URL),
+                                                            new ValidationRule(None, RECURRENCE_ID, REQUEST_STATUS)));
+        methodValidators.put(Method.CANCEL, new VToDoValidator(false, new ValidationRule(One, UID, DTSTAMP, ORGANIZER, SEQUENCE),
+                new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTSTART, DUE, DURATION, GEO,
+                        LAST_MODIFIED, LOCATION, PERCENT_COMPLETE, RECURRENCE_ID, RESOURCES, PRIORITY, STATUS, URL),
+                new ValidationRule(None, REQUEST_STATUS)));
+        methodValidators.put(Method.COUNTER, new VToDoValidator(new ValidationRule(OneOrMore, ATTENDEE),
+                new ValidationRule(One, DTSTAMP, ORGANIZER, PRIORITY, SUMMARY, UID),
+                new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTSTART, DUE, DURATION, GEO,
+                        LAST_MODIFIED, LOCATION, PERCENT_COMPLETE, RECURRENCE_ID, RESOURCES, RRULE, SEQUENCE, STATUS,
+                        URL)));
+        methodValidators.put(Method.DECLINE_COUNTER, new VToDoValidator(false, new ValidationRule(OneOrMore, ATTENDEE),
+                new ValidationRule(One, DTSTAMP, ORGANIZER, SEQUENCE, UID),
+                new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTSTART, DUE, DURATION, GEO,
+                        LAST_MODIFIED, LOCATION, LOCATION, PERCENT_COMPLETE, PRIORITY, RECURRENCE_ID, RESOURCES, STATUS,
+                        URL)));
+        methodValidators.put(Method.PUBLISH, new VToDoValidator(new ValidationRule(One, DTSTAMP, SUMMARY, UID),
+                new ValidationRule(One, true, ORGANIZER, PRIORITY),
+                new ValidationRule(OneOrLess, DTSTART, SEQUENCE, CATEGORIES, CLASS, CREATED, DESCRIPTION, DUE, DURATION,
+                        GEO, LAST_MODIFIED, LOCATION, PERCENT_COMPLETE, RECURRENCE_ID, RESOURCES, STATUS, URL),
+                new ValidationRule(None, ATTENDEE, REQUEST_STATUS)));
+        methodValidators.put(Method.REFRESH, new VToDoValidator(false, new ValidationRule(One, ATTENDEE, DTSTAMP, UID),
+                new ValidationRule(OneOrLess, RECURRENCE_ID),
+                new ValidationRule(None, ATTACH, CATEGORIES, CLASS, CONTACT, CREATED, DESCRIPTION, DTSTART, DUE,
+                        DURATION, EXDATE, EXRULE, GEO, LAST_MODIFIED, LOCATION, ORGANIZER, PERCENT_COMPLETE, PRIORITY,
+                        RDATE, RELATED_TO, REQUEST_STATUS, RESOURCES, RRULE, SEQUENCE, STATUS, URL)));
+        methodValidators.put(Method.REPLY, new VToDoValidator(false, new ValidationRule(OneOrMore, ATTENDEE),
+                new ValidationRule(One, DTSTAMP, ORGANIZER, UID),
+                new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTSTART, DUE, DURATION, GEO,
+                        LAST_MODIFIED, LOCATION, PERCENT_COMPLETE, PRIORITY, RESOURCES, RECURRENCE_ID, SEQUENCE, STATUS,
+                        SUMMARY, URL)));
+        methodValidators.put(Method.REQUEST, new VToDoValidator(new ValidationRule(OneOrMore, ATTENDEE),
+                new ValidationRule(One, DTSTAMP, DTSTART, ORGANIZER, PRIORITY, SUMMARY, UID),
+                new ValidationRule(OneOrLess, SEQUENCE, CATEGORIES, CLASS, CREATED, DESCRIPTION, DUE, DURATION, GEO,
+                        LAST_MODIFIED, LOCATION, PERCENT_COMPLETE, RECURRENCE_ID, RESOURCES, STATUS, URL),
+                new ValidationRule(None, REQUEST_STATUS)));
     }
     
     private ComponentList<VAlarm> alarms = new ComponentList<VAlarm>();
@@ -156,6 +247,11 @@ public class VToDo extends CalendarComponent {
      */
     public VToDo(final PropertyList properties) {
         super(VTODO, properties);
+    }
+
+    public VToDo(PropertyList properties, ComponentList<VAlarm> alarms) {
+        super(VTODO, properties);
+        this.alarms = alarms;
     }
 
     /**
@@ -189,7 +285,7 @@ public class VToDo extends CalendarComponent {
      * @param duration the duration of the new todo
      * @param summary the todo summary
      */
-    public VToDo(final Date start, final Dur duration, final String summary) {
+    public VToDo(final Date start, final TemporalAmount duration, final String summary) {
         this();
         getProperties().add(new DtStart(start));
         getProperties().add(new Duration(duration));
@@ -207,8 +303,9 @@ public class VToDo extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String toString() {
-        String buffer = BEGIN +
+        return BEGIN +
                 ':' +
                 getName() +
                 Strings.LINE_SEPARATOR +
@@ -218,7 +315,6 @@ public class VToDo extends CalendarComponent {
                 ':' +
                 getName() +
                 Strings.LINE_SEPARATOR;
-        return buffer;
     }
 
     @Override
@@ -231,6 +327,7 @@ public class VToDo extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void validate(final boolean recurse)
             throws ValidationException {
 
@@ -245,14 +342,14 @@ public class VToDo extends CalendarComponent {
             // From "4.8.4.7 Unique Identifier":
             // Conformance: The property MUST be specified in the "VEVENT", "VTODO",
             // "VJOURNAL" or "VFREEBUSY" calendar components.
-            PropertyValidator.getInstance().assertOne(Property.UID,
-                    getProperties());
+            PropertyValidator.assertOne(UID,
+                                        getProperties());
 
             // From "4.8.7.2 Date/Time Stamp":
             // Conformance: This property MUST be included in the "VEVENT", "VTODO",
             // "VJOURNAL" or "VFREEBUSY" calendar components.
-            PropertyValidator.getInstance().assertOne(Property.DTSTAMP,
-                    getProperties());
+            PropertyValidator.assertOne(DTSTAMP,
+                                        getProperties());
         }
 
         /*
@@ -260,17 +357,12 @@ public class VToDo extends CalendarComponent {
          * dtstamp / dtstart / geo / last-mod / location / organizer / percent / priority / recurid / seq / status /
          * summary / uid / url /
          */
-        CollectionUtils.forAllDo(Arrays.asList(Property.CLASS, Property.COMPLETED, Property.CREATED, Property.DESCRIPTION,
-                Property.DTSTAMP, Property.DTSTART, Property.GEO, Property.LAST_MODIFIED, Property.LOCATION, Property.ORGANIZER,
-                Property.PERCENT_COMPLETE, Property.PRIORITY, Property.RECURRENCE_ID, Property.SEQUENCE, Property.STATUS,
-                Property.SUMMARY, Property.UID, Property.URL), new Closure<String>() {
-            @Override
-            public void execute(String input) {
-                PropertyValidator.getInstance().assertOneOrLess(input, getProperties());
-            }
-        });
+        Arrays.asList(CLASS, Property.COMPLETED, CREATED, DESCRIPTION,
+                      DTSTAMP, DTSTART, GEO, LAST_MODIFIED, LOCATION, ORGANIZER,
+                      PERCENT_COMPLETE, PRIORITY, RECURRENCE_ID, SEQUENCE, STATUS,
+                      SUMMARY, UID, URL).forEach(property -> PropertyValidator.assertOneOrLess(property, getProperties()));
 
-        final Status status = (Status) getProperty(Property.STATUS);
+        final Status status = getProperty(STATUS);
         if (status != null && !Status.VTODO_NEEDS_ACTION.getValue().equals(status.getValue())
                 && !Status.VTODO_COMPLETED.getValue().equals(status.getValue())
                 && !Status.VTODO_IN_PROCESS.getValue().equals(status.getValue())
@@ -284,12 +376,12 @@ public class VToDo extends CalendarComponent {
          * same 'todoprop' due / duration /
          */
         try {
-            PropertyValidator.getInstance().assertNone(Property.DUE,
-                    getProperties());
+            PropertyValidator.assertNone(DUE,
+                                         getProperties());
         }
         catch (ValidationException ve) {
-            PropertyValidator.getInstance().assertNone(Property.DURATION,
-                    getProperties());
+            PropertyValidator.assertNone(DURATION,
+                                         getProperties());
         }
 
         /*
@@ -305,6 +397,7 @@ public class VToDo extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Validator getValidator(Method method) {
         return methodValidators.get(method);
     }
@@ -313,28 +406,28 @@ public class VToDo extends CalendarComponent {
      * @return the optional access classification property
      */
     public final Clazz getClassification() {
-        return (Clazz) getProperty(Property.CLASS);
+        return getProperty(CLASS);
     }
 
     /**
      * @return the optional date completed property
      */
     public final Completed getDateCompleted() {
-        return (Completed) getProperty(Property.COMPLETED);
+        return getProperty(Property.COMPLETED);
     }
 
     /**
      * @return the optional creation-time property
      */
     public final Created getCreated() {
-        return (Created) getProperty(Property.CREATED);
+        return getProperty(CREATED);
     }
 
     /**
      * @return the optional description property
      */
     public final Description getDescription() {
-        return (Description) getProperty(Property.DESCRIPTION);
+        return getProperty(DESCRIPTION);
     }
 
     /**
@@ -342,105 +435,105 @@ public class VToDo extends CalendarComponent {
      * @return The DtStart object representation of the start Date
      */
     public final DtStart getStartDate() {
-        return (DtStart) getProperty(Property.DTSTART);
+        return getProperty(DTSTART);
     }
 
     /**
      * @return the optional geographic position property
      */
     public final Geo getGeographicPos() {
-        return (Geo) getProperty(Property.GEO);
+        return getProperty(GEO);
     }
 
     /**
      * @return the optional last-modified property
      */
     public final LastModified getLastModified() {
-        return (LastModified) getProperty(Property.LAST_MODIFIED);
+        return getProperty(LAST_MODIFIED);
     }
 
     /**
      * @return the optional location property
      */
     public final Location getLocation() {
-        return (Location) getProperty(Property.LOCATION);
+        return getProperty(LOCATION);
     }
 
     /**
      * @return the optional organizer property
      */
     public final Organizer getOrganizer() {
-        return (Organizer) getProperty(Property.ORGANIZER);
+        return getProperty(ORGANIZER);
     }
 
     /**
      * @return the optional percentage complete property
      */
     public final PercentComplete getPercentComplete() {
-        return (PercentComplete) getProperty(Property.PERCENT_COMPLETE);
+        return getProperty(PERCENT_COMPLETE);
     }
 
     /**
      * @return the optional priority property
      */
     public final Priority getPriority() {
-        return (Priority) getProperty(Property.PRIORITY);
+        return getProperty(PRIORITY);
     }
 
     /**
      * @return the optional date-stamp property
      */
     public final DtStamp getDateStamp() {
-        return (DtStamp) getProperty(Property.DTSTAMP);
+        return getProperty(DTSTAMP);
     }
 
     /**
      * @return the optional sequence number property
      */
     public final Sequence getSequence() {
-        return (Sequence) getProperty(Property.SEQUENCE);
+        return getProperty(SEQUENCE);
     }
 
     /**
      * @return the optional status property
      */
     public final Status getStatus() {
-        return (Status) getProperty(Property.STATUS);
+        return getProperty(STATUS);
     }
 
     /**
      * @return the optional summary property
      */
     public final Summary getSummary() {
-        return (Summary) getProperty(Property.SUMMARY);
+        return getProperty(SUMMARY);
     }
 
     /**
      * @return the optional URL property
      */
     public final Url getUrl() {
-        return (Url) getProperty(Property.URL);
+        return getProperty(URL);
     }
 
     /**
      * @return the optional recurrence identifier property
      */
     public final RecurrenceId getRecurrenceId() {
-        return (RecurrenceId) getProperty(Property.RECURRENCE_ID);
+        return getProperty(RECURRENCE_ID);
     }
 
     /**
      * @return the optional Duration property
      */
     public final Duration getDuration() {
-        return (Duration) getProperty(Property.DURATION);
+        return getProperty(DURATION);
     }
 
     /**
      * @return the optional due property
      */
     public final Due getDue() {
-        return (Due) getProperty(Property.DUE);
+        return getProperty(DUE);
     }
 
     /**
@@ -448,16 +541,17 @@ public class VToDo extends CalendarComponent {
      * @return a Uid instance, or null if no UID property exists
      */
     public final Uid getUid() {
-        return (Uid) getProperty(Property.UID);
+        return getProperty(UID);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(final Object arg0) {
         if (arg0 instanceof VToDo) {
             return super.equals(arg0)
-                    && ObjectUtils.equals(alarms, ((VToDo) arg0).getAlarms());
+                    && Objects.equals(alarms, ((VToDo) arg0).getAlarms());
         }
         return super.equals(arg0);
     }
@@ -465,6 +559,7 @@ public class VToDo extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode() {
         return new HashCodeBuilder().append(getName()).append(getProperties())
                 .append(getAlarms()).toHashCode();
@@ -478,6 +573,7 @@ public class VToDo extends CalendarComponent {
      * @throws URISyntaxException where an invalid URI is encountered
      * @see net.fortuna.ical4j.model.Component#copy()
      */
+    @Override
     public Component copy() throws ParseException, IOException, URISyntaxException {
         final VToDo copy = (VToDo) super.copy();
         copy.alarms = new ComponentList<VAlarm>(alarms);
@@ -502,7 +598,7 @@ public class VToDo extends CalendarComponent {
 
         @Override
         public VToDo createComponent(PropertyList properties, ComponentList subComponents) {
-            throw new UnsupportedOperationException(String.format("%s does not support sub-components", VTODO));
+            return new VToDo(properties, subComponents);
         }
     }
 }

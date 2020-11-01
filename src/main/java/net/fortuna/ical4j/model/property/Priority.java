@@ -31,7 +31,12 @@
  */
 package net.fortuna.ical4j.model.property;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.ParameterList;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyFactory;
+import net.fortuna.ical4j.util.CompatibilityHints;
+import net.fortuna.ical4j.validate.ValidationException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -173,7 +178,7 @@ public class Priority extends Property {
      * Default constructor.
      */
     public Priority() {
-        super(PRIORITY, PropertyFactoryImpl.getInstance());
+        super(PRIORITY, new Factory());
         level = UNDEFINED.getLevel();
     }
 
@@ -182,15 +187,23 @@ public class Priority extends Property {
      * @param aValue a value string for this component
      */
     public Priority(final ParameterList aList, final String aValue) {
-        super(PRIORITY, aList, PropertyFactoryImpl.getInstance());
-        level = Integer.parseInt(aValue);
+        super(PRIORITY, aList, new Factory());
+        try {
+            level = Integer.parseInt(aValue);
+        } catch (NumberFormatException e) {
+            if (CompatibilityHints.isHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING)) {
+                level = UNDEFINED.level;
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
      * @param aLevel an int representation of a priority level
      */
     public Priority(final int aLevel) {
-        super(PRIORITY, PropertyFactoryImpl.getInstance());
+        super(PRIORITY, new Factory());
         level = aLevel;
     }
 
@@ -199,7 +212,7 @@ public class Priority extends Property {
      * @param aLevel an int representation of a priority level
      */
     public Priority(final ParameterList aList, final int aLevel) {
-        super(PRIORITY, aList, PropertyFactoryImpl.getInstance());
+        super(PRIORITY, aList, new Factory());
         level = aLevel;
     }
 
@@ -231,19 +244,40 @@ public class Priority extends Property {
         this.level = level;
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory {
+    @Override
+    public void validate() throws ValidationException {
+
+    }
+
+    public static class Factory extends Content.Factory implements PropertyFactory<Priority> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
             super(PRIORITY);
         }
 
-        public Property createProperty(final ParameterList parameters, final String value)
+        public Priority createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
-            return new Priority(parameters, value);
+
+            Priority priority;
+            if (HIGH.getValue().equals(value)) {
+                priority = HIGH;
+            }
+            else if (MEDIUM.getValue().equals(value)) {
+                priority = MEDIUM;
+            }
+            else if (LOW.getValue().equals(value)) {
+                priority = LOW;
+            }
+            else if (UNDEFINED.getValue().equals(value)) {
+                priority = UNDEFINED;
+            } else {
+                priority = new Priority(parameters, value);
+            }
+            return priority;
         }
 
-        public Property createProperty() {
+        public Priority createProperty() {
             return new Priority();
         }
     }

@@ -1,68 +1,52 @@
-/**
- * Copyright (c) 2012, Ben Fortuna
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *  o Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- *  o Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- *  o Neither the name of Ben Fortuna nor the names of any other contributors
- * may be used to endorse or promote products derived from this software
- * without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package net.fortuna.ical4j.model.parameter;
 
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactory;
-import net.fortuna.ical4j.model.ParameterFactoryImpl;
-import net.fortuna.ical4j.util.Strings;
 
 /**
- * $Id$ [1-May-2017]
- * <p/>
- * Defines a Label parameter - specified in RFC7986.
- * 
+ * <pre>
+ * Parameter Name:  LABEL
  *
- * @author Mike Douglass
+ *  Purpose:  To provide a human readable label.
+ *
+ *  Format Definition:  This property parameter is defined by the
+ *  following notation:
+ *
+ *  infoparam = "LABEL" "=" param-value
+ *
+ *  Description:  This property parameter MAY be specified on the
+ *  "CONFERENCE" property.  It is anticipated that other extensions to
+ *  iCalendar will re-use this property parameter on new properties
+ *  that they define.  As a result, clients SHOULD expect to find this
+ *  property parameter present on many different properties.  It
+ *  provides a human readable label that can be presented to calendar
+ *  users to allow them to discriminate between properties which might
+ *  be similar, or provide additional information for properties that
+ *  are not self-describing.
+ *
+ *  Example:
+ *
+ *  CONFERENCE;VALUE=URI;FEATURE=VIDEO;
+ *  LABEL="Web video chat, access code=76543";
+ *  :http://video-chat.example.com/;group-id=1234
+ *  </pre>
  */
 public class Label extends Parameter {
 
-    private static final long serialVersionUID = -8764966004966855480L;
+    private static final long serialVersionUID = 1L;
 
-    private String value;
+    private static final String PARAMETER_NAME = "LABEL";
 
-    /**
-     * @param aValue a string representation of a resource type
-     */
-    public Label(final String aValue) {
-        super(LABEL, ParameterFactoryImpl.getInstance());
-        this.value = Strings.unquote(aValue);
+    private final String value;
+
+    public Label(String value) {
+        super(PARAMETER_NAME, new Factory());
+        this.value = value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public final String getValue() {
+    @Override
+    public String getValue() {
         return value;
     }
 
@@ -70,12 +54,11 @@ public class Label extends Parameter {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(LABEL);
+            super(PARAMETER_NAME);
         }
 
         public Parameter createParameter(final String value) {
             return new Label(value);
         }
     }
-
 }

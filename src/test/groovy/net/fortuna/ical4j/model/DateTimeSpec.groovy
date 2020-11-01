@@ -40,133 +40,160 @@ import java.text.ParseException
 
 class DateTimeSpec extends Specification {
 
-   @Shared TimeZoneRegistry tzRegistry = TimeZoneRegistryFactory.instance.createRegistry()
+    @Shared TimeZoneRegistry tzRegistry = TimeZoneRegistryFactory.instance.createRegistry()
 
-   @Unroll
-   def 'test date time initialisation with a standard timezone: #timezoneId'() {
-	   setup:
-	   def originalTimezone = TimeZone.default
-	   TimeZone.default = TimeZone.getTimeZone(timezoneId)
-	   
-	   def timezone = tzRegistry.getTimeZone(timezoneId)
-	   
-	   expect:
-	   assert new DateTime(dateTimeString, timezone) as String == dateTimeString
-	   
-	   cleanup:
-	   TimeZone.default = originalTimezone
-	   
-	   where:
-	   dateTimeString	| timezoneId
-	   '20110327T000000'| 'Europe/London'
-	   '20110326T090000'| 'Europe/Minsk'
-   }
-   
-   @Ignore
-   def 'test date time initialisation with a custom timezone'() {
-	   setup:
-	   def originalTimezone = TimeZone.default
-	   TimeZone.default = TimeZone.getTimeZone('Europe/London')
-	   
-	   def vTimeZone = new ContentBuilder().vtimezone {
-		   tzid 'Europe/London'
-		   standard {
-			   tzname 'GMT'
-			   dtstart '19710101T020000'
-			   tzoffsetfrom '+0100'
-			   tzoffsetto '+0000'
-			   rrule 'FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU'
-		   }
-		   daylight {
-			   tzname 'BST'
-			   dtstart '19710101T010000'
-			   tzoffsetfrom '+0000'
-			   tzoffsetto '+0100'
-			   rrule 'FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU'
-		   }
-	   }
-	   println vTimeZone
-	   def customTimezone = new TimeZone(vTimeZone)
-	   
-	   expect:
-	   assert new DateTime(dateTimeString, customTimezone) as String == dateTimeString
-	   
-	   cleanup:
-	   TimeZone.default = originalTimezone
-	   
-	   where:
-	   dateTimeString << ['20110327T000000']
-   }
-   
-	  def 'test date time initialisation with a registered custom timezone'() {
-		  setup:
-		  def originalTimezone = TimeZone.default
-		  TimeZone.default = TimeZone.getTimeZone('Europe/London')
-		  
-		  def vTimeZone = new ContentBuilder().vtimezone {
-			  tzid 'Europe/London'
-			  standard {
-				  tzname 'GMT'
-				  dtstart '19710101T020000'
-				  tzoffsetfrom '+0100'
-				  tzoffsetto '+0000'
-				  rrule 'FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU'
-			  }
-			  daylight {
-				  tzname 'BST'
-				  dtstart '19710101T010000'
-				  tzoffsetfrom '+0000'
-				  tzoffsetto '+0100'
-				  rrule 'FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU'
-			  }
-		  }
-		  println vTimeZone
-		  def customTimezone = new TimeZone(vTimeZone)
-		  tzRegistry.register(customTimezone)
-		  
-		  when:
-		  new DateTime(dateTimeString, customTimezone)
-		  
-		  then:
-		  thrown(ParseException)
-   
-		  cleanup:
-		  TimeZone.default = originalTimezone
-		  // remove custom timezone..
-		  tzRegistry.clear()
-		  
-		  where:
-		  dateTimeString << ['20110327T000000']
-	  }
+    @Unroll
+    def 'test date time initialisation with a standard timezone: #timezoneId'() {
+        setup:
+        def originalTimezone = TimeZone.default
+        TimeZone.default = TimeZone.getTimeZone(timezoneId)
 
-   @Unroll
-   def 'verify parse failure for invalid dates: #dateTimeString'() {
-	   when:
-	   new DateTime(dateTimeString, timezone)
-	   
-	   then:
-	   thrown(ParseException)
-	   
-	   where:
-	   dateTimeString		| timezone
-	   '20110327T010000'	| tzRegistry.getTimeZone('Europe/London')
-   }
-   
-   def 'test conversion of UTC date-time to local time'() {
-	   setup: 'Override default timezone for test consistency'
-	   def originalTimezone = TimeZone.default
-	   TimeZone.default = TimeZone.getTimeZone('Australia/Melbourne')
-	   
-	   and:
-	   DateTime dateTime = ['20110327T010000Z']
-	   def cal = java.util.Calendar.instance
-	   cal.time = dateTime
-	   
-	   expect:
-	   assert !dateTime.is(cal.time)
-	   assert cal.time.format("yyyyMMdd'T'hhmmss") == '20110327T120000'
-	   
-	   cleanup:
-	   TimeZone.default = originalTimezone
-   }
+        def timezone = tzRegistry.getTimeZone(timezoneId)
+
+        expect:
+        assert new DateTime(dateTimeString, timezone) as String == dateTimeString
+
+        cleanup:
+        TimeZone.default = originalTimezone
+
+        where:
+        dateTimeString	| timezoneId
+        '20110327T000000'| 'Europe/London'
+        '20110326T090000'| 'Europe/Minsk'
+    }
+
+    @Ignore
+    def 'test date time initialisation with a custom timezone'() {
+        setup:
+        def originalTimezone = TimeZone.default
+        TimeZone.default = TimeZone.getTimeZone('Europe/London')
+
+        def vTimeZone = new ContentBuilder().vtimezone {
+            tzid 'Europe/London'
+            standard {
+                tzname 'GMT'
+                dtstart '19710101T020000'
+                tzoffsetfrom '+0100'
+                tzoffsetto '+0000'
+                rrule 'FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU'
+            }
+            daylight {
+                tzname 'BST'
+                dtstart '19710101T010000'
+                tzoffsetfrom '+0000'
+                tzoffsetto '+0100'
+                rrule 'FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU'
+            }
+        }
+        println vTimeZone
+        def customTimezone = new TimeZone(vTimeZone)
+
+        expect:
+        assert new DateTime(dateTimeString, customTimezone) as String == dateTimeString
+
+        cleanup:
+        TimeZone.default = originalTimezone
+
+        where:
+        dateTimeString << ['20110327T000000']
+    }
+
+    @Ignore
+    def 'test date time initialisation with a registered custom timezone'() {
+        setup:
+        def originalTimezone = TimeZone.default
+        TimeZone.default = TimeZone.getTimeZone('Europe/London')
+
+        def vTimeZone = new ContentBuilder().vtimezone {
+            tzid 'Europe/London'
+            standard {
+                tzname 'GMT'
+                dtstart '19710101T020000'
+                tzoffsetfrom '+0100'
+                tzoffsetto '+0000'
+                rrule 'FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU'
+            }
+            daylight {
+                tzname 'BST'
+                dtstart '19710101T010000'
+                tzoffsetfrom '+0000'
+                tzoffsetto '+0100'
+                rrule 'FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU'
+            }
+        }
+        println vTimeZone
+        def customTimezone = new TimeZone(vTimeZone)
+        tzRegistry.register(customTimezone)
+
+        when:
+        new DateTime(dateTimeString, customTimezone)
+
+        then:
+        thrown(ParseException)
+
+        cleanup:
+        TimeZone.default = originalTimezone
+        // remove custom timezone..
+        tzRegistry.clear()
+
+        where:
+        dateTimeString << ['20110327T000000']
+    }
+
+    @Ignore
+    @Unroll
+    def 'verify parse failure for invalid dates: #dateTimeString'() {
+        when:
+        new DateTime(dateTimeString, timezone)
+
+        then:
+        thrown(ParseException)
+
+        where:
+        dateTimeString		| timezone
+        '20110327T010000'	| tzRegistry.getTimeZone('Europe/London')
+    }
+
+    @Unroll
+    def 'verify parse success for valid dates: #dateTimeString'() {
+        when:
+        def dt = new DateTime(dateTimeString, timezone)
+
+        then:
+        dt as String == dateTimeString
+
+        where:
+        dateTimeString		| timezone
+        '20180319T061500'	| tzRegistry.getTimeZone('Europe/Dublin')
+    }
+
+    def 'test conversion of UTC date-time to local time'() {
+        setup: 'Override default timezone for test consistency'
+        def originalTimezone = TimeZone.default
+        TimeZone.default = TimeZone.getTimeZone('Australia/Melbourne')
+
+        and:
+        DateTime dateTime = ['20110327T010000Z']
+        def cal = java.util.Calendar.instance
+        cal.time = dateTime
+
+        expect:
+        assert !dateTime.is(cal.time)
+        assert cal.time.format("yyyyMMdd'T'hhmmss") == '20110327T120000'
+
+        cleanup:
+        TimeZone.default = originalTimezone
+    }
+
+    def 'datetime constructor using calendar'() {
+        given: 'a calendar instance'
+        def cal = java.util.Calendar.instance
+        cal.timeZone = java.util.TimeZone.getTimeZone('Europe/Berlin')
+
+        when: 'a datetime is created'
+        DateTime dateTime = [cal.time, tzRegistry.getTimeZone(cal.timeZone.getID())]
+
+        then: 'it has the timezone set'
+        dateTime.timeZone == tzRegistry.getTimeZone(cal.timeZone.getID())
+    }
 }

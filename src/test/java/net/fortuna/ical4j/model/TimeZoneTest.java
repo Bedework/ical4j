@@ -287,11 +287,8 @@ public class TimeZoneTest extends TestCase {
             int day = 18;
             int dayOfWeek = Calendar.SUNDAY;
             int millisecods = 0;
-            assertEquals(tz
-                            .getOffset(era, year, month, day, dayOfWeek, millisecods),
-                    timezone.getOffset(era, year, month, day, dayOfWeek,
-                            millisecods)
-            );
+            assertEquals(tz.getOffset(era, year, month, day, dayOfWeek, millisecods),
+                    timezone.getOffset(era, year, month, day, dayOfWeek, millisecods));
         }
     }
 

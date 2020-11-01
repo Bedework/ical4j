@@ -32,11 +32,18 @@
 package net.fortuna.ical4j.model.property;
 
 import net.fortuna.ical4j.model.*;
-import net.fortuna.ical4j.validate.property.OneOrLessParameterValidator;
+import net.fortuna.ical4j.validate.PropertyValidator;
+import net.fortuna.ical4j.validate.ValidationException;
+import net.fortuna.ical4j.validate.ValidationRule;
+import net.fortuna.ical4j.validate.Validator;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.Arrays;
+
+import static net.fortuna.ical4j.model.Parameter.ABBREV;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
 
 /**
  * $Id$
@@ -53,6 +60,9 @@ public class Region extends Property implements Escapable {
     private static final long serialVersionUID = 7753849118575885600L;
 
     private String value;
+
+    private final Validator<Property> validator = new PropertyValidator(Arrays.asList(
+            new ValidationRule(OneOrLess, ABBREV)));
 
     /**
      * Default constructor.
@@ -73,7 +83,7 @@ public class Region extends Property implements Escapable {
      * @param aValue a value string for this component
      */
     public Region(final ParameterList aList, final String aValue) {
-        super(REGION, aList, new OneOrLessParameterValidator(Parameter.ABBREV), PropertyFactoryImpl.getInstance());
+        super(REGION, aList, new Factory());
         setValue(aValue);
     }
 
@@ -89,6 +99,11 @@ public class Region extends Property implements Escapable {
      */
     public final String getValue() {
         return value;
+    }
+
+    @Override
+    public void validate() throws ValidationException {
+        validator.validate(this);
     }
 
     public static class Factory extends Content.Factory implements PropertyFactory {

@@ -33,8 +33,10 @@ package net.fortuna.ical4j.model;
 
 import net.fortuna.ical4j.model.component.Daylight;
 import net.fortuna.ical4j.model.component.Observance;
+import net.fortuna.ical4j.model.component.Standard;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.TzId;
+import net.fortuna.ical4j.model.property.TzOffsetFrom;
 import net.fortuna.ical4j.model.property.TzOffsetTo;
 
 import java.util.Calendar;
@@ -64,7 +66,7 @@ public class TimeZone extends java.util.TimeZone {
      */
     public TimeZone(final VTimeZone vTimeZone) {
         this.vTimeZone = vTimeZone;
-        final TzId tzId = (TzId) vTimeZone.getProperty(Property.TZID);
+        final TzId tzId = vTimeZone.getProperty(Property.TZID);
         setID(tzId.getValue());
         this.rawOffset = getRawOffset(vTimeZone);
     }
@@ -72,6 +74,7 @@ public class TimeZone extends java.util.TimeZone {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final int getOffset(final int era, final int year, final int month, final int dayOfMonth,
                                final int dayOfWeek, final int milliseconds) {
 
@@ -95,8 +98,8 @@ public class TimeZone extends java.util.TimeZone {
 
         final Observance observance = vTimeZone.getApplicableObservance(new DateTime(cal.getTime()));
         if (observance != null) {
-            final TzOffsetTo offset = (TzOffsetTo) observance.getProperty(Property.TZOFFSETTO);
-            return (int) offset.getOffset().getOffset();
+            final TzOffsetTo offset = observance.getProperty(Property.TZOFFSETTO);
+            return (int) (offset.getOffset().getTotalSeconds() * 1000L);
         }
         return 0;
     }
@@ -104,14 +107,15 @@ public class TimeZone extends java.util.TimeZone {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getOffset(long date) {
         final Observance observance = vTimeZone.getApplicableObservance(new DateTime(date));
         if (observance != null) {
-            final TzOffsetTo offset = (TzOffsetTo) observance.getProperty(Property.TZOFFSETTO);
-            if (offset.getOffset().getOffset() < getRawOffset()) {
+            final TzOffsetTo offset = observance.getProperty(Property.TZOFFSETTO);
+            if ((offset.getOffset().getTotalSeconds() * 1000L) < getRawOffset()) {
                 return getRawOffset();
             } else {
-                return (int) offset.getOffset().getOffset();
+                return (int) (offset.getOffset().getTotalSeconds() * 1000L);
             }
         }
         return 0;
@@ -120,6 +124,7 @@ public class TimeZone extends java.util.TimeZone {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final int getRawOffset() {
         return rawOffset;
     }
@@ -133,14 +138,16 @@ public class TimeZone extends java.util.TimeZone {
      * @param date a date instance
      * @return true if the specified date is in daylight time, otherwise false
      */
+    @Override
     public final boolean inDaylightTime(final Date date) {
         final Observance observance = vTimeZone.getApplicableObservance(new DateTime(date));
-        return (observance != null && observance instanceof Daylight);
+        return (observance instanceof Daylight);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setRawOffset(final int offsetMillis) {
         throw new UnsupportedOperationException("Updates to the VTIMEZONE object must be performed directly");
     }
@@ -148,6 +155,7 @@ public class TimeZone extends java.util.TimeZone {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean useDaylightTime() {
         final ComponentList<Observance> daylights = vTimeZone.getObservances().getComponents(Observance.DAYLIGHT);
         return (!daylights.isEmpty());
@@ -189,15 +197,21 @@ public class TimeZone extends java.util.TimeZone {
         } else {
             latestSeasonalTime = seasonalTimes.get(0);
         }
-        if (latestSeasonalTime != null) {
-            final TzOffsetTo offsetTo = (TzOffsetTo) latestSeasonalTime.getProperty(Property.TZOFFSETTO);
+        if (latestSeasonalTime instanceof Daylight) {
+            final TzOffsetFrom offsetFrom = latestSeasonalTime.getProperty(Property.TZOFFSETFROM);
+            if (offsetFrom != null) {
+                return (int) (offsetFrom.getOffset().getTotalSeconds() * 1000L);
+            }
+        } else if (latestSeasonalTime instanceof Standard) {
+            final TzOffsetTo offsetTo = latestSeasonalTime.getProperty(Property.TZOFFSETTO);
             if (offsetTo != null) {
-                return (int) offsetTo.getOffset().getOffset();
+                return (int) (offsetTo.getOffset().getTotalSeconds() * 1000L);
             }
         }
         return 0;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -208,6 +222,7 @@ public class TimeZone extends java.util.TimeZone {
                 && !(vTimeZone != null ? !vTimeZone.equals(timeZone.vTimeZone) : timeZone.vTimeZone != null);
     }
 
+    @Override
     public int hashCode() {
         int result = vTimeZone != null ? vTimeZone.hashCode() : 0;
         result = 31 * result + rawOffset;

@@ -31,13 +31,15 @@
  */
 package net.fortuna.ical4j.model.property;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Parameter;
+import net.fortuna.ical4j.model.ParameterList;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyFactory;
 import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.util.Uris;
 import net.fortuna.ical4j.validate.ParameterValidator;
 import net.fortuna.ical4j.validate.ValidationException;
-import org.apache.commons.collections4.Closure;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
 import java.net.URI;
@@ -64,7 +66,7 @@ public class CalendarAddress extends Property {
      * Default constructor.
      */
     public CalendarAddress() {
-        super(CALENDAR_ADDRESS, PropertyFactoryImpl.getInstance());
+        super(CALENDAR_ADDRESS, new Factory());
     }
 
     /**
@@ -72,7 +74,7 @@ public class CalendarAddress extends Property {
      * @throws URISyntaxException where the specified value string is not a valid uri
      */
     public CalendarAddress(final String aValue) throws URISyntaxException {
-        super(CALENDAR_ADDRESS, PropertyFactoryImpl.getInstance());
+        super(CALENDAR_ADDRESS, new Factory());
         setValue(aValue);
     }
 
@@ -83,7 +85,7 @@ public class CalendarAddress extends Property {
      */
     public CalendarAddress(final ParameterList aList, final String aValue)
             throws URISyntaxException {
-        super(CALENDAR_ADDRESS, aList, PropertyFactoryImpl.getInstance());
+        super(CALENDAR_ADDRESS, aList, new Factory());
         setValue(aValue);
     }
 
@@ -91,7 +93,7 @@ public class CalendarAddress extends Property {
      * @param aUri a URI
      */
     public CalendarAddress(final URI aUri) {
-        super(CALENDAR_ADDRESS, PropertyFactoryImpl.getInstance());
+        super(CALENDAR_ADDRESS, new Factory());
         calAddress = aUri;
     }
 
@@ -100,7 +102,7 @@ public class CalendarAddress extends Property {
      * @param aUri  a URI
      */
     public CalendarAddress(final ParameterList aList, final URI aUri) {
-        super(CALENDAR_ADDRESS, aList, PropertyFactoryImpl.getInstance());
+        super(CALENDAR_ADDRESS, aList, new Factory());
         calAddress = aUri;
     }
 
@@ -121,24 +123,17 @@ public class CalendarAddress extends Property {
          * roleparam) / (";" partstatparam) / (";" rsvpparam) / (";" deltoparam) / (";" delfromparam) / (";"
          * sentbyparam) / (";"cnparam) / (";" dirparam) / (";" languageparam) /
          */
-        CollectionUtils.forAllDo(Arrays.asList(Parameter.CUTYPE, Parameter.MEMBER,
-                Parameter.ROLE, Parameter.PARTSTAT,
-                Parameter.RSVP, Parameter.DELEGATED_TO,
-                Parameter.DELEGATED_FROM, Parameter.SENT_BY, Parameter.CN,
-                Parameter.DIR, Parameter.LANGUAGE), new Closure<String>() {
-            @Override
-            public void execute(String input) {
-                ParameterValidator.getInstance().assertOneOrLess(input, getParameters());
-            }
-        });
+        Arrays.asList(Parameter.CUTYPE, Parameter.MEMBER, Parameter.ROLE, Parameter.PARTSTAT,
+                      Parameter.RSVP, Parameter.DELEGATED_TO, Parameter.DELEGATED_FROM, Parameter.SENT_BY, Parameter.CN,
+                      Parameter.DIR, Parameter.LANGUAGE).forEach(parameter -> ParameterValidator.assertOneOrLess(parameter, getParameters()));
 
         /* scheduleagent and schedulestatus added for CalDAV scheduling
          */
-        ParameterValidator.getInstance().assertOneOrLess(Parameter.SCHEDULE_AGENT,
+        ParameterValidator.assertOneOrLess(Parameter.SCHEDULE_AGENT,
                 getParameters());
-        ParameterValidator.getInstance().assertOneOrLess(Parameter.SCHEDULE_STATUS,
+        ParameterValidator.assertOneOrLess(Parameter.SCHEDULE_STATUS,
                 getParameters());
-        ParameterValidator.getInstance().assertOneOrLess(Parameter.PUBLIC_COMMENT,
+        ParameterValidator.assertOneOrLess(Parameter.PUBLIC_COMMENT,
                 getParameters());
         /*
          * ; the following is optional, ; and MAY occur more than once (";" xparam)

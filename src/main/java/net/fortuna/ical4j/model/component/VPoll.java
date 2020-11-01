@@ -31,14 +31,43 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.*;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentFactory;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.Dur;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.property.Clazz;
+import net.fortuna.ical4j.model.property.Completed;
+import net.fortuna.ical4j.model.property.Created;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.DtEnd;
+import net.fortuna.ical4j.model.property.DtStamp;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.Due;
+import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.Geo;
+import net.fortuna.ical4j.model.property.LastModified;
+import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.Organizer;
+import net.fortuna.ical4j.model.property.PercentComplete;
+import net.fortuna.ical4j.model.property.Priority;
+import net.fortuna.ical4j.model.property.RecurrenceId;
+import net.fortuna.ical4j.model.property.Sequence;
+import net.fortuna.ical4j.model.property.Status;
+import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
+import net.fortuna.ical4j.validate.ValidationRule;
 import net.fortuna.ical4j.validate.Validator;
-import net.fortuna.ical4j.validate.component.*;
+import net.fortuna.ical4j.validate.component.VPollValidator;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -48,7 +77,41 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static net.fortuna.ical4j.model.Property.ATTACH;
+import static net.fortuna.ical4j.model.Property.ATTENDEE;
+import static net.fortuna.ical4j.model.Property.CATEGORIES;
+import static net.fortuna.ical4j.model.Property.CLASS;
+import static net.fortuna.ical4j.model.Property.CONTACT;
+import static net.fortuna.ical4j.model.Property.CREATED;
+import static net.fortuna.ical4j.model.Property.DESCRIPTION;
+import static net.fortuna.ical4j.model.Property.DTEND;
+import static net.fortuna.ical4j.model.Property.DTSTAMP;
+import static net.fortuna.ical4j.model.Property.DTSTART;
+import static net.fortuna.ical4j.model.Property.DURATION;
+import static net.fortuna.ical4j.model.Property.EXDATE;
+import static net.fortuna.ical4j.model.Property.EXRULE;
+import static net.fortuna.ical4j.model.Property.GEO;
+import static net.fortuna.ical4j.model.Property.LAST_MODIFIED;
+import static net.fortuna.ical4j.model.Property.LOCATION;
+import static net.fortuna.ical4j.model.Property.ORGANIZER;
+import static net.fortuna.ical4j.model.Property.PRIORITY;
+import static net.fortuna.ical4j.model.Property.RDATE;
+import static net.fortuna.ical4j.model.Property.RECURRENCE_ID;
+import static net.fortuna.ical4j.model.Property.RELATED_TO;
+import static net.fortuna.ical4j.model.Property.REQUEST_STATUS;
+import static net.fortuna.ical4j.model.Property.RESOURCES;
+import static net.fortuna.ical4j.model.Property.RRULE;
+import static net.fortuna.ical4j.model.Property.SEQUENCE;
+import static net.fortuna.ical4j.model.Property.STATUS;
+import static net.fortuna.ical4j.model.Property.SUMMARY;
+import static net.fortuna.ical4j.model.Property.TRANSP;
+import static net.fortuna.ical4j.model.Property.UID;
+import static net.fortuna.ical4j.model.Property.URL;
 import static net.fortuna.ical4j.model.property.ParticipantType.VOTER;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.None;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.One;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrMore;
 
 /**
  *
@@ -64,15 +127,69 @@ public class VPoll extends CalendarComponent {
 
     private static final long serialVersionUID = -269658210065896668L;
 
-    private final Map<Method, Validator> methodValidators = new HashMap<Method, Validator>();
+    private final Map<Method, Validator> methodValidators = new HashMap<>();
     {
-        methodValidators.put(Method.CANCEL, new VPollCancelValidator());
-        methodValidators.put(Method.CONFIRM, new VPollRequestValidator());
-        methodValidators.put(Method.POLLSTATUS, new VPollPollStatusValidator());
-        methodValidators.put(Method.PUBLISH, new VPollPublishValidator());
-        methodValidators.put(Method.REFRESH, new VPollRefreshValidator());
-        methodValidators.put(Method.REPLY, new VPollReplyValidator());
-        methodValidators.put(Method.REQUEST, new VPollRequestValidator());
+        methodValidators.put(Method.ADD, new VPollValidator(new ValidationRule(One, DTSTAMP, DTSTART, ORGANIZER, SEQUENCE, SUMMARY, UID),
+                                                             new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND, DURATION, GEO,
+                                                                                LAST_MODIFIED, LOCATION, PRIORITY, RESOURCES, STATUS, TRANSP, URL),
+                                                             new ValidationRule(None, RECURRENCE_ID, REQUEST_STATUS)));
+        methodValidators.put(Method.CANCEL, new VPollValidator(
+                new ValidationRule(
+                        One, DTSTAMP, DTSTART, ORGANIZER,
+                        SEQUENCE, UID),
+                new ValidationRule(
+                        OneOrLess, CATEGORIES, CLASS, CREATED,
+                        DESCRIPTION, DTEND, DTSTART, DURATION, GEO,
+                        LAST_MODIFIED, LOCATION, PRIORITY,
+                        RECURRENCE_ID, RESOURCES, STATUS, SUMMARY,
+                        TRANSP, URL),
+                new ValidationRule(None, REQUEST_STATUS)));
+
+        methodValidators.put(Method.COUNTER, new VPollValidator(
+                new ValidationRule(One, DTSTAMP, DTSTART, SEQUENCE,
+                                   SUMMARY, UID),
+                new ValidationRule(One, true, ORGANIZER),
+                new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND, DURATION, GEO,
+                                   LAST_MODIFIED, LOCATION, PRIORITY, RECURRENCE_ID, RESOURCES, STATUS, TRANSP, URL)));
+
+        methodValidators.put(Method.DECLINE_COUNTER, new VPollValidator(
+                new ValidationRule(
+                        One, DTSTAMP, ORGANIZER, UID),
+                new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE),
+                new ValidationRule(None, ATTACH, ATTENDEE, CATEGORIES, CLASS, CONTACT, CREATED, DESCRIPTION, DTEND,
+                                   DTSTART, DURATION, EXDATE, EXRULE, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RDATE, RELATED_TO,
+                                   RESOURCES, RRULE, STATUS, SUMMARY, TRANSP, URL)));
+
+        methodValidators.put(Method.PUBLISH, new VPollValidator(
+                new ValidationRule(One, DTSTART, UID),
+                new ValidationRule(One, true, DTSTAMP, ORGANIZER, SUMMARY),
+                new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND,
+                                   DURATION, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RESOURCES, STATUS, TRANSP, URL),
+                new ValidationRule(None, true, ATTENDEE),
+                new ValidationRule(None, REQUEST_STATUS)));
+
+        methodValidators.put(Method.REFRESH, new VPollValidator(
+                new ValidationRule(
+                        One, ATTENDEE, DTSTAMP, ORGANIZER, UID),
+                new ValidationRule(OneOrLess, RECURRENCE_ID),
+                new ValidationRule(None, ATTACH, CATEGORIES, CLASS, CONTACT, CREATED, DESCRIPTION, DTEND, DTSTART,
+                                   DURATION, EXDATE, EXRULE, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RDATE, RELATED_TO,
+                                   REQUEST_STATUS, RESOURCES, RRULE, SEQUENCE, STATUS, SUMMARY, TRANSP, URL)));
+        methodValidators.put(Method.REPLY, new VPollValidator(
+                new ValidationRule(One, ATTENDEE, DTSTAMP, ORGANIZER, UID),
+                new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND,
+                                   DTSTART, DURATION, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RESOURCES, STATUS, SUMMARY, TRANSP,
+                                   URL)));
+        methodValidators.put(Method.REQUEST, new VPollValidator(
+                new ValidationRule(OneOrMore, true, ATTENDEE),
+                new ValidationRule(One, DTSTAMP, DTSTART, ORGANIZER,
+                                   SUMMARY, UID),
+                new ValidationRule(OneOrLess, SEQUENCE, CATEGORIES,
+                                   CLASS, CREATED, DESCRIPTION, DTEND,
+                                   DURATION, GEO,
+                                   LAST_MODIFIED, LOCATION, PRIORITY,
+                                   RECURRENCE_ID, RESOURCES, STATUS,
+                                   TRANSP, URL)));
     }
 
     private ComponentList<Participant> voters = new ComponentList<>();
@@ -216,13 +333,13 @@ public class VPoll extends CalendarComponent {
             // From "4.8.4.7 Unique Identifier":
             // Conformance: The property MUST be specified in the "VEVENT", "VTODO",
             // "VJOURNAL" or "VFREEBUSY" calendar components.
-            PropertyValidator.getInstance().assertOne(Property.UID,
+            PropertyValidator.assertOne(Property.UID,
                     getProperties());
 
             // From "4.8.7.2 Date/Time Stamp":
             // Conformance: This property MUST be included in the "VEVENT", "VTODO",
             // "VJOURNAL" or "VFREEBUSY" calendar components.
-            PropertyValidator.getInstance().assertOne(Property.DTSTAMP,
+            PropertyValidator.assertOne(Property.DTSTAMP,
                     getProperties());
         }
 
@@ -231,41 +348,41 @@ public class VPoll extends CalendarComponent {
          * dtstamp / dtstart / geo / last-mod / location / organizer / percent / priority / recurid / seq / status /
          * summary / uid / url /
          */
-        PropertyValidator.getInstance().assertOneOrLess(Property.CLASS,
+        PropertyValidator.assertOneOrLess(Property.CLASS,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.COMPLETED,
+        PropertyValidator.assertOneOrLess(Property.COMPLETED,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.CREATED,
+        PropertyValidator.assertOneOrLess(Property.CREATED,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.DESCRIPTION,
+        PropertyValidator.assertOneOrLess(Property.DESCRIPTION,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.DTSTAMP,
+        PropertyValidator.assertOneOrLess(Property.DTSTAMP,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.DTSTART,
+        PropertyValidator.assertOneOrLess(Property.DTSTART,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.GEO,
+        PropertyValidator.assertOneOrLess(Property.GEO,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.LAST_MODIFIED,
+        PropertyValidator.assertOneOrLess(Property.LAST_MODIFIED,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.LOCATION,
+        PropertyValidator.assertOneOrLess(Property.LOCATION,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.ORGANIZER,
+        PropertyValidator.assertOneOrLess(Property.ORGANIZER,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(
+        PropertyValidator.assertOneOrLess(
                 Property.PERCENT_COMPLETE, getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.PRIORITY,
+        PropertyValidator.assertOneOrLess(Property.PRIORITY,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.RECURRENCE_ID,
+        PropertyValidator.assertOneOrLess(Property.RECURRENCE_ID,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.SEQUENCE,
+        PropertyValidator.assertOneOrLess(Property.SEQUENCE,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.STATUS,
+        PropertyValidator.assertOneOrLess(Property.STATUS,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.SUMMARY,
+        PropertyValidator.assertOneOrLess(Property.SUMMARY,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.UID,
+        PropertyValidator.assertOneOrLess(Property.UID,
                 getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.URL,
+        PropertyValidator.assertOneOrLess(Property.URL,
                 getProperties());
 
         final Status status = (Status) getProperty(Property.STATUS);
@@ -282,11 +399,11 @@ public class VPoll extends CalendarComponent {
          * same 'todoprop' due / duration /
          */
         try {
-            PropertyValidator.getInstance().assertNone(Property.DUE,
+            PropertyValidator.assertNone(Property.DUE,
                     getProperties());
         }
         catch (ValidationException ve) {
-            PropertyValidator.getInstance().assertNone(Property.DURATION,
+            PropertyValidator.assertNone(Property.DURATION,
                     getProperties());
         }
 
@@ -311,28 +428,28 @@ public class VPoll extends CalendarComponent {
      * @return the optional access classification property
      */
     public final Clazz getClassification() {
-        return (Clazz) getProperty(Property.CLASS);
+        return getProperty(Property.CLASS);
     }
 
     /**
      * @return the optional date completed property
      */
     public final Completed getDateCompleted() {
-        return (Completed) getProperty(Property.COMPLETED);
+        return getProperty(Property.COMPLETED);
     }
 
     /**
      * @return the optional creation-time property
      */
     public final Created getCreated() {
-        return (Created) getProperty(Property.CREATED);
+        return getProperty(Property.CREATED);
     }
 
     /**
      * @return the optional description property
      */
     public final Description getDescription() {
-        return (Description) getProperty(Property.DESCRIPTION);
+        return getProperty(Property.DESCRIPTION);
     }
 
     /**
@@ -340,105 +457,105 @@ public class VPoll extends CalendarComponent {
      * @return The DtStart object representation of the start Date
      */
     public final DtStart getStartDate() {
-        return (DtStart) getProperty(Property.DTSTART);
+        return getProperty(Property.DTSTART);
     }
 
     /**
      * @return the optional geographic position property
      */
     public final Geo getGeographicPos() {
-        return (Geo) getProperty(Property.GEO);
+        return getProperty(Property.GEO);
     }
 
     /**
      * @return the optional last-modified property
      */
     public final LastModified getLastModified() {
-        return (LastModified) getProperty(Property.LAST_MODIFIED);
+        return getProperty(Property.LAST_MODIFIED);
     }
 
     /**
      * @return the optional location property
      */
     public final Location getLocation() {
-        return (Location) getProperty(Property.LOCATION);
+        return getProperty(Property.LOCATION);
     }
 
     /**
      * @return the optional organizer property
      */
     public final Organizer getOrganizer() {
-        return (Organizer) getProperty(Property.ORGANIZER);
+        return getProperty(Property.ORGANIZER);
     }
 
     /**
      * @return the optional percentage complete property
      */
     public final PercentComplete getPercentComplete() {
-        return (PercentComplete) getProperty(Property.PERCENT_COMPLETE);
+        return getProperty(Property.PERCENT_COMPLETE);
     }
 
     /**
      * @return the optional priority property
      */
     public final Priority getPriority() {
-        return (Priority) getProperty(Property.PRIORITY);
+        return getProperty(Property.PRIORITY);
     }
 
     /**
      * @return the optional date-stamp property
      */
     public final DtStamp getDateStamp() {
-        return (DtStamp) getProperty(Property.DTSTAMP);
+        return getProperty(Property.DTSTAMP);
     }
 
     /**
      * @return the optional sequence number property
      */
     public final Sequence getSequence() {
-        return (Sequence) getProperty(Property.SEQUENCE);
+        return getProperty(Property.SEQUENCE);
     }
 
     /**
      * @return the optional status property
      */
     public final Status getStatus() {
-        return (Status) getProperty(Property.STATUS);
+        return getProperty(Property.STATUS);
     }
 
     /**
      * @return the optional summary property
      */
     public final Summary getSummary() {
-        return (Summary) getProperty(Property.SUMMARY);
+        return getProperty(Property.SUMMARY);
     }
 
     /**
      * @return the optional URL property
      */
     public final Url getUrl() {
-        return (Url) getProperty(Property.URL);
+        return getProperty(Property.URL);
     }
 
     /**
      * @return the optional recurrence identifier property
      */
     public final RecurrenceId getRecurrenceId() {
-        return (RecurrenceId) getProperty(Property.RECURRENCE_ID);
+        return getProperty(Property.RECURRENCE_ID);
     }
 
     /**
      * @return the optional Duration property
      */
     public final Duration getDuration() {
-        return (Duration) getProperty(Property.DURATION);
+        return getProperty(Property.DURATION);
     }
 
     /**
      * @return the optional due property
      */
     public final Due getDue() {
-        return (Due) getProperty(Property.DUE);
+        return getProperty(Property.DUE);
     }
 
     /**
@@ -446,7 +563,7 @@ public class VPoll extends CalendarComponent {
      * @return a Uid instance, or null if no UID property exists
      */
     public final Uid getUid() {
-        return (Uid) getProperty(Property.UID);
+        return getProperty(Property.UID);
     }
 
     /**

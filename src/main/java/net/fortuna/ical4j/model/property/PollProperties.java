@@ -56,7 +56,7 @@ public class PollProperties extends Property {
      * Default constructor.
      */
     public PollProperties() {
-        super(POLL_PROPERTIES, PropertyFactoryImpl.getInstance());
+        super(POLL_PROPERTIES, new ParticipantType.Factory());
         properties = new TextList();
     }
 
@@ -64,7 +64,7 @@ public class PollProperties extends Property {
      * @param aValue a value string for this component
      */
     public PollProperties(final String aValue) {
-        super(POLL_PROPERTIES, PropertyFactoryImpl.getInstance());
+        super(POLL_PROPERTIES, new ParticipantType.Factory());
         setValue(aValue);
     }
 
@@ -73,7 +73,7 @@ public class PollProperties extends Property {
      * @param aValue a value string for this component
      */
     public PollProperties(final ParameterList aList, final String aValue) {
-        super(POLL_PROPERTIES, aList, PropertyFactoryImpl.getInstance());
+        super(POLL_PROPERTIES, aList, new ParticipantType.Factory());
         setValue(aValue);
     }
 
@@ -81,7 +81,7 @@ public class PollProperties extends Property {
      * @param cList a list of component names
      */
     public PollProperties(final TextList cList) {
-        super(POLL_PROPERTIES, PropertyFactoryImpl.getInstance());
+        super(POLL_PROPERTIES, new ParticipantType.Factory());
         properties = cList;
     }
 
@@ -91,7 +91,7 @@ public class PollProperties extends Property {
      */
     public PollProperties(final ParameterList aList, 
     		final TextList val) {
-        super(POLL_PROPERTIES, aList, PropertyFactoryImpl.getInstance());
+        super(POLL_PROPERTIES, aList, new ParticipantType.Factory());
         properties = val;
     }
 

@@ -31,21 +31,56 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.*;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentFactory;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.property.Clazz;
+import net.fortuna.ical4j.model.property.Created;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.DtStamp;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.LastModified;
+import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.Organizer;
+import net.fortuna.ical4j.model.property.RecurrenceId;
+import net.fortuna.ical4j.model.property.Sequence;
+import net.fortuna.ical4j.model.property.Status;
+import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.util.CompatibilityHints;
+import net.fortuna.ical4j.validate.ComponentValidator;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
+import net.fortuna.ical4j.validate.ValidationRule;
 import net.fortuna.ical4j.validate.Validator;
-import net.fortuna.ical4j.validate.component.VJournalAddValidator;
-import net.fortuna.ical4j.validate.component.VJournalCancelValidator;
-import net.fortuna.ical4j.validate.component.VJournalPublishValidator;
-import org.apache.commons.collections4.Closure;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static net.fortuna.ical4j.model.Property.ATTENDEE;
+import static net.fortuna.ical4j.model.Property.CATEGORIES;
+import static net.fortuna.ical4j.model.Property.CLASS;
+import static net.fortuna.ical4j.model.Property.CREATED;
+import static net.fortuna.ical4j.model.Property.DESCRIPTION;
+import static net.fortuna.ical4j.model.Property.DTSTAMP;
+import static net.fortuna.ical4j.model.Property.DTSTART;
+import static net.fortuna.ical4j.model.Property.LAST_MODIFIED;
+import static net.fortuna.ical4j.model.Property.ORGANIZER;
+import static net.fortuna.ical4j.model.Property.RECURRENCE_ID;
+import static net.fortuna.ical4j.model.Property.REQUEST_STATUS;
+import static net.fortuna.ical4j.model.Property.SEQUENCE;
+import static net.fortuna.ical4j.model.Property.STATUS;
+import static net.fortuna.ical4j.model.Property.SUMMARY;
+import static net.fortuna.ical4j.model.Property.UID;
+import static net.fortuna.ical4j.model.Property.URL;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.None;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.One;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
 
 /**
  * $Id$ [Apr 5, 2004]
@@ -112,9 +147,17 @@ public class VJournal extends CalendarComponent {
 
     private final Map<Method, Validator> methodValidators = new HashMap<Method, Validator>();
     {
-        methodValidators.put(Method.ADD, new VJournalAddValidator());
-        methodValidators.put(Method.CANCEL, new VJournalCancelValidator());
-        methodValidators.put(Method.PUBLISH, new VJournalPublishValidator());
+        methodValidators.put(Method.ADD, new ComponentValidator<VJournal>(new ValidationRule(One, DESCRIPTION, DTSTAMP, DTSTART, ORGANIZER, SEQUENCE, UID),
+                                                                          new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, LAST_MODIFIED, STATUS, SUMMARY, URL),
+                                                                          new ValidationRule(None, ATTENDEE, RECURRENCE_ID)));
+        methodValidators.put(Method.CANCEL, new ComponentValidator(new ValidationRule(One, DTSTAMP, ORGANIZER, SEQUENCE, UID),
+                new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTSTART, LAST_MODIFIED,
+                        RECURRENCE_ID, STATUS, SUMMARY, URL),
+                new ValidationRule(None, REQUEST_STATUS)));
+        methodValidators.put(Method.PUBLISH, new ComponentValidator(new ValidationRule(One, DESCRIPTION, DTSTAMP, DTSTART, ORGANIZER, UID),
+                new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, LAST_MODIFIED, RECURRENCE_ID, SEQUENCE, STATUS,
+                        SUMMARY, URL),
+                new ValidationRule(None, ATTENDEE)));
     }
     
     /**
@@ -158,6 +201,7 @@ public class VJournal extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void validate(final boolean recurse)
             throws ValidationException {
 
@@ -167,30 +211,25 @@ public class VJournal extends CalendarComponent {
             // From "4.8.4.7 Unique Identifier":
             // Conformance: The property MUST be specified in the "VEVENT", "VTODO",
             // "VJOURNAL" or "VFREEBUSY" calendar components.
-            PropertyValidator.getInstance().assertOne(Property.UID,
-                    getProperties());
+            PropertyValidator.assertOne(UID,
+                                        getProperties());
 
             // From "4.8.7.2 Date/Time Stamp":
             // Conformance: This property MUST be included in the "VEVENT", "VTODO",
             // "VJOURNAL" or "VFREEBUSY" calendar components.
-            PropertyValidator.getInstance().assertOne(Property.DTSTAMP,
-                    getProperties());
+            PropertyValidator.assertOne(DTSTAMP,
+                                        getProperties());
         }
 
         /*
          * ; the following are optional, ; but MUST NOT occur more than once class / created / description / dtstart /
          * dtstamp / last-mod / organizer / recurid / seq / status / summary / uid / url /
          */
-        CollectionUtils.forAllDo(Arrays.asList(Property.CLASS, Property.CREATED, Property.DESCRIPTION, Property.DTSTART,
-                Property.DTSTAMP, Property.LAST_MODIFIED, Property.ORGANIZER, Property.RECURRENCE_ID, Property.SEQUENCE,
-                Property.STATUS, Property.SUMMARY, Property.UID, Property.URL), new Closure<String>() {
-            @Override
-            public void execute(String input) {
-                PropertyValidator.getInstance().assertOneOrLess(input, getProperties());
-            }
-        });
+        Arrays.asList(CLASS, CREATED, DESCRIPTION, DTSTART,
+                      DTSTAMP, LAST_MODIFIED, ORGANIZER, RECURRENCE_ID, SEQUENCE,
+                      STATUS, SUMMARY, UID, URL).forEach(property -> PropertyValidator.assertOneOrLess(property, getProperties()));
 
-        final Status status = (Status) getProperty(Property.STATUS);
+        final Status status = getProperty(STATUS);
         if (status != null && !Status.VJOURNAL_DRAFT.getValue().equals(status.getValue())
                 && !Status.VJOURNAL_FINAL.getValue().equals(status.getValue())
                 && !Status.VJOURNAL_CANCELLED.getValue().equals(status.getValue())) {
@@ -211,6 +250,7 @@ public class VJournal extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Validator getValidator(Method method) {
         return methodValidators.get(method);
     }
@@ -219,21 +259,21 @@ public class VJournal extends CalendarComponent {
      * @return the optional access classification property for a journal entry
      */
     public final Clazz getClassification() {
-        return (Clazz) getProperty(Property.CLASS);
+        return getProperty(CLASS);
     }
 
     /**
      * @return the optional creation-time property for a journal entry
      */
     public final Created getCreated() {
-        return (Created) getProperty(Property.CREATED);
+        return getProperty(CREATED);
     }
 
     /**
      * @return the optional description property for a journal entry
      */
     public final Description getDescription() {
-        return (Description) getProperty(Property.DESCRIPTION);
+        return getProperty(DESCRIPTION);
     }
 
     /**
@@ -241,63 +281,63 @@ public class VJournal extends CalendarComponent {
      * @return The DtStart object representation of the start Date
      */
     public final DtStart getStartDate() {
-        return (DtStart) getProperty(Property.DTSTART);
+        return getProperty(DTSTART);
     }
 
     /**
      * @return the optional last-modified property for a journal entry
      */
     public final LastModified getLastModified() {
-        return (LastModified) getProperty(Property.LAST_MODIFIED);
+        return getProperty(LAST_MODIFIED);
     }
 
     /**
      * @return the optional organizer property for a journal entry
      */
     public final Organizer getOrganizer() {
-        return (Organizer) getProperty(Property.ORGANIZER);
+        return getProperty(ORGANIZER);
     }
 
     /**
      * @return the optional date-stamp property
      */
     public final DtStamp getDateStamp() {
-        return (DtStamp) getProperty(Property.DTSTAMP);
+        return getProperty(DTSTAMP);
     }
 
     /**
      * @return the optional sequence number property for a journal entry
      */
     public final Sequence getSequence() {
-        return (Sequence) getProperty(Property.SEQUENCE);
+        return getProperty(SEQUENCE);
     }
 
     /**
      * @return the optional status property for a journal entry
      */
     public final Status getStatus() {
-        return (Status) getProperty(Property.STATUS);
+        return getProperty(STATUS);
     }
 
     /**
      * @return the optional summary property for a journal entry
      */
     public final Summary getSummary() {
-        return (Summary) getProperty(Property.SUMMARY);
+        return getProperty(SUMMARY);
     }
 
     /**
      * @return the optional URL property for a journal entry
      */
     public final Url getUrl() {
-        return (Url) getProperty(Property.URL);
+        return getProperty(URL);
     }
 
     /**
      * @return the optional recurrence identifier property for a journal entry
      */
     public final RecurrenceId getRecurrenceId() {
-        return (RecurrenceId) getProperty(Property.RECURRENCE_ID);
+        return getProperty(RECURRENCE_ID);
     }
 
     /**
@@ -305,7 +345,7 @@ public class VJournal extends CalendarComponent {
      * @return a Uid instance, or null if no UID property exists
      */
     public final Uid getUid() {
-        return (Uid) getProperty(Property.UID);
+        return getProperty(UID);
     }
 
     public static class Factory extends Content.Factory implements ComponentFactory<VJournal> {

@@ -41,15 +41,7 @@ import org.junit.Ignore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringWriter;
+import java.io.*;
 
 /**
  * $Id: CalendarOutputterTest.java [Apr 6, 2004]
@@ -66,6 +58,7 @@ public class CalendarOutputterTest extends TestCase {
     private String filename;
 
     /**
+     * @param method
      * @param file
      */
     public CalendarOutputterTest(final String file) {
@@ -161,7 +154,7 @@ public class CalendarOutputterTest extends TestCase {
         File[] testFiles = null;
 
         // valid tests..
-        testFiles = new File("src/test/resources/samples/invalid").listFiles(f -> !f.isDirectory() && f.getName().endsWith(".ics"));
+        testFiles = new File("src/test/resources/samples/valid").listFiles(f -> !f.isDirectory() && f.getName().endsWith(".ics"));
         for (int i = 0; i < testFiles.length; i++) {
             log.info("Sample [" + testFiles[i] + "]");
             suite.addTest(new CalendarOutputterTest(testFiles[i].getPath()));

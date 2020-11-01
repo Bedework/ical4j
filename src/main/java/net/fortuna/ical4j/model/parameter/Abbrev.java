@@ -34,7 +34,6 @@ package net.fortuna.ical4j.model.parameter;
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactory;
-import net.fortuna.ical4j.model.ParameterFactoryImpl;
 import net.fortuna.ical4j.util.Strings;
 
 import java.net.URISyntaxException;
@@ -43,11 +42,9 @@ import java.net.URISyntaxException;
  * $Id$ [18-Apr-2004]
  * <p/>
  * Defines an Abbreviation parameter.
- * @deprecated Was for vvenue
  *
  * @author benfortuna
  * @author Mike Douglass
- *
  */
 public class Abbrev extends Parameter {
 
@@ -59,7 +56,7 @@ public class Abbrev extends Parameter {
      * @param aValue a string abbreviation
      */
     public Abbrev(final String aValue) {
-        super(ABBREV, ParameterFactoryImpl.getInstance());
+        super(ABBREV, new Factory());
         this.value = Strings.unquote(aValue);
     }
 

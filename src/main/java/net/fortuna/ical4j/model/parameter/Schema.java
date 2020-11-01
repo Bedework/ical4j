@@ -34,7 +34,6 @@ package net.fortuna.ical4j.model.parameter;
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactory;
-import net.fortuna.ical4j.model.ParameterFactoryImpl;
 import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.util.Uris;
 
@@ -67,7 +66,7 @@ public class Schema extends Parameter {
      * @param aUri a URI reference to a schema
      */
     public Schema(final URI aUri) {
-        super(SCHEMA, ParameterFactoryImpl.getInstance());
+        super(SCHEMA, new Factory());
         this.uri = aUri;
     }
 

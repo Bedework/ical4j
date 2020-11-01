@@ -31,12 +31,22 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.*;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentFactory;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.property.Action;
+import net.fortuna.ical4j.model.property.Attach;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.ParticipantType;
+import net.fortuna.ical4j.model.property.Repeat;
+import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Trigger;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
-import net.fortuna.ical4j.validate.Validator;
-import net.fortuna.ical4j.validate.component.ParticipantITIPValidator;
 
 import static net.fortuna.ical4j.model.Property.PARTICIPANT_TYPE;
 
@@ -108,12 +118,10 @@ import static net.fortuna.ical4j.model.Property.PARTICIPANT_TYPE;
  *
  * @author Ben Fortuna
  */
-public class Participant extends CalendarComponent {
+public class Participant extends Component {
 
     private static final long serialVersionUID = -8193965477414653802L;
     
-    private final Validator itipValidator = new ParticipantITIPValidator();
-
     private ComponentList components = new ComponentList();
 
     /**
@@ -132,7 +140,7 @@ public class Participant extends CalendarComponent {
     }
 
     public ParticipantType getParticipantType() {
-        return (ParticipantType)getProperty(PARTICIPANT_TYPE);
+        return getProperty(PARTICIPANT_TYPE);
     }
 
     public ComponentList getComponents() {
@@ -149,27 +157,20 @@ public class Participant extends CalendarComponent {
          * ; 'dtstamp' and participanttype' are both REQUIRED, 
          * ; but MUST NOT occur more than once 
          */
-        PropertyValidator.getInstance().assertOne(Property.DTSTAMP, getProperties());
-        PropertyValidator.getInstance().assertOne(PARTICIPANT_TYPE, getProperties());
+        PropertyValidator.assertOne(Property.DTSTAMP, getProperties());
+        PropertyValidator.assertOne(PARTICIPANT_TYPE, getProperties());
 
-        PropertyValidator.getInstance().assertOneOrLess(Property.CALENDAR_ADDRESS, getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.DURATION, getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.SOURCE, getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.STATUS, getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.SUMMARY, getProperties());
-        PropertyValidator.getInstance().assertOneOrLess(Property.URL, getProperties());
+        PropertyValidator.assertOneOrLess(Property.CALENDAR_ADDRESS, getProperties());
+        PropertyValidator.assertOneOrLess(Property.DURATION, getProperties());
+        PropertyValidator.assertOneOrLess(Property.SOURCE, getProperties());
+        PropertyValidator.assertOneOrLess(Property.STATUS, getProperties());
+        PropertyValidator.assertOneOrLess(Property.SUMMARY, getProperties());
+        PropertyValidator.assertOneOrLess(Property.URL, getProperties());
         
         
         if (recurse) {
             validateProperties();
         }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    protected Validator getValidator(Method method) {
-        return itipValidator;
     }
 
     /**
@@ -177,7 +178,7 @@ public class Participant extends CalendarComponent {
      * @return the ACTION property or null if not specified
      */
     public final Action getAction() {
-        return (Action) getProperty(Property.ACTION);
+        return getProperty(Property.ACTION);
     }
 
     /**
@@ -185,7 +186,7 @@ public class Participant extends CalendarComponent {
      * @return the TRIGGER property or null if not specified
      */
     public final Trigger getTrigger() {
-        return (Trigger) getProperty(Property.TRIGGER);
+        return getProperty(Property.TRIGGER);
     }
 
     /**
@@ -193,7 +194,7 @@ public class Participant extends CalendarComponent {
      * @return the DURATION property or null if not specified
      */
     public final Duration getDuration() {
-        return (Duration) getProperty(Property.DURATION);
+        return getProperty(Property.DURATION);
     }
 
     /**
@@ -201,7 +202,7 @@ public class Participant extends CalendarComponent {
      * @return the REPEAT property or null if not specified
      */
     public final Repeat getRepeat() {
-        return (Repeat) getProperty(Property.REPEAT);
+        return getProperty(Property.REPEAT);
     }
 
     /**
@@ -209,7 +210,7 @@ public class Participant extends CalendarComponent {
      * @return the ATTACH property or null if not specified
      */
     public final Attach getAttachment() {
-        return (Attach) getProperty(Property.ATTACH);
+        return getProperty(Property.ATTACH);
     }
 
     /**
@@ -217,7 +218,7 @@ public class Participant extends CalendarComponent {
      * @return the DESCRIPTION property or null if not specified
      */
     public final Description getDescription() {
-        return (Description) getProperty(Property.DESCRIPTION);
+        return getProperty(Property.DESCRIPTION);
     }
 
     /**
@@ -225,7 +226,7 @@ public class Participant extends CalendarComponent {
      * @return the SUMMARY property or null if not specified
      */
     public final Summary getSummary() {
-        return (Summary) getProperty(Property.SUMMARY);
+        return getProperty(Property.SUMMARY);
     }
 
     public static class Factory extends Content.Factory implements ComponentFactory<Participant> {

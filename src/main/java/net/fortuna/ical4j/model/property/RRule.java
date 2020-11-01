@@ -32,6 +32,9 @@
 package net.fortuna.ical4j.model.property;
 
 import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Recur.Frequency;
+import net.fortuna.ical4j.validate.ParameterValidator;
+import net.fortuna.ical4j.validate.ValidationException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -56,16 +59,17 @@ public class RRule extends Property {
      * Default constructor.
      */
     public RRule() {
-        super(RRULE, PropertyFactoryImpl.getInstance());
-        recur = new Recur(Recur.DAILY, 1);
+        super(RRULE, new Factory());
+        recur = new Recur(Frequency.DAILY, 1);
     }
 
     /**
      * @param value a rule string
-     * @throws ParseException where the specified string is not a valid rule
+     * @throws ParseException where the if the UNTIL part of the recurrence string is an invalid date representation
+     * @throws IllegalArgumentException where the recurrence string contains an unrecognised token
      */
     public RRule(String value) throws ParseException {
-        super(RRULE, PropertyFactoryImpl.getInstance());
+        super(RRULE, new Factory());
         setValue(value);
     }
 
@@ -77,7 +81,7 @@ public class RRule extends Property {
      */
     public RRule(final ParameterList aList, final String aValue)
             throws ParseException {
-        super(RRULE, aList, PropertyFactoryImpl.getInstance());
+        super(RRULE, aList, new Factory());
         setValue(aValue);
     }
 
@@ -85,7 +89,7 @@ public class RRule extends Property {
      * @param aRecur a recurrence value
      */
     public RRule(final Recur aRecur) {
-        super(RRULE, PropertyFactoryImpl.getInstance());
+        super(RRULE, new Factory());
         recur = aRecur;
     }
 
@@ -94,7 +98,7 @@ public class RRule extends Property {
      * @param aRecur a recurrence value
      */
     public RRule(final ParameterList aList, final Recur aRecur) {
-        super(RRULE, aList, PropertyFactoryImpl.getInstance());
+        super(RRULE, aList, new Factory());
         recur = aRecur;
     }
 
@@ -117,6 +121,11 @@ public class RRule extends Property {
      */
     public final String getValue() {
         return getRecur().toString();
+    }
+
+    @Override
+    public void validate() throws ValidationException {
+        ParameterValidator.assertNone(Parameter.TZID, getParameters());
     }
 
     public static class Factory extends Content.Factory implements PropertyFactory {

@@ -31,13 +31,23 @@
  */
 package net.fortuna.ical4j.model.property;
 
-import net.fortuna.ical4j.model.*;
-import net.fortuna.ical4j.validate.property.OneOrLessParameterValidator;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.ParameterList;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyFactory;
+import net.fortuna.ical4j.validate.PropertyValidator;
+import net.fortuna.ical4j.validate.ValidationException;
+import net.fortuna.ical4j.validate.ValidationRule;
+import net.fortuna.ical4j.validate.Validator;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.StringTokenizer;
+
+import static net.fortuna.ical4j.model.Parameter.LANGUAGE;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
 
 /**
  * $Id$
@@ -78,12 +88,14 @@ public class RequestStatus extends Property {
 
     private String exData;
 
+    private final Validator<Property> validator = new PropertyValidator(Arrays.asList(
+            new ValidationRule(OneOrLess, LANGUAGE)));
+
     /**
      * Default constructor.
      */
     public RequestStatus() {
-        super(REQUEST_STATUS, new ParameterList(), new OneOrLessParameterValidator(Parameter.LANGUAGE),
-                PropertyFactoryImpl.getInstance());
+        super(REQUEST_STATUS, new ParameterList(), new Factory());
     }
 
     /**
@@ -91,7 +103,7 @@ public class RequestStatus extends Property {
      * @param aValue a value string for this component
      */
     public RequestStatus(final ParameterList aList, final String aValue) {
-        super(REQUEST_STATUS, aList, new OneOrLessParameterValidator(Parameter.LANGUAGE), PropertyFactoryImpl.getInstance());
+        super(REQUEST_STATUS, aList, new Factory());
         setValue(aValue);
     }
 
@@ -102,8 +114,7 @@ public class RequestStatus extends Property {
      */
     public RequestStatus(final String aStatusCode, final String aDescription,
                          final String data) {
-        super(REQUEST_STATUS, new ParameterList(), new OneOrLessParameterValidator(Parameter.LANGUAGE),
-                PropertyFactoryImpl.getInstance());
+        super(REQUEST_STATUS, new ParameterList(), new Factory());
         statusCode = aStatusCode;
         description = aDescription;
         exData = data;
@@ -117,7 +128,7 @@ public class RequestStatus extends Property {
      */
     public RequestStatus(final ParameterList aList, final String aStatusCode,
                          final String aDescription, final String data) {
-        super(REQUEST_STATUS, aList, new OneOrLessParameterValidator(Parameter.LANGUAGE), PropertyFactoryImpl.getInstance());
+        super(REQUEST_STATUS, aList, new Factory());
         statusCode = aStatusCode;
         description = aDescription;
         exData = data;
@@ -205,6 +216,11 @@ public class RequestStatus extends Property {
      */
     public final void setStatusCode(final String statusCode) {
         this.statusCode = statusCode;
+    }
+
+    @Override
+    public void validate() throws ValidationException {
+        validator.validate(this);
     }
 
     public static class Factory extends Content.Factory implements PropertyFactory {

@@ -34,7 +34,6 @@ package net.fortuna.ical4j.model.parameter;
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactory;
-import net.fortuna.ical4j.model.ParameterFactoryImpl;
 
 import java.net.URISyntaxException;
 
@@ -75,7 +74,7 @@ public class StayInformed extends Parameter {
      * @param aValue a boolean value
      */
     public StayInformed(final Boolean aValue) {
-        super(STAY_INFORMED, ParameterFactoryImpl.getInstance());
+        super(STAY_INFORMED, new Factory());
         this.stayInformed = aValue;
     }
 

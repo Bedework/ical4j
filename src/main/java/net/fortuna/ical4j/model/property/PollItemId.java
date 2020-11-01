@@ -35,7 +35,6 @@ import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyFactory;
-import net.fortuna.ical4j.model.PropertyFactoryImpl;
 import net.fortuna.ical4j.validate.ValidationException;
 
 import java.io.IOException;
@@ -60,7 +59,7 @@ public class PollItemId extends Property {
      * Default constructor.
      */
     public PollItemId() {
-        super(POLL_ITEM_ID, PropertyFactoryImpl.getInstance());
+        super(POLL_ITEM_ID, new ParticipantType.Factory());
     }
 
     /**
@@ -68,7 +67,7 @@ public class PollItemId extends Property {
      * @param aValue a value string for this component
      */
     public PollItemId(final ParameterList aList, final String aValue) {
-        super(POLL_ITEM_ID, aList, PropertyFactoryImpl.getInstance());
+        super(POLL_ITEM_ID, aList, new ParticipantType.Factory());
         setValue(aValue);
     }
 
@@ -76,7 +75,7 @@ public class PollItemId extends Property {
      * @param val a poll item id
      */
     public PollItemId(final int val) {
-        super(POLL_ITEM_ID, PropertyFactoryImpl.getInstance());
+        super(POLL_ITEM_ID, new ParticipantType.Factory());
         pollitemid = val;
     }
 
@@ -85,7 +84,7 @@ public class PollItemId extends Property {
      * @param val a poll item id
      */
     public PollItemId(final ParameterList aList, final int val) {
-        super(POLL_ITEM_ID, aList, PropertyFactoryImpl.getInstance());
+        super(POLL_ITEM_ID, aList, new ParticipantType.Factory());
         pollitemid = val;
     }
 

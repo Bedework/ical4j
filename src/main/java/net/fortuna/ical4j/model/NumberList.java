@@ -35,8 +35,8 @@ import net.fortuna.ical4j.util.Numbers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 /**
  * $Id$ [29-May-2004]
@@ -101,6 +101,7 @@ public class NumberList extends ArrayList<Integer> implements Serializable {
      * @param aNumber a number to add to the list
      * @return true if the number was added, otherwise false
      */
+    @Override
     public final boolean add(final Integer aNumber) {
         int abs = aNumber;
         if ((abs >> 31 | -abs >>> 31) < 0) {
@@ -119,14 +120,8 @@ public class NumberList extends ArrayList<Integer> implements Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String toString() {
-        final StringBuilder b = new StringBuilder();
-        for (final Iterator<Integer> i = iterator(); i.hasNext();) {
-            b.append(i.next());
-            if (i.hasNext()) {
-                b.append(',');
-            }
-        }
-        return b.toString();
+        return stream().map(Object::toString).collect(Collectors.joining(","));
     }
 }

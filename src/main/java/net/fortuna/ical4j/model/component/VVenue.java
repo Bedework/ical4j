@@ -31,14 +31,17 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentFactory;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
 import net.fortuna.ical4j.validate.Validator;
-import org.apache.commons.collections4.Closure;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Arrays;
 
@@ -114,8 +117,9 @@ public class VVenue extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String toString() {
-        String b = BEGIN +
+        return BEGIN +
                 ':' +
                 getName() +
                 Strings.LINE_SEPARATOR +
@@ -124,7 +128,6 @@ public class VVenue extends CalendarComponent {
                 ':' +
                 getName() +
                 Strings.LINE_SEPARATOR;
-        return b;
     }
 
     @Override
@@ -135,13 +138,14 @@ public class VVenue extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void validate(final boolean recurse)
             throws ValidationException {
 
         /*
          * ; 'uiid' is required, but MUST NOT occur more ; than once uiid /
          */
-        PropertyValidator.getInstance().assertOne(Property.UID,
+        PropertyValidator.assertOne(Property.UID,
                 getProperties());
 
         /*
@@ -153,14 +157,9 @@ public class VVenue extends CalendarComponent {
          *                location-type / categories /
          *                dtstamp / created / last-modified
          */
-        CollectionUtils.forAllDo(Arrays.asList(Property.NAME, Property.DESCRIPTION, Property.STREET_ADDRESS, Property.EXTENDED_ADDRESS,
+        Arrays.asList(Property.NAME, Property.DESCRIPTION, Property.STREET_ADDRESS, Property.EXTENDED_ADDRESS,
                 Property.LOCALITY, Property.REGION, Property.COUNTRY, Property.POSTALCODE, Property.TZID, Property.GEO,
-                Property.LOCATION_TYPE, Property.CATEGORIES, Property.DTSTAMP, Property.CREATED, Property.LAST_MODIFIED), new Closure<String>() {
-            @Override
-            public void execute(String input) {
-                PropertyValidator.getInstance().assertOneOrLess(input, getProperties());
-            }
-        });
+                Property.LOCATION_TYPE, Property.CATEGORIES, Property.DTSTAMP, Property.CREATED, Property.LAST_MODIFIED).forEach(property -> PropertyValidator.assertOneOrLess(property, getProperties()));
 
         /*
          * ; the following is optional, ; and MAY occur more than once tel / url / x-prop
@@ -174,6 +173,7 @@ public class VVenue extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Validator getValidator(Method method) {
         // No method validation required.. 
         return EMPTY_VALIDATOR;

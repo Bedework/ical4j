@@ -32,11 +32,18 @@
 package net.fortuna.ical4j.model.property;
 
 import net.fortuna.ical4j.model.*;
-import net.fortuna.ical4j.validate.property.OneOrLessParameterValidator;
+import net.fortuna.ical4j.validate.PropertyValidator;
+import net.fortuna.ical4j.validate.ValidationException;
+import net.fortuna.ical4j.validate.ValidationRule;
+import net.fortuna.ical4j.validate.Validator;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.Arrays;
+
+import static net.fortuna.ical4j.model.Parameter.ALTREP;
+import static net.fortuna.ical4j.model.Parameter.LANGUAGE;
 
 /**
  * $Id$
@@ -53,20 +60,21 @@ public class Contact extends Property implements Escapable {
 
     private String value;
 
+    private Validator<Property> validator = new PropertyValidator(Arrays.asList(
+            new ValidationRule(ValidationRule.ValidationType.OneOrLess, ALTREP, LANGUAGE)));
+
     /**
      * Default constructor.
      */
     public Contact() {
-        super(CONTACT, new ParameterList(), new OneOrLessParameterValidator(Parameter.ALTREP, Parameter.LANGUAGE),
-                PropertyFactoryImpl.getInstance());
+        super(CONTACT, new ParameterList(), new Factory());
     }
 
     /**
      * @param aValue a value string for this component
      */
     public Contact(final String aValue) {
-        super(CONTACT, new ParameterList(), new OneOrLessParameterValidator(Parameter.ALTREP, Parameter.LANGUAGE),
-                PropertyFactoryImpl.getInstance());
+        super(CONTACT, new ParameterList(), new Factory());
         setValue(aValue);
     }
 
@@ -75,8 +83,7 @@ public class Contact extends Property implements Escapable {
      * @param aValue a value string for this component
      */
     public Contact(final ParameterList aList, final String aValue) {
-        super(CONTACT, aList, new OneOrLessParameterValidator(Parameter.ALTREP, Parameter.LANGUAGE),
-                PropertyFactoryImpl.getInstance());
+        super(CONTACT, aList, new Factory());
         setValue(aValue);
     }
 
@@ -92,6 +99,11 @@ public class Contact extends Property implements Escapable {
      */
     public final String getValue() {
         return value;
+    }
+
+    @Override
+    public void validate() throws ValidationException {
+        validator.validate(this);
     }
 
     public static class Factory extends Content.Factory implements PropertyFactory {

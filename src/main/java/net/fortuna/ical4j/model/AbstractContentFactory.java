@@ -32,11 +32,11 @@
 package net.fortuna.ical4j.model;
 
 import net.fortuna.ical4j.util.CompatibilityHints;
+import org.apache.commons.lang3.Validate;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * $Id$
@@ -47,17 +47,18 @@ import java.util.ServiceLoader;
  *
  * @author Ben Fortuna
  */
-public abstract class AbstractContentFactory<T> implements Serializable {
+@Deprecated
+public abstract class AbstractContentFactory<T> implements Serializable, Supplier<List<T>> {
 
     private final Map<String, T> extendedFactories;
 
-    private final transient ServiceLoader<T> factoryLoader;
+    protected transient ServiceLoader factoryLoader;
 
     /**
      * Default constructor.
      */
-    public AbstractContentFactory(ServiceLoader<T> factoryLoader) {
-        extendedFactories = new HashMap<String, T>();
+    public AbstractContentFactory(ServiceLoader factoryLoader) {
+        extendedFactories = new HashMap<>();
         this.factoryLoader = factoryLoader;
     }
 
@@ -76,10 +77,12 @@ public abstract class AbstractContentFactory<T> implements Serializable {
      * @param key a factory key
      * @return a factory associated with the specified key, giving preference to
      * standard factories
+     * @throws IllegalArgumentException if the specified key is blank
      */
     protected final T getFactory(String key) {
+        Validate.notBlank(key, "Invalid factory key: [%s]", key);
         T factory = null;
-        for (T candidate : factoryLoader) {
+        for (T candidate : (ServiceLoader<T>) factoryLoader) {
             if (factorySupports(candidate, key)) {
                 factory = candidate;
                 break;
@@ -96,5 +99,15 @@ public abstract class AbstractContentFactory<T> implements Serializable {
      */
     protected boolean allowIllegalNames() {
         return CompatibilityHints.isHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING);
+    }
+
+    @Override
+    public List<T> get() {
+        List<T> factories = new ArrayList<>();
+        for (T candidate : (ServiceLoader<T>) factoryLoader) {
+            factories.add(candidate);
+        }
+        factories.addAll(extendedFactories.values());
+        return factories;
     }
 }

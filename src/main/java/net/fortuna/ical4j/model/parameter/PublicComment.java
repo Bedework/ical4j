@@ -34,7 +34,6 @@ package net.fortuna.ical4j.model.parameter;
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactory;
-import net.fortuna.ical4j.model.ParameterFactoryImpl;
 import net.fortuna.ical4j.util.Strings;
 
 import java.net.URISyntaxException;
@@ -58,7 +57,7 @@ public class PublicComment extends Parameter {
      *            a string abbreviation
      */
     public PublicComment(final String aValue) {
-        super(PUBLIC_COMMENT, ParameterFactoryImpl.getInstance());
+        super(PUBLIC_COMMENT, new Factory());
         this.value = Strings.unquote(aValue);
     }
 

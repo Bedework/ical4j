@@ -34,7 +34,6 @@ package net.fortuna.ical4j.model.parameter;
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactory;
-import net.fortuna.ical4j.model.ParameterFactoryImpl;
 import net.fortuna.ical4j.util.Strings;
 
 /**
@@ -64,7 +63,7 @@ public class LocType extends Parameter {
      * @param aValue a string representation of a format type
      */
     public LocType(final String aValue) {
-        super(LOCTYPE, ParameterFactoryImpl.getInstance());
+        super(LOCTYPE, new Factory());
         this.value = Strings.unquote(aValue);
     }
 

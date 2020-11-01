@@ -31,14 +31,18 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentFactory;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Parameter;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
-import org.apache.commons.collections4.Closure;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Arrays;
 
@@ -116,25 +120,21 @@ public class Available extends Component {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void validate(final boolean recurse)
             throws ValidationException {
 
         /*
          * ; dtstamp / dtstart / uid are required, but MUST NOT occur more than once /
          */
-        CollectionUtils.forAllDo(Arrays.asList(Property.DTSTART, Property.DTSTAMP, Property.UID), new Closure<String>() {
-            @Override
-            public void execute(String input) {
-                PropertyValidator.getInstance().assertOne(input, getProperties());
-            }
-        });
+        Arrays.asList(Property.DTSTART, Property.DTSTAMP, Property.UID).forEach(property -> PropertyValidator.assertOne(property, getProperties()));
 
         /*       If specified, the "DTSTART" and "DTEND" properties in
          *      "VAVAILABILITY" components and "AVAILABLE" sub-components MUST be
          *      "DATE-TIME" values specified as either date with UTC time or date
          *      with local time and a time zone reference.
          */
-        final DtStart start = (DtStart) getProperty(Property.DTSTART);
+        final DtStart start = getProperty(Property.DTSTART);
         if (Value.DATE.equals(start.getParameter(Parameter.VALUE))) {
             throw new ValidationException("Property [" + Property.DTSTART
                     + "] must be a " + Value.DATE_TIME);
@@ -147,13 +147,8 @@ public class Available extends Component {
          *               created / last-mod / recurid / rrule /
          *               summary /
          */
-        CollectionUtils.forAllDo(Arrays.asList(Property.CREATED, Property.LAST_MODIFIED, Property.RECURRENCE_ID,
-                Property.RRULE, Property.SUMMARY), new Closure<String>() {
-            @Override
-            public void execute(String input) {
-                PropertyValidator.getInstance().assertOneOrLess(input, getProperties());
-            }
-        });
+        Arrays.asList(Property.CREATED, Property.LAST_MODIFIED, Property.RECURRENCE_ID,
+                      Property.RRULE, Property.SUMMARY).forEach(property -> PropertyValidator.assertOneOrLess(property, getProperties()));
 
         /*
          ; either a 'dtend' or a 'duration' is required
@@ -163,16 +158,16 @@ public class Available extends Component {
          ; than once
          */
         if (getProperty(Property.DTEND) != null) {
-            PropertyValidator.getInstance().assertOne(Property.DTEND,
+            PropertyValidator.assertOne(Property.DTEND,
                     getProperties());
             /* Must be DATE_TIME */
-            final DtEnd end = (DtEnd) getProperty(Property.DTEND);
+            final DtEnd end = getProperty(Property.DTEND);
             if (Value.DATE.equals(end.getParameter(Parameter.VALUE))) {
                 throw new ValidationException("Property [" + Property.DTEND
                         + "] must be a " + Value.DATE_TIME);
             }
         } else {
-            PropertyValidator.getInstance().assertOne(Property.DURATION,
+            PropertyValidator.assertOne(Property.DURATION,
                     getProperties());
         }
 

@@ -86,14 +86,14 @@ public class PollMode extends Property {
      * Default constructor.
      */
     public PollMode() {
-        super(POLL_MODE, PropertyFactoryImpl.getInstance());
+        super(POLL_MODE, new ParticipantType.Factory());
     }
 
     /**
      * @param aValue a value string for this property
      */
     public PollMode(final String aValue) {
-        super(POLL_MODE, PropertyFactoryImpl.getInstance());
+        super(POLL_MODE, new ParticipantType.Factory());
         this.value = aValue;
     }
 
@@ -102,7 +102,7 @@ public class PollMode extends Property {
      * @param aValue a value string for this property
      */
     public PollMode(final ParameterList aList, final String aValue) {
-        super(POLL_MODE, aList, PropertyFactoryImpl.getInstance());
+        super(POLL_MODE, aList, new ParticipantType.Factory());
         this.value = aValue;
     }
 

@@ -32,9 +32,14 @@
 package net.fortuna.ical4j.model;
 
 import net.fortuna.ical4j.model.component.CalendarComponent;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.Strings;
-import net.fortuna.ical4j.validate.*;
+import net.fortuna.ical4j.validate.AbstractCalendarValidatorFactory;
+import net.fortuna.ical4j.validate.ValidationException;
+import net.fortuna.ical4j.validate.Validator;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -129,7 +134,7 @@ public class Calendar implements Serializable {
      */
     public static final String END = "END";
 
-    private final PropertyList properties;
+    private final PropertyList<Property> properties;
 
     private final ComponentList<CalendarComponent> components;
 
@@ -139,7 +144,7 @@ public class Calendar implements Serializable {
      * Default constructor.
      */
     public Calendar() {
-        this(new PropertyList(), new ComponentList<CalendarComponent>());
+        this(new PropertyList<Property>(), new ComponentList<CalendarComponent>());
     }
 
     /**
@@ -147,7 +152,7 @@ public class Calendar implements Serializable {
      * @param components a list of components to add to the calendar
      */
     public Calendar(final ComponentList<CalendarComponent> components) {
-        this(new PropertyList(), components);
+        this(new PropertyList<Property>(), components);
     }
 
     /**
@@ -155,7 +160,7 @@ public class Calendar implements Serializable {
      * @param properties a list of initial calendar properties
      * @param components a list of initial calendar components
      */
-    public Calendar(PropertyList properties, ComponentList<CalendarComponent> components) {
+    public Calendar(PropertyList<Property> properties, ComponentList<CalendarComponent> components) {
         this(properties, components, AbstractCalendarValidatorFactory.getInstance().newInstance());
     }
 
@@ -165,7 +170,7 @@ public class Calendar implements Serializable {
      * @param c a list of components
      * @param validator used to ensure the validity of the calendar instance
      */
-    public Calendar(PropertyList p, ComponentList<CalendarComponent> c, Validator<Calendar> validator) {
+    public Calendar(PropertyList<Property> p, ComponentList<CalendarComponent> c, Validator<Calendar> validator) {
         this.properties = p;
         this.components = c;
         this.validator = validator;
@@ -181,15 +186,16 @@ public class Calendar implements Serializable {
     public Calendar(Calendar c) throws ParseException, IOException,
             URISyntaxException {
         
-        this(new PropertyList(c.getProperties()),
+        this(new PropertyList<Property>(c.getProperties()),
         		new ComponentList<CalendarComponent>(c.getComponents()));
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String toString() {
-        String buffer = BEGIN +
+        return BEGIN +
                 ':' +
                 VCALENDAR +
                 Strings.LINE_SEPARATOR +
@@ -199,8 +205,6 @@ public class Calendar implements Serializable {
                 ':' +
                 VCALENDAR +
                 Strings.LINE_SEPARATOR;
-
-        return buffer;
     }
 
     /**
@@ -231,7 +235,7 @@ public class Calendar implements Serializable {
     /**
      * @return Returns the properties.
      */
-    public final PropertyList getProperties() {
+    public final PropertyList<Property> getProperties() {
         return properties;
     }
 
@@ -240,7 +244,7 @@ public class Calendar implements Serializable {
      * @param name name of properties to retrieve
      * @return a property list containing only properties with the specified name
      */
-    public final PropertyList getProperties(final String name) {
+    public final PropertyList<Property> getProperties(final String name) {
         return getProperties().getProperties(name);
     }
 
@@ -249,7 +253,7 @@ public class Calendar implements Serializable {
      * @param name name of the property to retrieve
      * @return the first matching property in the property list with the specified name
      */
-    public final Property getProperty(final String name) {
+    public final <T extends Property> T getProperty(final String name) {
         return getProperties().getProperty(name);
     }
 
@@ -299,7 +303,7 @@ public class Calendar implements Serializable {
      * @return the PRODID property, or null if property doesn't exist
      */
     public final ProdId getProductId() {
-        return (ProdId) getProperty(Property.PRODID);
+        return getProperty(Property.PRODID);
     }
 
     /**
@@ -307,7 +311,7 @@ public class Calendar implements Serializable {
      * @return the VERSION property, or null if property doesn't exist
      */
     public final Version getVersion() {
-        return (Version) getProperty(Property.VERSION);
+        return getProperty(Property.VERSION);
     }
 
     /**
@@ -315,7 +319,7 @@ public class Calendar implements Serializable {
      * @return the CALSCALE property, or null if property doesn't exist
      */
     public final CalScale getCalendarScale() {
-        return (CalScale) getProperty(Property.CALSCALE);
+        return getProperty(Property.CALSCALE);
     }
 
     /**
@@ -323,12 +327,13 @@ public class Calendar implements Serializable {
      * @return the METHOD property, or null if property doesn't exist
      */
     public final Method getMethod() {
-        return (Method) getProperty(Property.METHOD);
+        return getProperty(Property.METHOD);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean equals(final Object arg0) {
         if (arg0 instanceof Calendar) {
             final Calendar calendar = (Calendar) arg0;
@@ -341,6 +346,7 @@ public class Calendar implements Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final int hashCode() {
         return new HashCodeBuilder().append(getProperties()).append(
                 getComponents()).toHashCode();

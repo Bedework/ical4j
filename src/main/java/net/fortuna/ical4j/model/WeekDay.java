@@ -32,11 +32,11 @@
 package net.fortuna.ical4j.model;
 
 import net.fortuna.ical4j.util.Numbers;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Objects;
 
 /**
  * $Id$
@@ -155,6 +155,7 @@ public class WeekDay implements Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String toString() {
         final StringBuilder b = new StringBuilder();
         if (getOffset() != 0) {
@@ -201,7 +202,18 @@ public class WeekDay implements Serializable {
      * @return a weekday instance representing the specified calendar
      */
     public static WeekDay getNegativeMonthlyOffset(final Calendar cal) {
-        return new WeekDay(getDay(cal.get(Calendar.DAY_OF_WEEK)), cal.get(Calendar.DAY_OF_WEEK_IN_MONTH) - 6);
+        Calendar calClone = (Calendar) cal.clone();
+		int delta = -1;
+		do {
+			calClone.add(7, Calendar.DAY_OF_YEAR);
+			if(calClone.get(Calendar.MONTH)==cal.get(Calendar.MONTH)) {
+				delta -= 1;
+			}else {
+				break;
+			}
+		}while(delta>-5);
+		
+		return new WeekDay(getDay(cal.get(Calendar.DAY_OF_WEEK)), delta);
     }
     
     /**
@@ -276,6 +288,7 @@ public class WeekDay implements Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean equals(final Object arg0) {
         if (arg0 == null) {
             return false;
@@ -284,13 +297,14 @@ public class WeekDay implements Serializable {
             return false;
         }
         final WeekDay wd = (WeekDay) arg0;
-        return ObjectUtils.equals(wd.getDay(), getDay())
+        return Objects.equals(wd.getDay(), getDay())
             && wd.getOffset() == getOffset();
     }
     
     /**
      * {@inheritDoc}
      */
+    @Override
     public final int hashCode() {
         return new HashCodeBuilder().append(getDay())
             .append(getOffset()).toHashCode();

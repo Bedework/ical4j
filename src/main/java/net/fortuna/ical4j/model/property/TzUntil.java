@@ -95,7 +95,7 @@ public class TzUntil extends UtcProperty {
      * Default constructor. Initialises the dateTime value to the time of instantiation.
      */
     public TzUntil() {
-        super(TZUNTIL, PropertyFactoryImpl.getInstance());
+        super(TZUNTIL, new Factory());
     }
 
     /**
@@ -113,7 +113,7 @@ public class TzUntil extends UtcProperty {
      */
     public TzUntil(final ParameterList aList, final String aValue)
             throws ParseException {
-        super(TZUNTIL, aList, PropertyFactoryImpl.getInstance());
+        super(TZUNTIL, aList, new Factory());
         setValue(aValue);
     }
 
@@ -121,7 +121,7 @@ public class TzUntil extends UtcProperty {
      * @param aDate a date representing a date-time
      */
     public TzUntil(final DateTime aDate) {
-        super(TZUNTIL, PropertyFactoryImpl.getInstance());
+        super(TZUNTIL, new Factory());
         // time must be in UTC..
         aDate.setUtc(true);
         setDate(aDate);
@@ -132,7 +132,7 @@ public class TzUntil extends UtcProperty {
      * @param aDate a date representing a date-time
      */
     public TzUntil(final ParameterList aList, final DateTime aDate) {
-        super(TZUNTIL, aList, PropertyFactoryImpl.getInstance());
+        super(TZUNTIL, aList, new Factory());
         // time must be in UTC..
         aDate.setUtc(true);
         setDate(aDate);

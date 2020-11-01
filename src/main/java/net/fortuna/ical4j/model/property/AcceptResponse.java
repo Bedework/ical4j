@@ -59,7 +59,7 @@ public class AcceptResponse extends Property {
      * Default constructor.
      */
     public AcceptResponse() {
-        super(ACCEPT_RESPONSE, PropertyFactoryImpl.getInstance());
+        super(ACCEPT_RESPONSE, new Factory());
         components = new TextList();
     }
 
@@ -67,7 +67,7 @@ public class AcceptResponse extends Property {
      * @param aValue a value string for this component
      */
     public AcceptResponse(final String aValue) {
-        super(ACCEPT_RESPONSE, PropertyFactoryImpl.getInstance());
+        super(ACCEPT_RESPONSE, new Factory());
         setValue(aValue);
     }
 
@@ -76,7 +76,7 @@ public class AcceptResponse extends Property {
      * @param aValue a value string for this component
      */
     public AcceptResponse(final ParameterList aList, final String aValue) {
-        super(ACCEPT_RESPONSE, aList, PropertyFactoryImpl.getInstance());
+        super(ACCEPT_RESPONSE, aList, new Factory());
         setValue(aValue);
     }
 
@@ -84,7 +84,7 @@ public class AcceptResponse extends Property {
      * @param cList a list of component names
      */
     public AcceptResponse(final TextList cList) {
-        super(ACCEPT_RESPONSE, PropertyFactoryImpl.getInstance());
+        super(ACCEPT_RESPONSE, new Factory());
         components = cList;
     }
 
@@ -94,7 +94,7 @@ public class AcceptResponse extends Property {
      */
     public AcceptResponse(final ParameterList aList, 
     		final TextList cList) {
-        super(ACCEPT_RESPONSE, aList, PropertyFactoryImpl.getInstance());
+        super(ACCEPT_RESPONSE, aList, new Factory());
         components = cList;
     }
 
@@ -103,15 +103,6 @@ public class AcceptResponse extends Property {
      */
     public final void setValue(final String aValue) {
     	components = new TextList(aValue);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final void validate() throws ValidationException {
-        /*
-         * ; the following is optional, ; and MAY occur more than once (";" xparam)
-         */
     }
 
     /**
@@ -126,6 +117,11 @@ public class AcceptResponse extends Property {
      */
     public final String getValue() {
         return getComponentNames().toString();
+    }
+
+    @Override
+    public void validate() throws ValidationException {
+
     }
 
     public static class Factory extends Content.Factory implements

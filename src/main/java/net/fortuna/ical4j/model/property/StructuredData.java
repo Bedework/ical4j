@@ -31,12 +31,20 @@
  */
 package net.fortuna.ical4j.model.property;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Escapable;
+import net.fortuna.ical4j.model.Parameter;
+import net.fortuna.ical4j.model.ParameterList;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyFactory;
 import net.fortuna.ical4j.model.parameter.Encoding;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.util.DecoderFactory;
 import net.fortuna.ical4j.util.Uris;
-import net.fortuna.ical4j.validate.property.OneOrLessParameterValidator;
+import net.fortuna.ical4j.validate.PropertyValidator;
+import net.fortuna.ical4j.validate.ValidationException;
+import net.fortuna.ical4j.validate.ValidationRule;
+import net.fortuna.ical4j.validate.Validator;
 import org.apache.commons.codec.BinaryDecoder;
 import org.apache.commons.codec.DecoderException;
 import org.slf4j.Logger;
@@ -47,6 +55,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.Arrays;
+
+import static net.fortuna.ical4j.model.Parameter.FMTTYPE;
+import static net.fortuna.ical4j.model.Parameter.SCHEMA;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
 
 /**
  * $Id$
@@ -65,24 +78,24 @@ public class StructuredData extends Property implements Escapable {
     private URI uri;
     private byte[] binary;
 
+    private final Validator<Property> validator = new PropertyValidator(
+            Arrays.asList(
+                    new ValidationRule(OneOrLess, FMTTYPE, SCHEMA)));
+
     /**
      * Default constructor.
      */
     public StructuredData() {
-        super(STRUCTURED_DATA, new ParameterList(), 
-                new OneOrLessParameterValidator(Parameter.FMTTYPE,
-                        Parameter.SCHEMA),
-                PropertyFactoryImpl.getInstance());
+        super(STRUCTURED_DATA, new ParameterList(),
+              new Factory());
     }
 
     /**
      * @param aValue a value string for this component
      */
     public StructuredData(final String aValue) throws URISyntaxException {
-        super(STRUCTURED_DATA, new ParameterList(), 
-                new OneOrLessParameterValidator(Parameter.FMTTYPE,
-                        Parameter.SCHEMA),
-                PropertyFactoryImpl.getInstance());
+        super(STRUCTURED_DATA, new ParameterList(),
+              new Factory());
         setValue(aValue);
     }
 
@@ -91,10 +104,8 @@ public class StructuredData extends Property implements Escapable {
      * @param aValue a value string for this component
      */
     public StructuredData(final ParameterList aList, final String aValue) throws URISyntaxException {
-        super(STRUCTURED_DATA, aList, 
-                new OneOrLessParameterValidator(Parameter.FMTTYPE,
-                        Parameter.SCHEMA),
-                PropertyFactoryImpl.getInstance());
+        super(STRUCTURED_DATA, aList,
+              new Factory());
         setValue(aValue);
     }
 
@@ -131,6 +142,11 @@ public class StructuredData extends Property implements Escapable {
      */
     public final String getValue() {
         return value;
+    }
+
+    @Override
+    public void validate() throws ValidationException {
+        validator.validate(this);
     }
 
     public static class Factory extends Content.Factory implements PropertyFactory {

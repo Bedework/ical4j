@@ -31,23 +31,55 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentFactory;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.DateRange;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Period;
+import net.fortuna.ical4j.model.PeriodList;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.TemporalAmountComparator;
 import net.fortuna.ical4j.model.parameter.FbType;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.Contact;
+import net.fortuna.ical4j.model.property.DtEnd;
+import net.fortuna.ical4j.model.property.DtStamp;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.FreeBusy;
+import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.Organizer;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.util.CompatibilityHints;
+import net.fortuna.ical4j.validate.ComponentValidator;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
+import net.fortuna.ical4j.validate.ValidationRule;
 import net.fortuna.ical4j.validate.Validator;
-import net.fortuna.ical4j.validate.component.VFreeBusyPublishValidator;
-import net.fortuna.ical4j.validate.component.VFreeBusyReplyValidator;
-import net.fortuna.ical4j.validate.component.VFreeBusyRequestValidator;
-import org.apache.commons.collections4.Closure;
-import org.apache.commons.collections4.CollectionUtils;
 
+import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+
+import static net.fortuna.ical4j.model.Property.ATTENDEE;
+import static net.fortuna.ical4j.model.Property.DTEND;
+import static net.fortuna.ical4j.model.Property.DTSTAMP;
+import static net.fortuna.ical4j.model.Property.DTSTART;
+import static net.fortuna.ical4j.model.Property.DURATION;
+import static net.fortuna.ical4j.model.Property.FREEBUSY;
+import static net.fortuna.ical4j.model.Property.ORGANIZER;
+import static net.fortuna.ical4j.model.Property.REQUEST_STATUS;
+import static net.fortuna.ical4j.model.Property.SEQUENCE;
+import static net.fortuna.ical4j.model.Property.UID;
+import static net.fortuna.ical4j.model.Property.URL;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.None;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.One;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrMore;
 
 /**
  * $Id$ [Apr 5, 2004]
@@ -211,9 +243,16 @@ public class VFreeBusy extends CalendarComponent {
 
     private final Map<Method, Validator> methodValidators = new HashMap<Method, Validator>();
     {
-        methodValidators.put(Method.PUBLISH, new VFreeBusyPublishValidator());
-        methodValidators.put(Method.REPLY, new VFreeBusyReplyValidator());
-        methodValidators.put(Method.REQUEST, new VFreeBusyRequestValidator());
+        methodValidators.put(Method.PUBLISH, new ComponentValidator<VFreeBusy>(new ValidationRule(OneOrMore, FREEBUSY),
+                                                                               new ValidationRule(One, DTSTAMP, DTSTART, DTEND, ORGANIZER, UID),
+                                                                               new ValidationRule(OneOrLess, URL),
+                                                                               new ValidationRule(None, ATTENDEE, DURATION, REQUEST_STATUS)));
+        methodValidators.put(Method.REPLY, new ComponentValidator(new ValidationRule(One, ATTENDEE, DTSTAMP, DTEND, DTSTART, ORGANIZER, UID),
+                new ValidationRule(OneOrLess, URL),
+                new ValidationRule(None, DURATION, SEQUENCE)));
+        methodValidators.put(Method.REQUEST, new ComponentValidator(new ValidationRule(OneOrMore, ATTENDEE),
+                new ValidationRule(One, DTEND, DTSTAMP, DTSTART, ORGANIZER, UID),
+                new ValidationRule(None, FREEBUSY, DURATION, REQUEST_STATUS, URL)));
     }
     
     /**
@@ -270,7 +309,7 @@ public class VFreeBusy extends CalendarComponent {
      * @param end the ending boundary for the VFreeBusy
      * @param duration the length of the period being requested
      */
-    public VFreeBusy(final DateTime start, final DateTime end, final Dur duration) {
+    public VFreeBusy(final DateTime start, final DateTime end, final TemporalAmount duration) {
         this();
         
         // 4.8.2.4 Date/Time Start:
@@ -306,11 +345,11 @@ public class VFreeBusy extends CalendarComponent {
     public VFreeBusy(final VFreeBusy request, final ComponentList<CalendarComponent> components) {
         this();
         
-        final DtStart start = (DtStart) request.getProperty(Property.DTSTART);
+        final DtStart start = request.getProperty(DTSTART);
         
-        final DtEnd end = (DtEnd) request.getProperty(Property.DTEND);
+        final DtEnd end = request.getProperty(DTEND);
         
-        final Duration duration = (Duration) request.getProperty(Property.DURATION);
+        final Duration duration = request.getProperty(DURATION);
         
         // 4.8.2.4 Date/Time Start:
         //
@@ -389,12 +428,10 @@ public class VFreeBusy extends CalendarComponent {
             final DateRange range = new DateRange(start, end);
             // periods must be in UTC time for freebusy..
             periods.setUtc(true);
-            for (final Iterator<Period> i = periods.iterator(); i.hasNext();) {
+            periods.removeIf(period -> {
                 // check if period outside bounds..
-                if (!range.intersects(i.next())) {
-                    i.remove();
-                }
-            }
+                return !range.intersects(period);
+            });
             return new FreeBusy(periods);
         }
     }
@@ -411,7 +448,7 @@ public class VFreeBusy extends CalendarComponent {
         
         private DateTime end;
         
-        private Dur duration;
+        private TemporalAmount duration;
         
         private ComponentList<CalendarComponent> components;
         
@@ -425,7 +462,7 @@ public class VFreeBusy extends CalendarComponent {
             return this;
         }
         
-        private FreeTimeBuilder duration(Dur duration) {
+        private FreeTimeBuilder duration(TemporalAmount duration) {
             this.duration = duration;
             return this;
         }
@@ -451,7 +488,7 @@ public class VFreeBusy extends CalendarComponent {
                     
                     // calculate duration between this period start and last period end..
                     final Duration freeDuration = new Duration(lastPeriodEnd, period.getStart());
-                    if (freeDuration.getDuration().compareTo(duration) >= 0) {
+                    if (new TemporalAmountComparator().compare(freeDuration.getDuration(), duration) >= 0) {
                         fb.getPeriods().add(new Period(lastPeriodEnd, freeDuration.getDuration()));
                     }
                 }
@@ -488,6 +525,7 @@ public class VFreeBusy extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void validate(final boolean recurse) throws ValidationException {
 
         if (!CompatibilityHints.isHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION)) {
@@ -495,27 +533,22 @@ public class VFreeBusy extends CalendarComponent {
             // From "4.8.4.7 Unique Identifier":
             // Conformance: The property MUST be specified in the "VEVENT", "VTODO",
             // "VJOURNAL" or "VFREEBUSY" calendar components.
-            PropertyValidator.getInstance().assertOne(Property.UID,
-                    getProperties());
+            PropertyValidator.assertOne(UID,
+                                        getProperties());
 
             // From "4.8.7.2 Date/Time Stamp":
             // Conformance: This property MUST be included in the "VEVENT", "VTODO",
             // "VJOURNAL" or "VFREEBUSY" calendar components.
-            PropertyValidator.getInstance().assertOne(Property.DTSTAMP,
-                    getProperties());
+            PropertyValidator.assertOne(DTSTAMP,
+                                        getProperties());
         }
 
         /*
          * ; the following are optional, ; but MUST NOT occur more than once contact / dtstart / dtend / duration /
          * dtstamp / organizer / uid / url /
          */
-        CollectionUtils.forAllDo(Arrays.asList(Property.CONTACT, Property.DTSTART, Property.DTEND, Property.DURATION,
-                Property.DTSTAMP, Property.ORGANIZER, Property.UID, Property.URL), new Closure<String>() {
-            @Override
-            public void execute(String input) {
-                PropertyValidator.getInstance().assertOneOrLess(input, getProperties());
-            }
-        });
+        Arrays.asList(Property.CONTACT, DTSTART, DTEND, DURATION,
+                DTSTAMP, ORGANIZER, UID, URL).forEach(parameter -> PropertyValidator.assertOneOrLess(parameter, getProperties()));
 
         /*
          * ; the following are optional, ; and MAY occur more than once attendee / comment / freebusy / rstatus / x-prop
@@ -526,15 +559,10 @@ public class VFreeBusy extends CalendarComponent {
          * calendar component. Any recurring events are resolved into their individual busy time periods using the
          * "FREEBUSY" property.
          */
-        CollectionUtils.forAllDo(Arrays.asList(Property.RRULE, Property.EXRULE, Property.RDATE, Property.EXDATE), new Closure<String>() {
-            @Override
-            public void execute(String input) {
-                PropertyValidator.getInstance().assertNone(input, getProperties());
-            }
-        });
+        Arrays.asList(Property.RRULE, Property.EXRULE, Property.RDATE, Property.EXDATE).forEach(property -> PropertyValidator.assertNone(property, getProperties()));
 
         // DtEnd value must be later in time that DtStart..
-        final DtStart dtStart = (DtStart) getProperty(Property.DTSTART);
+        final DtStart dtStart = getProperty(DTSTART);
         
         // 4.8.2.4 Date/Time Start:
         //
@@ -545,7 +573,7 @@ public class VFreeBusy extends CalendarComponent {
             throw new ValidationException("DTSTART must be specified in UTC time");
         }
         
-        final DtEnd dtEnd = (DtEnd) getProperty(Property.DTEND);
+        final DtEnd dtEnd = getProperty(DTEND);
         
         // 4.8.2.2 Date/Time End
         //
@@ -559,8 +587,8 @@ public class VFreeBusy extends CalendarComponent {
         
         if (dtStart != null && dtEnd != null
                 && !dtStart.getDate().before(dtEnd.getDate())) {
-            throw new ValidationException("Property [" + Property.DTEND
-                    + "] must be later in time than [" + Property.DTSTART + "]");
+            throw new ValidationException("Property [" + DTEND
+                    + "] must be later in time than [" + DTSTART + "]");
         }
 
         if (recurse) {
@@ -571,6 +599,7 @@ public class VFreeBusy extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Validator getValidator(Method method) {
         return methodValidators.get(method);
     }
@@ -579,49 +608,49 @@ public class VFreeBusy extends CalendarComponent {
      * @return the CONTACT property or null if not specified
      */
     public final Contact getContact() {
-        return (Contact) getProperty(Property.CONTACT);
+        return getProperty(Property.CONTACT);
     }
 
     /**
      * @return the DTSTART propery or null if not specified
      */
     public final DtStart getStartDate() {
-        return (DtStart) getProperty(Property.DTSTART);
+        return getProperty(DTSTART);
     }
 
     /**
      * @return the DTEND property or null if not specified
      */
     public final DtEnd getEndDate() {
-        return (DtEnd) getProperty(Property.DTEND);
+        return getProperty(DTEND);
     }
 
     /**
      * @return the DURATION property or null if not specified
      */
     public final Duration getDuration() {
-        return (Duration) getProperty(Property.DURATION);
+        return getProperty(DURATION);
     }
 
     /**
      * @return the DTSTAMP property or null if not specified
      */
     public final DtStamp getDateStamp() {
-        return (DtStamp) getProperty(Property.DTSTAMP);
+        return getProperty(DTSTAMP);
     }
 
     /**
      * @return the ORGANIZER property or null if not specified
      */
     public final Organizer getOrganizer() {
-        return (Organizer) getProperty(Property.ORGANIZER);
+        return getProperty(ORGANIZER);
     }
 
     /**
      * @return the URL property or null if not specified
      */
     public final Url getUrl() {
-        return (Url) getProperty(Property.URL);
+        return getProperty(URL);
     }
 
     /**
@@ -629,7 +658,7 @@ public class VFreeBusy extends CalendarComponent {
      * @return a Uid instance, or null if no UID property exists
      */
     public final Uid getUid() {
-        return (Uid) getProperty(Property.UID);
+        return getProperty(UID);
     }
 
     public static class Factory extends Content.Factory implements ComponentFactory<VFreeBusy> {

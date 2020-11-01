@@ -56,7 +56,7 @@ public class PollWinner extends Property {
      * Default constructor.
      */
     public PollWinner() {
-        super(POLL_WINNER, PropertyFactoryImpl.getInstance());
+        super(POLL_WINNER, new ParticipantType.Factory());
     }
 
     /**
@@ -64,7 +64,7 @@ public class PollWinner extends Property {
      * @param aValue a value string for this component
      */
     public PollWinner(final ParameterList aList, final String aValue) {
-        super(POLL_WINNER, aList, PropertyFactoryImpl.getInstance());
+        super(POLL_WINNER, aList, new ParticipantType.Factory());
         setValue(aValue);
     }
 
@@ -72,7 +72,7 @@ public class PollWinner extends Property {
      * @param val a poll item id
      */
     public PollWinner(final int val) {
-        super(POLL_WINNER, PropertyFactoryImpl.getInstance());
+        super(POLL_WINNER, new ParticipantType.Factory());
         pollwinner = val;
     }
 
@@ -81,7 +81,7 @@ public class PollWinner extends Property {
      * @param val a poll item id
      */
     public PollWinner(final ParameterList aList, final int val) {
-        super(POLL_WINNER, aList, PropertyFactoryImpl.getInstance());
+        super(POLL_WINNER, aList, new ParticipantType.Factory());
         pollwinner = val;
     }
 

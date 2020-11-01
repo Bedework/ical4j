@@ -31,15 +31,29 @@
  */
 package net.fortuna.ical4j.model.property;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Escapable;
+import net.fortuna.ical4j.model.Parameter;
+import net.fortuna.ical4j.model.ParameterList;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyFactory;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.util.Uris;
-import net.fortuna.ical4j.validate.property.OneOrLessParameterValidator;
+import net.fortuna.ical4j.validate.PropertyValidator;
+import net.fortuna.ical4j.validate.ValidationException;
+import net.fortuna.ical4j.validate.ValidationRule;
+import net.fortuna.ical4j.validate.Validator;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.Arrays;
+
+import static net.fortuna.ical4j.model.Parameter.FMTTYPE;
+import static net.fortuna.ical4j.model.Parameter.LABEL;
+import static net.fortuna.ical4j.model.Parameter.RESTYPE;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
 
 /**
  * $Id$
@@ -57,15 +71,18 @@ public class StructuredResource extends Property implements Escapable {
     private String value;
     private URI uriValue;
 
+    private final Validator<Property> validator = new PropertyValidator(
+            Arrays.asList(
+                    new ValidationRule(OneOrLess, FMTTYPE,
+                                       RESTYPE,
+                                       LABEL)));
+
     /**
      * Default constructor.
      */
     public StructuredResource() {
         super(STRUCTURED_RESOURCE, new ParameterList(), 
-                new OneOrLessParameterValidator(Parameter.FMTTYPE,
-                        Parameter.RESTYPE,
-                        Parameter.LABEL),
-                PropertyFactoryImpl.getInstance());
+                new Factory());
     }
 
     /**
@@ -73,10 +90,7 @@ public class StructuredResource extends Property implements Escapable {
      */
     public StructuredResource(final String aValue) throws URISyntaxException {
         super(STRUCTURED_RESOURCE, new ParameterList(), 
-                new OneOrLessParameterValidator(Parameter.FMTTYPE,
-                        Parameter.RESTYPE,
-                        Parameter.LABEL),
-                PropertyFactoryImpl.getInstance());
+                new Factory());
         setValue(aValue);
     }
 
@@ -86,10 +100,7 @@ public class StructuredResource extends Property implements Escapable {
      */
     public StructuredResource(final ParameterList aList, final String aValue) throws URISyntaxException {
         super(STRUCTURED_RESOURCE, aList, 
-                new OneOrLessParameterValidator(Parameter.FMTTYPE,
-                        Parameter.RESTYPE,
-                        Parameter.LABEL),
-                PropertyFactoryImpl.getInstance());
+                new Factory());
         setValue(aValue);
     }
 
@@ -113,6 +124,11 @@ public class StructuredResource extends Property implements Escapable {
      */
     public final String getValue() {
         return value;
+    }
+
+    @Override
+    public void validate() throws ValidationException {
+        validator.validate(this);
     }
 
     public static class Factory extends Content.Factory implements PropertyFactory {

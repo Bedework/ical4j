@@ -1,5 +1,7 @@
+#RFC5545
 net.fortuna.ical4j.model.property.AcceptResponse$Factory
 net.fortuna.ical4j.model.property.Action$Factory
+net.fortuna.ical4j.model.property.Acknowledged$Factory
 net.fortuna.ical4j.model.property.Attach$Factory
 net.fortuna.ical4j.model.property.Attendee$Factory
 net.fortuna.ical4j.model.property.BusyType$Factory
@@ -69,3 +71,9 @@ net.fortuna.ical4j.model.property.TzUrl$Factory
 net.fortuna.ical4j.model.property.Uid$Factory
 net.fortuna.ical4j.model.property.Url$Factory
 net.fortuna.ical4j.model.property.Version$Factory
+#RFC7986
+net.fortuna.ical4j.model.property.Color$Factory
+net.fortuna.ical4j.model.property.Conference$Factory
+net.fortuna.ical4j.model.property.Image$Factory
+net.fortuna.ical4j.model.property.RefreshInterval$Factory
+net.fortuna.ical4j.model.property.Source$Factory

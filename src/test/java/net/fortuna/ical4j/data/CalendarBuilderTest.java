@@ -65,7 +65,7 @@ public class CalendarBuilderTest extends TestCase {
     /**
      * Constructor.
      *
-     * @param testMethod name of method to run in test case
+     * @param method name of method to run in test case
      * @param file   an iCalendar filename
      * @throws FileNotFoundException
      */
@@ -120,10 +120,8 @@ public class CalendarBuilderTest extends TestCase {
             Calendar calendar = builder.build(fin);
             calendar.validate();
             fail("Should throw ParserException or ValidationException");
-        } catch (ValidationException ve) {
-            log.trace("Caught exception: [" + filename + "," + ve.getMessage() + "]");
-        } catch (ParserException ve) {
-            log.trace("Caught exception: [" + filename + "," + ve.getMessage() + "]");
+        } catch (ValidationException | ParserException e) {
+            log.trace("Caught exception: [" + filename + "," + e.getMessage() + "]");
         }
     }
     
