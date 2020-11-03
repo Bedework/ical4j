@@ -53,7 +53,7 @@ public class ParticipantType extends Property implements Escapable {
     private static final long serialVersionUID = 7753849118575885600L;
 
     public static final ParticipantType VOTER =
-            new ParticipantType("voter");
+            new ParticipantType("VOTER");
 
     private String value;
 
@@ -99,19 +99,28 @@ public class ParticipantType extends Property implements Escapable {
 
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory {
+    public static class Factory extends Content.Factory implements PropertyFactory<ParticipantType> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
             super(PARTICIPANT_TYPE);
         }
 
-        public Property createProperty(final ParameterList parameters, final String value)
+        public ParticipantType createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
-            return new ParticipantType(parameters, value);
+            final ParticipantType participantType;
+
+            if (ParticipantType.VOTER
+                    .getValue().equals(value)) {
+                participantType = ParticipantType.VOTER;
+            } else {
+                participantType = new ParticipantType(parameters, value);
+            }
+
+            return participantType;
         }
 
-        public Property createProperty() {
+        public ParticipantType createProperty() {
             return new ParticipantType();
         }
     }

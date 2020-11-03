@@ -33,8 +33,30 @@ public class DefaultPropertyFactorySupplier implements Supplier<List<PropertyFac
         List<PropertyFactory<? extends Property>> rfc7986 = Arrays.asList(new Color.Factory(), new Conference.Factory(), new Image.Factory(),
                 new RefreshInterval.Factory(), new Source.Factory());
 
+        List<PropertyFactory<? extends Property>> eventPubDraft =
+                Arrays.asList(new CalendarAddress.Factory(),
+                              new ParticipantType.Factory(),
+                              new StructuredData.Factory(),
+                              new StructuredLocation.Factory(),
+                              new StructuredResource.Factory(),
+                              new StyledDescription.Factory());
+
+        List<PropertyFactory<? extends Property>> vpollDraft =
+                Arrays.asList(new AcceptResponse.Factory(),
+                              new PollCompletion.Factory(),
+                              new PollItemId.Factory(),
+                              new PollMode.Factory(),
+                              new PollProperties.Factory(),
+                              new PollWinner.Factory(),
+                              new ReplyUrl.Factory(),
+                              new Response.Factory());
+
         List<PropertyFactory<? extends Property>> factories = new ArrayList<>(rfc5545);
+
         factories.addAll(rfc7986);
+        factories.addAll(eventPubDraft);
+        factories.addAll(vpollDraft);
+
         return factories;
     }
 }

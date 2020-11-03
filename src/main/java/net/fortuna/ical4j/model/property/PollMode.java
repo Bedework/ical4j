@@ -128,19 +128,29 @@ public class PollMode extends Property {
     }
 
     public static class Factory extends Content.Factory implements
-            PropertyFactory {
+            PropertyFactory<PollMode> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(POLL_ITEM_ID);
+            super(POLL_MODE);
         }
 
-        public Property createProperty(final ParameterList parameters, final String value)
+        public PollMode createProperty(
+                final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
-            return new PollMode(parameters, value);
+            final PollMode pollMode;
+
+            if (PollMode.BASIC
+                    .getValue().equals(value)) {
+                pollMode = PollMode.BASIC;
+            } else {
+                pollMode = new PollMode(parameters, value);
+            }
+
+            return pollMode;
         }
 
-        public Property createProperty() {
+        public PollMode createProperty() {
             return new PollMode();
         }
     }

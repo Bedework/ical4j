@@ -123,19 +123,19 @@ public class Response extends Property {
         }
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory {
+    public static class Factory extends Content.Factory implements PropertyFactory<Response> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
             super(RESPONSE);
         }
 
-        public Property createProperty(final ParameterList parameters, final String value)
+        public Response createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
             return new Response(parameters, value);
         }
 
-        public Property createProperty() {
+        public Response createProperty() {
             return new Response();
         }
     }

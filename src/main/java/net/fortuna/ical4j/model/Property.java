@@ -138,11 +138,6 @@ public abstract class Property extends Content {
     public static final String PRIORITY = "PRIORITY";
 
     /**
-     * Response property name.
-     */
-    public static final String RESPONSE = "RESPONSE";
-
-    /**
      * Date-stamp property name.
      */
     public static final String DTSTAMP = "DTSTAMP";
@@ -161,26 +156,6 @@ public abstract class Property extends Content {
      * Status property name.
      */
     public static final String STATUS = "STATUS";
-
-    /**
-     * Structured data property name.
-     */
-    public static final String STRUCTURED_DATA = "STRUCTURED-DATA";
-
-    /**
-     * Structured location property name.
-     */
-    public static final String STRUCTURED_LOCATION = "STRUCTURED-LOCATION";
-
-    /**
-     * Structured resource property name.
-     */
-    public static final String STRUCTURED_RESOURCE = "STRUCTURED-RESOURCE";
-
-    /**
-     * Styled description property name.
-     */
-    public static final String STYLED_DESCRIPTION = "STYLED-DESCRIPTION";
 
     /**
      * Summary property name.
@@ -258,11 +233,6 @@ public abstract class Property extends Content {
     public static final String TZURL = "TZURL";
 
     /**
-     * VPOLL accept response property name.
-     */
-    public static final String ACCEPT_RESPONSE = "ACCEPT-RESPONSE";
-
-    /**
      * Alarm action property name.
      */
     public static final String ACTION = "ACTION";
@@ -303,11 +273,6 @@ public abstract class Property extends Content {
     public static final String ATTENDEE = "ATTENDEE";
 
     /**
-     * Participant cua property name.
-     */
-    public static final String CALENDAR_ADDRESS = "CALENDAR-ADDRESS";
-
-    /**
      * Categories property name.
      */
     public static final String CATEGORIES = "CATEGORIES";
@@ -331,31 +296,6 @@ public abstract class Property extends Content {
      * Exclusion rule property name.
      */
     public static final String EXRULE = "EXRULE";
-
-    /**
-     * Participant type.
-     */
-    public static final String PARTICIPANT_TYPE = "PARTICIPANT-TYPE";
-
-    /**
-     * Poll item id property name.
-     */
-    public static final String POLL_ITEM_ID = "POLL-ITEM-ID";
-
-    /**
-     * Poll mode property name.
-     */
-    public static final String POLL_MODE = "POLL-MODE";
-
-    /**
-     * Poll properties list property name.
-     */
-    public static final String POLL_PROPERTIES = "POLL-PROPERTIES";
-
-    /**
-     * Poll winner property name.
-     */
-    public static final String POLL_WINNER = "POLL-WINNER";
 
     /**
      * Relationship property name.
@@ -431,6 +371,80 @@ public abstract class Property extends Content {
      *  Acknowledged Property taken from http://tools.ietf.org/html/draft-daboo-valarm-extensions-04
      */
     public static final String ACKNOWLEDGED = "ACKNOWLEDGED";
+
+    /* Event publication properties */
+
+    /**
+     * Participant cua property name.
+     */
+    public static final String CALENDAR_ADDRESS = "CALENDAR-ADDRESS";
+
+    /**
+     * Participant type.
+     */
+    public static final String PARTICIPANT_TYPE = "PARTICIPANT-TYPE";
+
+    /**
+     * Structured data property name.
+     */
+    public static final String STRUCTURED_DATA = "STRUCTURED-DATA";
+
+    /**
+     * Structured location property name.
+     */
+    public static final String STRUCTURED_LOCATION = "STRUCTURED-LOCATION";
+
+    /**
+     * Structured resource property name.
+     */
+    public static final String STRUCTURED_RESOURCE = "STRUCTURED-RESOURCE";
+
+    /**
+     * Styled description property name.
+     */
+    public static final String STYLED_DESCRIPTION = "STYLED-DESCRIPTION";
+
+    /* VPOLL properties */
+
+    /**
+     * VPOLL accept response property name.
+     */
+    public static final String ACCEPT_RESPONSE = "ACCEPT-RESPONSE";
+
+    /**
+     * Poll completion property name.
+     */
+    public static final String POLL_COMPLETION = "POLL-COMPLETION";
+
+    /**
+     * Poll item id property name.
+     */
+    public static final String POLL_ITEM_ID = "POLL-ITEM-ID";
+
+    /**
+     * Poll mode property name.
+     */
+    public static final String POLL_MODE = "POLL-MODE";
+
+    /**
+     * Poll properties list property name.
+     */
+    public static final String POLL_PROPERTIES = "POLL-PROPERTIES";
+
+    /**
+     * Poll winner property name.
+     */
+    public static final String POLL_WINNER = "POLL-WINNER";
+
+    /**
+     * VPOLL reply url property name.
+     */
+    public static final String REPLY_URL = "REPLY-URL";
+
+    /**
+     * VPOLL response property name.
+     */
+    public static final String RESPONSE = "RESPONSE";
 
     private final String name;
 

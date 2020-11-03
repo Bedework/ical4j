@@ -169,19 +169,19 @@ public class CalendarAddress extends Property {
         return new CalendarAddress(new ParameterList(getParameters(), false), calAddress);
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory {
+    public static class Factory extends Content.Factory implements PropertyFactory<CalendarAddress> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(ATTENDEE);
+            super(CALENDAR_ADDRESS);
         }
 
-        public Property createProperty(final ParameterList parameters, final String value)
+        public CalendarAddress createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
             return new CalendarAddress(parameters, value);
         }
 
-        public Property createProperty() {
+        public CalendarAddress createProperty() {
             return new CalendarAddress();
         }
     }

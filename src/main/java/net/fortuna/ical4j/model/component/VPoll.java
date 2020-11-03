@@ -36,7 +36,6 @@ import net.fortuna.ical4j.model.ComponentFactory;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Date;
-import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.property.Clazz;
@@ -74,6 +73,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.time.temporal.TemporalAmount;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -127,15 +127,23 @@ public class VPoll extends CalendarComponent {
 
     private static final long serialVersionUID = -269658210065896668L;
 
-    private final Map<Method, Validator> methodValidators = new HashMap<>();
+    private final Map<Method,
+            Validator<? extends CalendarComponent>> methodValidators =
+            new HashMap<>();
     {
-        methodValidators.put(Method.ADD, new VPollValidator(new ValidationRule(One, DTSTAMP, DTSTART, ORGANIZER, SEQUENCE, SUMMARY, UID),
-                                                             new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND, DURATION, GEO,
-                                                                                LAST_MODIFIED, LOCATION, PRIORITY, RESOURCES, STATUS, TRANSP, URL),
-                                                             new ValidationRule(None, RECURRENCE_ID, REQUEST_STATUS)));
+        methodValidators.put(Method.ADD, new VPollValidator(
+                new ValidationRule(One, DTSTAMP, ORGANIZER,
+                                   SEQUENCE, SUMMARY, UID),
+                new ValidationRule(OneOrLess, CATEGORIES, CLASS,
+                                   CREATED, DESCRIPTION, DTEND,
+                                   DTSTART, DURATION, GEO, LAST_MODIFIED,
+                                   LOCATION, PRIORITY, RESOURCES,
+                                   STATUS, TRANSP, URL),
+                new ValidationRule(None, RECURRENCE_ID, REQUEST_STATUS)));
+
         methodValidators.put(Method.CANCEL, new VPollValidator(
                 new ValidationRule(
-                        One, DTSTAMP, DTSTART, ORGANIZER,
+                        One, DTSTAMP, ORGANIZER,
                         SEQUENCE, UID),
                 new ValidationRule(
                         OneOrLess, CATEGORIES, CLASS, CREATED,
@@ -146,47 +154,69 @@ public class VPoll extends CalendarComponent {
                 new ValidationRule(None, REQUEST_STATUS)));
 
         methodValidators.put(Method.COUNTER, new VPollValidator(
-                new ValidationRule(One, DTSTAMP, DTSTART, SEQUENCE,
+                new ValidationRule(One, DTSTAMP, SEQUENCE,
                                    SUMMARY, UID),
                 new ValidationRule(One, true, ORGANIZER),
-                new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND, DURATION, GEO,
-                                   LAST_MODIFIED, LOCATION, PRIORITY, RECURRENCE_ID, RESOURCES, STATUS, TRANSP, URL)));
+                new ValidationRule(OneOrLess, CATEGORIES, CLASS,
+                                   CREATED, DESCRIPTION, DTEND,
+                                   DTSTART, DURATION, GEO, LAST_MODIFIED,
+                                   LOCATION, PRIORITY, RECURRENCE_ID,
+                                   RESOURCES, STATUS, TRANSP, URL)));
 
         methodValidators.put(Method.DECLINE_COUNTER, new VPollValidator(
-                new ValidationRule(
-                        One, DTSTAMP, ORGANIZER, UID),
+                new ValidationRule(One, DTSTAMP, ORGANIZER, UID),
                 new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE),
-                new ValidationRule(None, ATTACH, ATTENDEE, CATEGORIES, CLASS, CONTACT, CREATED, DESCRIPTION, DTEND,
-                                   DTSTART, DURATION, EXDATE, EXRULE, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RDATE, RELATED_TO,
-                                   RESOURCES, RRULE, STATUS, SUMMARY, TRANSP, URL)));
+                new ValidationRule(None, ATTACH, ATTENDEE, CATEGORIES,
+                                   CLASS, CONTACT, CREATED,
+                                   DESCRIPTION, DTEND, DTSTART,
+                                   DURATION, EXDATE, EXRULE, GEO,
+                                   LAST_MODIFIED, LOCATION, PRIORITY,
+                                   RDATE, RELATED_TO, RESOURCES,
+                                   RRULE, STATUS, SUMMARY, TRANSP,
+                                   URL)));
 
         methodValidators.put(Method.PUBLISH, new VPollValidator(
-                new ValidationRule(One, DTSTART, UID),
-                new ValidationRule(One, true, DTSTAMP, ORGANIZER, SUMMARY),
-                new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND,
-                                   DURATION, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RESOURCES, STATUS, TRANSP, URL),
+                new ValidationRule(One, DTSTAMP, UID),
+                new ValidationRule(One, true, ORGANIZER, SUMMARY),
+                new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE,
+                                   CATEGORIES, CLASS, CREATED,
+                                   DESCRIPTION, DTEND, DTSTART,
+                                   DURATION, GEO,
+                                   LAST_MODIFIED, LOCATION, PRIORITY,
+                                   RESOURCES, STATUS, TRANSP, URL),
                 new ValidationRule(None, true, ATTENDEE),
                 new ValidationRule(None, REQUEST_STATUS)));
 
         methodValidators.put(Method.REFRESH, new VPollValidator(
-                new ValidationRule(
-                        One, ATTENDEE, DTSTAMP, ORGANIZER, UID),
+                new ValidationRule(One, ATTENDEE, DTSTAMP, ORGANIZER,
+                                   UID),
                 new ValidationRule(OneOrLess, RECURRENCE_ID),
-                new ValidationRule(None, ATTACH, CATEGORIES, CLASS, CONTACT, CREATED, DESCRIPTION, DTEND, DTSTART,
-                                   DURATION, EXDATE, EXRULE, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RDATE, RELATED_TO,
-                                   REQUEST_STATUS, RESOURCES, RRULE, SEQUENCE, STATUS, SUMMARY, TRANSP, URL)));
+                new ValidationRule(None, ATTACH, CATEGORIES, CLASS,
+                                   CONTACT, CREATED, DESCRIPTION,
+                                   DTEND, DTSTART, DURATION, EXDATE,
+                                   EXRULE, GEO, LAST_MODIFIED,
+                                   LOCATION, PRIORITY, RDATE,
+                                   RELATED_TO, REQUEST_STATUS,
+                                   RESOURCES, RRULE, SEQUENCE, STATUS,
+                                   SUMMARY, TRANSP, URL)));
+
         methodValidators.put(Method.REPLY, new VPollValidator(
-                new ValidationRule(One, ATTENDEE, DTSTAMP, ORGANIZER, UID),
-                new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND,
-                                   DTSTART, DURATION, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RESOURCES, STATUS, SUMMARY, TRANSP,
-                                   URL)));
+                new ValidationRule(One, ATTENDEE, DTSTAMP, ORGANIZER,
+                                   UID),
+                new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE,
+                                   CATEGORIES, CLASS, CREATED,
+                                   DESCRIPTION, DTEND, DTSTART,
+                                   DURATION, GEO, LAST_MODIFIED,
+                                   LOCATION, PRIORITY, RESOURCES,
+                                   STATUS, SUMMARY, TRANSP, URL)));
+
         methodValidators.put(Method.REQUEST, new VPollValidator(
                 new ValidationRule(OneOrMore, true, ATTENDEE),
-                new ValidationRule(One, DTSTAMP, DTSTART, ORGANIZER,
+                new ValidationRule(One, DTSTAMP, ORGANIZER,
                                    SUMMARY, UID),
                 new ValidationRule(OneOrLess, SEQUENCE, CATEGORIES,
                                    CLASS, CREATED, DESCRIPTION, DTEND,
-                                   DURATION, GEO,
+                                   DTSTART, DURATION, GEO,
                                    LAST_MODIFIED, LOCATION, PRIORITY,
                                    RECURRENCE_ID, RESOURCES, STATUS,
                                    TRANSP, URL)));
@@ -194,7 +224,7 @@ public class VPoll extends CalendarComponent {
 
     private ComponentList<Participant> voters = new ComponentList<>();
 
-    private ComponentList candidates = new ComponentList();
+    private ComponentList<Component> candidates = new ComponentList<>();
 
     private ComponentList<VAlarm> alarms = new ComponentList<>();
 
@@ -210,8 +240,20 @@ public class VPoll extends CalendarComponent {
      * Constructor.
      * @param properties a list of properties
      */
-    public VPoll(final PropertyList properties) {
+    public VPoll(final PropertyList<Property> properties) {
         super(VPOLL, properties);
+    }
+
+    /**
+     * Constructor.
+     * @param properties a list of properties
+     */
+    public VPoll(final PropertyList<Property> properties,
+                 final ComponentList<Component> subComponents) {
+        super(VPOLL, properties);
+
+        subComponents.forEach(this::add);
+
     }
 
     /**
@@ -246,11 +288,23 @@ public class VPoll extends CalendarComponent {
      * @param duration the duration of the new poll
      * @param summary the poll summary
      */
-    public VPoll(final Date start, final Dur duration, final String summary) {
+    public VPoll(final Date start,
+                 final TemporalAmount duration,
+                 final String summary) {
         this();
         getProperties().add(new DtStart(start));
         getProperties().add(new Duration(duration));
         getProperties().add(new Summary(summary));
+    }
+
+    public final void add(final Component val) {
+        if (val instanceof Participant) {
+            voters.add((Participant)val);
+        } else if (val instanceof VAlarm) {
+            alarms.add((VAlarm)val);
+        } else {
+            candidates.add(val);
+        }
     }
 
     /**
@@ -265,7 +319,7 @@ public class VPoll extends CalendarComponent {
      * Returns the list of candidates for this poll.
      * @return a component list
      */
-    public final ComponentList getCandidates() {
+    public final ComponentList<Component> getCandidates() {
         return candidates;
     }
 
@@ -385,7 +439,7 @@ public class VPoll extends CalendarComponent {
         PropertyValidator.assertOneOrLess(Property.URL,
                 getProperties());
 
-        final Status status = (Status) getProperty(Property.STATUS);
+        final Status status = getProperty(Property.STATUS);
         if (status != null && !Status.VTODO_NEEDS_ACTION.getValue().equals(status.getValue())
                 && !Status.VTODO_COMPLETED.getValue().equals(status.getValue())
                 && !Status.VTODO_IN_PROCESS.getValue().equals(status.getValue())
@@ -401,8 +455,7 @@ public class VPoll extends CalendarComponent {
         try {
             PropertyValidator.assertNone(Property.DUE,
                     getProperties());
-        }
-        catch (ValidationException ve) {
+        } catch (final ValidationException ve) {
             PropertyValidator.assertNone(Property.DURATION,
                     getProperties());
         }
@@ -420,8 +473,8 @@ public class VPoll extends CalendarComponent {
     /**
      * {@inheritDoc}
      */
-    protected Validator getValidator(Method method) {
-        return (Validator) methodValidators.get(method);
+    protected Validator<CalendarComponent> getValidator(final Method method) {
+        return (Validator<CalendarComponent>) methodValidators.get(method);
     }
 
     /**
@@ -619,8 +672,7 @@ public class VPoll extends CalendarComponent {
 
         @Override
         public VPoll createComponent(PropertyList properties, ComponentList subComponents) {
-//            return new VPoll(properties, subComponents);
-            throw new UnsupportedOperationException(String.format("%s does not support sub-components", VPOLL));
+            return new VPoll(properties, subComponents);
         }
     }
 }

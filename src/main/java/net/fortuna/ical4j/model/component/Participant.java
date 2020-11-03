@@ -122,7 +122,8 @@ public class Participant extends Component {
 
     private static final long serialVersionUID = -8193965477414653802L;
     
-    private ComponentList components = new ComponentList();
+    private final ComponentList<Component> components =
+            new ComponentList<>();
 
     /**
      * Default constructor.
@@ -143,7 +144,7 @@ public class Participant extends Component {
         return getProperty(PARTICIPANT_TYPE);
     }
 
-    public ComponentList getComponents() {
+    public ComponentList<Component> getComponents() {
         return components;
     }
 

@@ -129,19 +129,19 @@ public class StructuredLocation extends Property implements Escapable {
         validator.validate(this);
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory {
+    public static class Factory extends Content.Factory implements PropertyFactory<StructuredLocation> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
             super(STRUCTURED_LOCATION);
         }
 
-        public Property createProperty(final ParameterList parameters, final String value)
+        public StructuredLocation createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
             return new StructuredLocation(parameters, value);
         }
 
-        public Property createProperty() {
+        public StructuredLocation createProperty() {
             return new StructuredLocation();
         }
     }

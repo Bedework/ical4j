@@ -149,19 +149,19 @@ public class StructuredData extends Property implements Escapable {
         validator.validate(this);
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory {
+    public static class Factory extends Content.Factory implements PropertyFactory<StructuredData> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
             super(STRUCTURED_DATA);
         }
 
-        public Property createProperty(final ParameterList parameters, final String value)
+        public StructuredData createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
             return new StructuredData(parameters, value);
         }
 
-        public Property createProperty() {
+        public StructuredData createProperty() {
             return new StructuredData();
         }
     }

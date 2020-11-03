@@ -121,19 +121,19 @@ public class PollWinner extends Property {
     }
 
     public static class Factory extends Content.Factory implements
-            PropertyFactory {
+            PropertyFactory<PollWinner> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(POLL_ITEM_ID);
+            super(POLL_WINNER);
         }
 
-        public Property createProperty(final ParameterList parameters, final String value)
+        public PollWinner createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
             return new PollWinner(parameters, value);
         }
 
-        public Property createProperty() {
+        public PollWinner createProperty() {
             return new PollWinner();
         }
     }

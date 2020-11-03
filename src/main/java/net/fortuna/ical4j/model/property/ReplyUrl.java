@@ -32,119 +32,145 @@
 package net.fortuna.ical4j.model.property;
 
 import net.fortuna.ical4j.model.Content;
-import net.fortuna.ical4j.model.Escapable;
-import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyFactory;
-import net.fortuna.ical4j.model.parameter.Value;
+import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.util.Uris;
-import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
-import net.fortuna.ical4j.validate.ValidationRule;
-import net.fortuna.ical4j.validate.Validator;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.util.Arrays;
-
-import static net.fortuna.ical4j.model.Parameter.FMTTYPE;
-import static net.fortuna.ical4j.model.Parameter.LABEL;
-import static net.fortuna.ical4j.model.Parameter.RESTYPE;
-import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
 
 /**
  * $Id$
  * <p/>
  * Created: [Apr 6, 2004]
  * <p/>
- * Defines a STRUCTURED-RESOURCE iCalendar component property.
+ * Defines a URL iCalendar component property.
+ * <p/>
+ * <pre>
+ *     4.8.4.6 Uniform Resource Locator
  *
- * @author Mike Douglass
+ *        Property Name: Reply-URL
+ *
+ *        Purpose: This property may be used in scheduling messages
+ *        to indicate additional reply methods, for example a web-service.
+ *
+ *        Value Type: URI
+ *
+ *        Property Parameters: Non-standard property parameters can be
+ *        specified on this property.
+ *
+ *        Conformance: This property can be specified once in the
+ *        &quot;VPOLL&quot; calendar components.
+ *
+ *        Description: When used in a scheduling message this property
+ *        indicates additional or required services that can be used
+ *        to reply. Typically this would be a web service of some form.
+ *
+ *        Format Definition: The property is defined by the following notation:
+ *
+ *          reply-url  = "REPLY-URL" reply-urlparams ":" uri CRLF
+ *
+ *          reply-urlparams = *(
+ *                            (";" requiredparam) /
+ *                            (";" other-param)
+ *                            )
+ * </pre>
+ *
+ * @author Ben Fortuna
  */
-public class StructuredResource extends Property implements Escapable {
+public class ReplyUrl extends Property {
 
-    private static final long serialVersionUID = 7287564228220558361L;
+    private static final long serialVersionUID = 1092576402256525737L;
 
-    private String value;
-    private URI uriValue;
-
-    private final Validator<Property> validator = new PropertyValidator(
-            Arrays.asList(
-                    new ValidationRule(OneOrLess, FMTTYPE,
-                                       RESTYPE,
-                                       LABEL)));
+    private URI uri;
 
     /**
      * Default constructor.
      */
-    public StructuredResource() {
-        super(STRUCTURED_RESOURCE, new ParameterList(), 
-                new Factory());
-    }
-
-    /**
-     * @param aValue a value string for this component
-     */
-    public StructuredResource(final String aValue) throws URISyntaxException {
-        super(STRUCTURED_RESOURCE, new ParameterList(), 
-                new Factory());
-        setValue(aValue);
+    public ReplyUrl() {
+        super(REPLY_URL, new Factory());
     }
 
     /**
      * @param aList  a list of parameters for this component
      * @param aValue a value string for this component
+     * @throws URISyntaxException where the specified value string is not a valid uri
      */
-    public StructuredResource(final ParameterList aList, final String aValue) throws URISyntaxException {
-        super(STRUCTURED_RESOURCE, aList, 
-                new Factory());
+    public ReplyUrl(final ParameterList aList, final String aValue)
+            throws URISyntaxException {
+        super(REPLY_URL, aList, new Factory());
         setValue(aValue);
+    }
+
+    /**
+     * @param aUri a URI
+     */
+    public ReplyUrl(final URI aUri) {
+        super(REPLY_URL, new Factory());
+        uri = aUri;
+    }
+
+    /**
+     * @param aList a list of parameters for this component
+     * @param aUri  a URI
+     */
+    public ReplyUrl(final ParameterList aList, final URI aUri) {
+        super(REPLY_URL, aList, new Factory());
+        uri = aUri;
+    }
+
+    /**
+     * @return Returns the uri.
+     */
+    public final URI getUri() {
+        return uri;
     }
 
     /**
      * {@inheritDoc}
      */
     public final void setValue(final String aValue) throws URISyntaxException {
-        // value can be either text or a URI - no default
-        if (Value.TEXT.equals(getParameter(Parameter.VALUE))) {
-            this.value = aValue;
-        } else if (Value.URI.equals(getParameter(Parameter.VALUE))) {
-            uriValue = Uris.create(aValue);
-            this.value = aValue;
-        } else {
-            throw new IllegalArgumentException("No valid VALUE parameter specified");
-        }
+        uri = Uris.create(aValue);
     }
 
     /**
      * {@inheritDoc}
      */
     public final String getValue() {
-        return value;
+        return Uris.decode(Strings.valueOf(getUri()));
+    }
+
+    /**
+     * @param uri The uri to set.
+     */
+    public final void setUri(final URI uri) {
+        this.uri = uri;
     }
 
     @Override
     public void validate() throws ValidationException {
-        validator.validate(this);
+
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory<StructuredResource> {
+    public static class Factory extends Content.Factory implements PropertyFactory<ReplyUrl> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(STRUCTURED_RESOURCE);
+            super(REPLY_URL);
         }
 
-        public StructuredResource createProperty(final ParameterList parameters, final String value)
+        public ReplyUrl createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
-            return new StructuredResource(parameters, value);
+            return new ReplyUrl(parameters, value);
         }
 
-        public StructuredResource createProperty() {
-            return new StructuredResource();
+        public ReplyUrl createProperty() {
+            return new ReplyUrl();
         }
     }
 

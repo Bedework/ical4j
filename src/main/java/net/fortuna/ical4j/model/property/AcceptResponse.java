@@ -125,19 +125,19 @@ public class AcceptResponse extends Property {
     }
 
     public static class Factory extends Content.Factory implements
-            PropertyFactory {
+            PropertyFactory<AcceptResponse> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
             super(ACCEPT_RESPONSE);
         }
 
-        public Property createProperty(final ParameterList parameters, final String value)
+        public AcceptResponse createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
             return new AcceptResponse(parameters, value);
         }
 
-        public Property createProperty() {
+        public AcceptResponse createProperty() {
             return new AcceptResponse();
         }
     }
