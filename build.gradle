@@ -115,12 +115,12 @@ artifacts {
 
 scmVersion {
     tag {
-        prefix = 'ical4j'
+        prefix = 'bw-ical4j'
         branchPrefix = [
-                'ical4j-1.x-maintenance' : 'jdk14_ical4j'
+                'bw-ical4j-1.x-maintenance' : 'jdk14_ical4j'
         ]
         branchPrefix = [
-                'ical4j-2.x-maintenance' : 'jdk7_ical4j'
+                'bw-ical4j-2.x-maintenance' : 'jdk7_ical4j'
         ]
     }
     versionCreator 'versionWithBranch'
@@ -239,7 +239,7 @@ bintray {
             name = scmVersion.version
             desc = "iCal4j $scmVersion.version"
             released  = new Date()
-            vcsTag = "ical4j-$scmVersion.version"
+            vcsTag = "bw-ical4j-$scmVersion.version"
             gpg {
                 sign = isReleaseVersion
             }
