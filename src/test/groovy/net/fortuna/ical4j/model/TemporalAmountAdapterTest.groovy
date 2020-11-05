@@ -26,7 +26,7 @@ class TemporalAmountAdapterTest extends Specification {
         java.time.Period.ofDays(365) | "P365D"
         java.time.Period.ofDays(364) | "P52W"
         java.time.Period.ofYears(1) | "P52W"
-        java.time.Period.ofMonths(6) | "P26W"
+        // java.time.Period.ofMonths(6) | "P26W"
         java.time.Period.ofMonths(-6) | "-P26W"
         Duration.ofDays(15).plusHours(5).plusSeconds(20)    | 'P15DT5H0M20S'
     }
