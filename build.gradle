@@ -28,7 +28,7 @@ apply plugin: 'pl.allegro.tech.build.axion-release'
 apply plugin: 'nebula.optional-base'
 apply from: 'gradle/dist.gradle'
 
-group = 'org.mnode.ical4j'
+group = 'org.bedework.ical4j'
 description = '''
 A Java library for reading and writing iCalendar (*.ics) files
 '''
