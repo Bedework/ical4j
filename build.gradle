@@ -167,9 +167,9 @@ uploadArchives {
                 url 'http://ical4j.github.io'
                 // source code management
                 scm {
-                    url 'https://github.com/ical4j/ical4j'
-                    connection 'scm:git@github.com:ical4j/ical4j.git'
-                    developerConnection 'scm:git@github.com:ical4j/ical4j.git'
+                    url 'https://github.com/Bedework/ical4j'
+                    connection 'scm:git@github.com:Bedework/ical4j.git'
+                    developerConnection 'scm:git@github.com:Bedework/ical4j.git'
                 }
                 // open source license
                 licenses {
@@ -203,9 +203,9 @@ publishing {
                 asNode().appendNode('url', 'http://ical4j.github.io')
 
                 def scmNode = asNode().appendNode('scm')
-                scmNode.appendNode('url', 'https://github.com/ical4j/ical4j')
-                scmNode.appendNode('connection', 'scm:git@github.com:ical4j/ical4j.git')
-                scmNode.appendNode('developerConnection', 'scm:git@github.com:ical4j/ical4j.git')
+                scmNode.appendNode('url', 'https://github.com/Bedework/ical4j')
+                scmNode.appendNode('connection', 'scm:git@github.com:Bedework/ical4j.git')
+                scmNode.appendNode('developerConnection', 'scm:git@github.com:Bedework/ical4j.git')
 
                 def licenseNode = asNode().appendNode('licenses').appendNode('license')
                 licenseNode.appendNode('name', 'iCal4j - License')
@@ -234,7 +234,7 @@ bintray {
         name = 'ical4j'
         userOrg = 'ical4j'
         licenses = ['BSD']
-        vcsUrl = 'https://github.com/ical4j/ical4j.git'
+        vcsUrl = 'https://github.com/Bedework/ical4j.git'
         version {
             name = scmVersion.version
             desc = "iCal4j $scmVersion.version"
