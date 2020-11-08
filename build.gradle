@@ -99,8 +99,8 @@ release {
 //    allowLocalModifications = false
 //    releaseDryRun = false
 //    scm = 'git'
-    username = releaseUser
-    password = pass
+    scmVersion.repository.customUsername = releaseUser
+    scmVersion.repository.customUsername = pass
 }
 
 
