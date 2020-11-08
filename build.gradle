@@ -11,6 +11,7 @@ buildscript {
 
 plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.12.1'
+    //id 'com.intershop.gradle.scmversion' version '6.2.0'
     id "nebula.provided-base" version "3.0.3"
     id "com.jfrog.bintray" version "1.8.4"
     id "net.ltgt.errorprone" version "0.8.1"
@@ -25,6 +26,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'jacoco'
 apply plugin: 'signing'
 apply plugin: 'pl.allegro.tech.build.axion-release'
+//apply plugin: 'com.intershop.gradle.scmversion'
 apply plugin: 'nebula.optional-base'
 apply from: 'gradle/dist.gradle'
 
@@ -74,6 +76,33 @@ tasks.withType(JavaCompile).configureEach {
         options.errorprone.disable("Finally")
     }
 }
+
+// See https://pilloxa.gitlab.io/posts/safer-passwords-in-gradle/
+def getPassword(String currentUser, String keyChain) {
+    def stdout = new ByteArrayOutputStream()
+    def stderr = new ByteArrayOutputStream()
+    exec {
+        commandLine 'security', '-q', 'find-generic-password', '-a', currentUser, '-s', keyChain, '-w'
+        standardOutput = stdout
+        errorOutput = stderr
+        ignoreExitValue true
+    }
+    //noinspection GroovyAssignabilityCheck
+    stdout.toString().trim()
+}
+
+def pass = getPassword(releaseUser, releaseKeychain)
+
+
+release {
+//    failOnSnapshotDependencies = true
+//    allowLocalModifications = false
+//    releaseDryRun = false
+//    scm = 'git'
+//    username = 'fred'
+//    password = 'secret01'
+}
+
 
 jacocoTestReport {
     reports {
