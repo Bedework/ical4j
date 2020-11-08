@@ -94,13 +94,13 @@ def getPassword(String currentUser, String keyChain) {
 def pass = getPassword(releaseUser, releaseKeychain)
 
 
-task release {
+release {
 //    failOnSnapshotDependencies = true
 //    allowLocalModifications = false
 //    releaseDryRun = false
 //    scm = 'git'
-    scmVersion.repository.customUsername = releaseUser
-    scmVersion.repository.customUsername = pass
+    customUsername = releaseUser
+    customPassword = pass
 }
 
 
