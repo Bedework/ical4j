@@ -2,7 +2,7 @@
 
 Bedework version forked from the ical4j project. The intent is to feed back changes to that project.
 
-This version has VPOLL support.
+This version has VPOLL support which requires changes to the calendar builder to allow for subcomponents at depths greater than 3.
  
 # iCal4j - Release Notes
 
