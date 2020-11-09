@@ -92,7 +92,7 @@ def getPassword(String currentUser, String keyChain) {
 }
 
 def pass = getPassword(releaseUser, releaseKeychain)
-
+def bintrayPass = getPassword(bintrayUser, bintrayKeychain)
 
 release {
 //    failOnSnapshotDependencies = true
@@ -174,8 +174,10 @@ ext {
     sonatype_password = project.hasProperty('sonatype_password') ? project.getProperty('sonatype_password') : ''
 
     // bintray credentials
-    bintray_user = project.hasProperty('bintray_user') ? project.getProperty('bintray_user') : ''
-    bintray_key = project.hasProperty('bintray_key') ? project.getProperty('bintray_key') : ''
+    // bintray_user = project.hasProperty('bintray_user') ? project.getProperty('bintray_user') : ''
+    // bintray_key = project.hasProperty('bintray_key') ? project.getProperty('bintray_key') : ''
+    bintray_user = bintrayUser
+    bintray_key = bintrayPass
 }
 
 uploadArchives {
@@ -262,12 +264,12 @@ bintray {
     pkg {
         repo = 'maven'
         name = 'ical4j'
-        userOrg = 'ical4j'
+        userOrg = 'bedework'
         licenses = ['BSD']
         vcsUrl = 'https://github.com/Bedework/ical4j.git'
         version {
             name = scmVersion.version
-            desc = "iCal4j $scmVersion.version"
+            desc = "bedework iCal4j $scmVersion.version"
             released  = new Date()
             vcsTag = "bw-ical4j-$scmVersion.version"
             gpg {
