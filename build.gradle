@@ -94,6 +94,9 @@ def getPassword(String currentUser, String keyChain) {
 def pass = getPassword(releaseUser, releaseKeychain)
 def bintrayPass = getPassword(bintrayUser, bintrayKeychain)
 
+def sonatype_password = getPassword(sonatypeUser, sonatypeKeychain)
+def sonatype_username = sonatypeUser
+
 release {
 //    failOnSnapshotDependencies = true
 //    allowLocalModifications = false
