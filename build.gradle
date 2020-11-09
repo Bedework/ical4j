@@ -94,8 +94,7 @@ def getPassword(String currentUser, String keyChain) {
 def pass = getPassword(releaseUser, releaseKeychain)
 def bintrayPass = getPassword(bintrayUser, bintrayKeychain)
 
-def sonatype_password = getPassword(sonatypeUser, sonatypeKeychain)
-def sonatype_username = sonatypeUser
+def sonatypePassword = getPassword(sonatypeUser, sonatypeKeychain)
 
 release {
 //    failOnSnapshotDependencies = true
@@ -173,8 +172,10 @@ ext {
     isReleaseVersion = !version.endsWith("SNAPSHOT")
 
     // sonatype credentials
-    sonatype_username = project.hasProperty('sonatype_username') ? project.getProperty('sonatype_username') : ''
-    sonatype_password = project.hasProperty('sonatype_password') ? project.getProperty('sonatype_password') : ''
+    //sonatype_username = project.hasProperty('sonatype_username') ? project.getProperty('sonatype_username') : ''
+    //sonatype_password = project.hasProperty('sonatype_password') ? project.getProperty('sonatype_password') : ''
+    sonatype_password = sonatypePassword
+    sonatype_username = sonatypeUser
 
     // bintray credentials
     // bintray_user = project.hasProperty('bintray_user') ? project.getProperty('bintray_user') : ''
@@ -280,9 +281,11 @@ bintray {
             }
             mavenCentralSync {
                 sync = isReleaseVersion
-                user = sonatype_username //OSS user token: mandatory
-                password = sonatype_password //OSS user password: mandatory
+                //user = sonatype_username //OSS user token: mandatory
+                //password = sonatype_password //OSS user password: mandatory
 //                close = '0' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+                password = sonatypePassword
+                user = sonatypeUser
             }
         }
     }
