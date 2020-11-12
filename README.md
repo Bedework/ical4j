@@ -4,6 +4,37 @@ Bedework version forked from the ical4j project. The intent is to feed back chan
 
 This version has VPOLL support which requires changes to the calendar builder to allow for subcomponents at depths greater than 3.
  
+# Building the bedework version
+
+The build.gradle has been both augmented and simplified. I build on a mac and I don't want passwords in plain-text files. I've added some code to read passwords from the osx keychain. I removed all the bintray code - I was having trouble getting the sonatype upload to work correctly. At some point I may try to reinstate it.
+
+Building and releasing is much the same - I tend to allow gradle to choose the version except when doing a release - it will just increment the version for you..
+
+**Run unit tests**
+
+    ./gradlew clean test
+
+**Build a new release**
+
+    ./gradlew build
+    ./gradlew release -Prelease.forceVersion=3.2.1
+    
+or simply
+
+    ./gradlew build
+    ./gradlew release
+
+
+**Upload release binaries and packages**
+
+    ./gradlew uploadArchives
+
+Somewhere in there you may need to explicitly do:
+
+    ./gradlew publishToMavenLocal
+
+
+ 
 # iCal4j - Release Notes
 
  - For a concise description of the goals and directions of iCal4j please

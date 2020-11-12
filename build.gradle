@@ -13,7 +13,6 @@ plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.12.1'
     //id 'com.intershop.gradle.scmversion' version '6.2.0'
     id "nebula.provided-base" version "3.0.3"
-    id "com.jfrog.bintray" version "1.8.4"
     id "net.ltgt.errorprone" version "0.8.1"
     id "biz.aQute.bnd.builder" version "5.0.0"
 }
@@ -92,7 +91,6 @@ def getPassword(String currentUser, String keyChain) {
 }
 
 def pass = getPassword(releaseUser, releaseKeychain)
-def bintrayPass = getPassword(bintrayUser, bintrayKeychain)
 
 def sonatypePassword = getPassword(sonatypeUser, sonatypeKeychain)
 
@@ -137,10 +135,8 @@ task sourcesJar(type: Jar) {
 }
 
 jar.enabled = false
-build.dependsOn bundle
 
 artifacts {
-    archives bundle
     archives javadocJar
     archives sourcesJar
 }
@@ -166,24 +162,57 @@ scmVersion {
             'ical4j-2.x-maintenance': 'simple'
     ]
 }
+
 version = scmVersion.version
 
 ext {
     isReleaseVersion = !version.endsWith("SNAPSHOT")
 
-    // sonatype credentials
-    //sonatype_username = project.hasProperty('sonatype_username') ? project.getProperty('sonatype_username') : ''
-    //sonatype_password = project.hasProperty('sonatype_password') ? project.getProperty('sonatype_password') : ''
     sonatype_password = sonatypePassword
     sonatype_username = sonatypeUser
-
-    // bintray credentials
-    // bintray_user = project.hasProperty('bintray_user') ? project.getProperty('bintray_user') : ''
-    // bintray_key = project.hasProperty('bintray_key') ? project.getProperty('bintray_key') : ''
-    bintray_user = bintrayUser
-    bintray_key = bintrayPass
 }
 
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.name
+            from components.java
+
+            // maven project model
+            pom {
+                name = project.name
+                packaging = 'jar'
+                description = project.description
+                url = 'http://ical4j.github.io'
+                // source code management
+                scm {
+                    url = 'https://github.com/Bedework/ical4j'
+                    connection = 'scm:git@github.com:Bedework/ical4j.git'
+                    developerConnection = 'scm:git@github.com:Bedework/ical4j.git'
+                }
+                // open source license
+                licenses {
+                    license {
+                        name = 'iCal4j - License'
+                        url = 'https://raw.githubusercontent.com/ical4j/ical4j/master/LICENSE'
+                        distribution = 'repo'
+                    }
+                }
+                // contributors
+                developers {
+                    developer {
+                        id = 'fortuna'
+                        name = 'Ben Fortuna'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -227,68 +256,7 @@ uploadArchives {
     }
 }
 
-publishing {
-    publications {
-        mavenArtifacts(MavenPublication) {
-            from components.java
-            artifact javadocJar
-            artifact sourcesJar
-            pom.withXml {
-                asNode().appendNode('name', project.name)
-                asNode().appendNode('description', project.description)
-                asNode().appendNode('url', 'http://ical4j.github.io')
-
-                def scmNode = asNode().appendNode('scm')
-                scmNode.appendNode('url', 'https://github.com/Bedework/ical4j')
-                scmNode.appendNode('connection', 'scm:git@github.com:Bedework/ical4j.git')
-                scmNode.appendNode('developerConnection', 'scm:git@github.com:Bedework/ical4j.git')
-
-                def licenseNode = asNode().appendNode('licenses').appendNode('license')
-                licenseNode.appendNode('name', 'iCal4j - License')
-                licenseNode.appendNode('url', 'https://raw.githubusercontent.com/ical4j/ical4j/master/LICENSE')
-                licenseNode.appendNode('distribution', 'repo')
-
-                def developerNode = asNode().appendNode('developers').appendNode('developer')
-                developerNode.appendNode('id', 'fortuna')
-                developerNode.appendNode('name', 'Ben Fortuna')
-            }
-        }
-    }
-}
-
 signing {
-    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
-//    sign configurations.archives
-    sign publishing.publications.mavenArtifacts
-}
-
-bintray {
-    user = bintray_user
-    key = bintray_key
-    pkg {
-        repo = 'maven'
-        name = 'ical4j'
-        userOrg = 'bedework'
-        licenses = ['BSD']
-        vcsUrl = 'https://github.com/Bedework/ical4j.git'
-        version {
-            name = scmVersion.version
-            desc = "bedework iCal4j $scmVersion.version"
-            released  = new Date()
-            vcsTag = "bw-ical4j-$scmVersion.version"
-            gpg {
-                sign = isReleaseVersion
-            }
-            mavenCentralSync {
-                sync = isReleaseVersion
-                //user = sonatype_username //OSS user token: mandatory
-                //password = sonatype_password //OSS user password: mandatory
-//                close = '0' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
-                password = sonatypePassword
-                user = sonatypeUser
-            }
-        }
-    }
-//    configurations = ['archives']
-    publications = ['mavenArtifacts']
+//    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
 }
