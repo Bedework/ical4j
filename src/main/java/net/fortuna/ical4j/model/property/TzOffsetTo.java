@@ -87,7 +87,7 @@ public class TzOffsetTo extends Property {
     }
 
     /**
-     * @param anOffset a timezone offset in milliseconds
+     * @param anOffset a timezone offset in seconds
      */
     public TzOffsetTo(final ZoneOffset anOffset) {
         super(TZOFFSETTO, new Factory());
@@ -105,7 +105,7 @@ public class TzOffsetTo extends Property {
 
     /**
      * @param aList    a list of parameters for this component
-     * @param anOffset a timezone offset in milliseconds
+     * @param anOffset a timezone offset in seconds
      */
     public TzOffsetTo(final ParameterList aList, final ZoneOffset anOffset) {
         super(TZOFFSETTO, aList, new Factory());
