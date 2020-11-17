@@ -119,7 +119,7 @@ public class DefaultContentHandler implements ContentHandler {
         final ComponentBuilder<CalendarComponent> componentBuilder =
                 getComponentBuilder();
 
-        DefaultContentHandler.this.endComponent();
+        endComponent();
 
         final ComponentBuilder<CalendarComponent> parent =
                 getComponentBuilder();
