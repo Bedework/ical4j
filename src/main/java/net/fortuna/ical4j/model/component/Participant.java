@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012, Ben Fortuna
  * All rights reserved.
  *
@@ -37,18 +37,36 @@ import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
-import net.fortuna.ical4j.model.property.Action;
-import net.fortuna.ical4j.model.property.Attach;
+import net.fortuna.ical4j.model.property.CalendarAddress;
+import net.fortuna.ical4j.model.property.Created;
 import net.fortuna.ical4j.model.property.Description;
-import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.DtStamp;
+import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.ParticipantType;
-import net.fortuna.ical4j.model.property.Repeat;
+import net.fortuna.ical4j.model.property.Priority;
+import net.fortuna.ical4j.model.property.Sequence;
+import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Summary;
-import net.fortuna.ical4j.model.property.Trigger;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
 
+import java.util.Arrays;
+
+import static net.fortuna.ical4j.model.Property.CALENDAR_ADDRESS;
+import static net.fortuna.ical4j.model.Property.CREATED;
+import static net.fortuna.ical4j.model.Property.DESCRIPTION;
+import static net.fortuna.ical4j.model.Property.DTSTAMP;
+import static net.fortuna.ical4j.model.Property.GEO;
+import static net.fortuna.ical4j.model.Property.LAST_MODIFIED;
 import static net.fortuna.ical4j.model.Property.PARTICIPANT_TYPE;
+import static net.fortuna.ical4j.model.Property.PRIORITY;
+import static net.fortuna.ical4j.model.Property.SEQUENCE;
+import static net.fortuna.ical4j.model.Property.STATUS;
+import static net.fortuna.ical4j.model.Property.SUMMARY;
+import static net.fortuna.ical4j.model.Property.UID;
+import static net.fortuna.ical4j.model.Property.URL;
 
 /**
  * $Id$ [May 1 2017]
@@ -59,22 +77,21 @@ import static net.fortuna.ical4j.model.Property.PARTICIPANT_TYPE;
  Component name:  PARTICIPANT
 
  Purpose:  This component provides information about a participant in
- an event or optionally a plain text typed value.
+ an event or task.
 
- Conformance:  This component MAY be appear in any iCalendar
- component.
+ Conformance:  This component can be specified multiple times in a
+ "VEVENT", "VTODO", "VJOURNAL" or "VFREEBUSY" calendar component.
 
- Description:  This component provides information about an
- participant in an event, task or poll.  A participant may be an
- attendee in a scheduling sense and the ATTENDEE property may be
- specified in addition.  Participants in events can be individuals
- or organizations, for example a soccer team, the spectators, or
- the musicians.
+ Description:  This component provides information about a participant
+ in a calendar component.  A participant may be an attendee in a
+ scheduling sense and the ATTENDEE property may be specified in
+ addition.  Participants can be individuals or organizations, for
+ example a soccer team, the spectators or the musicians.
 
- The SOURCE property if present may refer to an external definition
- of the participant - such as a vcard.
+ STRUCTURED-DATA properties if present may refer to definitions of
+ the participant - such as a vCard.
 
- The STRUCTURED-ADDRESS property if present will provide a cal-
+ The CALENDAR-ADDRESS property if present will provide a cal-
  address.  If an ATTENDEE property has the same value the
  participant is considered schedulable.  The PARTICIPANT component
  can be used to contain additional meta-data related to the
@@ -85,63 +102,78 @@ import static net.fortuna.ical4j.model.Property.PARTICIPANT_TYPE;
  This property is defined by the following notation:
 
 
- participantc  = "BEGIN" ":" "PARTICIPANT" CRLF
-                     partprop *alarmc
-                     "END" ":" "PARTICIPANT" CRLF
+ participantc = "BEGIN" ":" "PARTICIPANT" CRLF
+                *( partprop / locationc / resourcec )
+                "END" ":" "PARTICIPANT" CRLF
 
- partprop      = *(
-                 ;
-                 ; The following are REQUIRED,
-                 ; but MUST NOT occur more than once.
-                 ;
-                 dtstamp  / participanttype /
-                 ;
-                 ; The following are OPTIONAL,
-                 ; but MUST NOT occur more than once.
-                 ;
-                 created / description / last-mod / seq /
-                 source / status / structuredaddress / summary / url /
-                 ;
-                 ; The following are OPTIONAL,
-                 ; and MAY occur more than once.
-                 ;
-                 attach / categories / comment /
-                 contact / rstatus / related /
-                 resources / x-prop / iana-prop
-                 ;
-                 )
+ partprop     = ; the elements herein may appear in any order,
+                ; and the order is not significant.
 
+                uid
+                participanttype
+
+                (calendaraddress)
+                (created)
+                (description)
+                (dtstamp)
+                (geo)
+                (last-mod)
+                (priority)
+                (seq)
+                (status)
+                (summary)
+                (url)
+
+                *attach
+                *categories
+                *comment
+                *contact
+                *location
+                *rstatus
+                *related
+                *resources
+                *strucloc
+                *strucres
+                *styleddescription
+                *sdataprop
+                *iana-prop
 
  Note:  When the PRIORITY is supplied it defines the ordering of
  PARTICIPANT components with the same value for the TYPE parameter.
  * </pre>
  *
- * @author Ben Fortuna
+ * @author Mike Douglass
  */
 public class Participant extends Component {
-
     private static final long serialVersionUID = -8193965477414653802L;
     
-    private final ComponentList<Component> components =
-            new ComponentList<>();
+    private final ComponentList<Component> components;
 
     /**
      * Default constructor.
      */
     public Participant() {
         super(PARTICIPANT);
+        components = new ComponentList<>();
     }
 
     /**
      * Constructor.
      * @param properties a list of properties
      */
-    public Participant(final PropertyList properties) {
+    public Participant(final PropertyList<Property> properties) {
         super(PARTICIPANT, properties);
+        components = new ComponentList<>();
     }
 
-    public ParticipantType getParticipantType() {
-        return getProperty(PARTICIPANT_TYPE);
+    /**
+     * Constructor.
+     * @param properties a list of properties
+     */
+    public Participant(final PropertyList<Property> properties,
+                       final ComponentList<Component> components) {
+        super(PARTICIPANT, properties);
+        this.components = components;
     }
 
     public ComponentList<Component> getComponents() {
@@ -155,63 +187,45 @@ public class Participant extends Component {
             throws ValidationException {
 
         /*
-         * ; 'dtstamp' and participanttype' are both REQUIRED, 
+         * ; 'dtstamp', uid and participanttype' are REQUIRED,
          * ; but MUST NOT occur more than once 
          */
-        PropertyValidator.assertOne(Property.DTSTAMP, getProperties());
-        PropertyValidator.assertOne(PARTICIPANT_TYPE, getProperties());
+        Arrays.asList(PARTICIPANT_TYPE, UID).forEach(
+                              property -> PropertyValidator.assertOne(
+                                      property, getProperties()));
 
-        PropertyValidator.assertOneOrLess(Property.CALENDAR_ADDRESS, getProperties());
-        PropertyValidator.assertOneOrLess(Property.DURATION, getProperties());
-        PropertyValidator.assertOneOrLess(Property.SOURCE, getProperties());
-        PropertyValidator.assertOneOrLess(Property.STATUS, getProperties());
-        PropertyValidator.assertOneOrLess(Property.SUMMARY, getProperties());
-        PropertyValidator.assertOneOrLess(Property.URL, getProperties());
-        
-        
+        Arrays.asList(CALENDAR_ADDRESS, CREATED, DESCRIPTION,
+                      DTSTAMP, GEO, LAST_MODIFIED, PRIORITY, SEQUENCE,
+                      STATUS, SUMMARY, URL).forEach(
+                              property -> PropertyValidator
+                                      .assertOneOrLess(
+                                              property, getProperties()));
+
         if (recurse) {
             validateProperties();
         }
     }
 
     /**
-     * Returns the mandatory action property.
-     * @return the ACTION property or null if not specified
+     * Returns the optional calendar address property.
+     * @return the CALENDAR_ADDRESS property or null if not specified
      */
-    public final Action getAction() {
-        return getProperty(Property.ACTION);
+    public final CalendarAddress getCalendarAddress() {
+        return getProperty(CALENDAR_ADDRESS);
     }
 
     /**
-     * Returns the mandatory trigger property.
-     * @return the TRIGGER property or null if not specified
+     * @return the optional creation-time property for an event
      */
-    public final Trigger getTrigger() {
-        return getProperty(Property.TRIGGER);
+    public final Created getCreated() {
+        return getProperty(CREATED);
     }
 
     /**
-     * Returns the optional duration property.
-     * @return the DURATION property or null if not specified
+     * @return the optional date-stamp property
      */
-    public final Duration getDuration() {
-        return getProperty(Property.DURATION);
-    }
-
-    /**
-     * Returns the optional repeat property.
-     * @return the REPEAT property or null if not specified
-     */
-    public final Repeat getRepeat() {
-        return getProperty(Property.REPEAT);
-    }
-
-    /**
-     * Returns the optional attachment property.
-     * @return the ATTACH property or null if not specified
-     */
-    public final Attach getAttachment() {
-        return getProperty(Property.ATTACH);
+    public final DtStamp getDateStamp() {
+        return getProperty(DTSTAMP);
     }
 
     /**
@@ -219,7 +233,43 @@ public class Participant extends Component {
      * @return the DESCRIPTION property or null if not specified
      */
     public final Description getDescription() {
-        return getProperty(Property.DESCRIPTION);
+        return getProperty(DESCRIPTION);
+    }
+
+    /**
+     * @return the optional last-modified property for an event
+     */
+    public final LastModified getLastModified() {
+        return getProperty(LAST_MODIFIED);
+    }
+
+    /**
+     * Returns the mandatory PARTICIPANT-TYPE property.
+     * @return the PARTICIPANT-TYPE property or null if not specified
+     */
+    public ParticipantType getParticipantType() {
+        return getProperty(PARTICIPANT_TYPE);
+    }
+
+    /**
+     * @return the optional priority property for an event
+     */
+    public final Priority getPriority() {
+        return getProperty(PRIORITY);
+    }
+
+    /**
+     * @return the optional sequence number property for an event
+     */
+    public final Sequence getSequence() {
+        return getProperty(SEQUENCE);
+    }
+
+    /**
+     * @return the optional status property for an event
+     */
+    public final Status getStatus() {
+        return getProperty(STATUS);
     }
 
     /**
@@ -227,7 +277,22 @@ public class Participant extends Component {
      * @return the SUMMARY property or null if not specified
      */
     public final Summary getSummary() {
-        return getProperty(Property.SUMMARY);
+        return getProperty(SUMMARY);
+    }
+
+    /**
+     * Returns the UID property of this component if available.
+     * @return a Uid instance, or null if no UID property exists
+     */
+    public final Uid getUid() {
+        return getProperty(UID);
+    }
+
+    /**
+     * @return the optional URL property for an event
+     */
+    public final Url getUrl() {
+        return getProperty(URL);
     }
 
     public static class Factory extends Content.Factory implements ComponentFactory<Participant> {
@@ -242,13 +307,16 @@ public class Participant extends Component {
         }
 
         @Override
-        public Participant createComponent(PropertyList properties) {
+        public Participant createComponent(
+                final PropertyList properties) {
             return new Participant(properties);
         }
 
         @Override
-        public Participant createComponent(PropertyList properties, ComponentList subComponents) {
-            throw new UnsupportedOperationException(String.format("%s does not support sub-components", PARTICIPANT));
+        public Participant createComponent(
+                final PropertyList properties,
+                final ComponentList subComponents) {
+            return new Participant(properties, subComponents);
         }
     }
 }
