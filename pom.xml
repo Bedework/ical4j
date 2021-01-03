@@ -133,6 +133,7 @@
     </extensions>
 
     <plugins>
+      <!--
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
@@ -161,7 +162,7 @@
           </dependency>
         </dependencies>
       </plugin>
-
+      -->
       <!-- Specify the compiler options and settings -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
