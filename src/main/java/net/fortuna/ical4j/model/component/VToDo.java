@@ -225,7 +225,7 @@ public class VToDo extends CalendarComponent {
                 new ValidationRule(None, REQUEST_STATUS)));
     }
     
-    private ComponentList<VAlarm> alarms = new ComponentList<VAlarm>();
+    private ComponentList<VAlarm> alarms = new ComponentList<>();
 
     /**
      * Default constructor.
