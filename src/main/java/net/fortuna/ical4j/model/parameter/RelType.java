@@ -37,6 +37,8 @@ import net.fortuna.ical4j.model.ParameterFactory;
 import net.fortuna.ical4j.util.Strings;
 
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * $Id$ [18-Apr-2004]
@@ -49,11 +51,31 @@ public class RelType extends Parameter {
 
     private static final long serialVersionUID = 5346030888832899016L;
 
+    /* rfc5545 */
+
     private static final String VALUE_PARENT = "PARENT";
 
     private static final String VALUE_CHILD = "CHILD";
 
     private static final String VALUE_SIBLING = "SIBLING";
+
+    /* relations draft temporal */
+
+    private static final String VALUE_FINISHTOSTART = "FINISHTOSTART";
+
+    private static final String VALUE_FINISHTOFINISH = "FINISHTOFINISH";
+
+    private static final String VALUE_STARTTOFINISH = "STARTTOFINISH";
+
+    private static final String VALUE_STARTTOSTART = "STARTTOSTART";
+
+    /* relations draft others */
+
+    private static final String VALUE_DEPENDS_ON = "DEPENDS-ON";
+
+    private static final String VALUE_REFID = "REFID";
+
+    private static final String VALUE_CONCEPT = "CONCEPT";
 
     /**
      * Parent.
@@ -69,6 +91,67 @@ public class RelType extends Parameter {
      * Sibling.
      */
     public static final RelType SIBLING = new RelType(VALUE_SIBLING);
+
+    /* relations draft temporal */
+
+    /**
+     * Finish to start.
+     */
+    public static final RelType FINISHTOSTART =
+            new RelType(VALUE_FINISHTOSTART);
+
+    /**
+     * Finish to finish.
+     */
+    public static final RelType FINISHTOFINISH =
+            new RelType(VALUE_FINISHTOFINISH);
+
+    /**
+     * Start to finish.
+     */
+    public static final RelType STARTTOFINISH =
+            new RelType(VALUE_STARTTOFINISH);
+
+    /**
+     * Start to start.
+     */
+    public static final RelType STARTTOSTART =
+            new RelType(VALUE_STARTTOSTART);
+
+    /* relations draft others */
+
+    /**
+     * depends-on.
+     */
+    public static final RelType DEPENDS_ON =
+            new RelType(VALUE_DEPENDS_ON);
+
+    /**
+     * refid.
+     */
+    public static final RelType REFID = new RelType(VALUE_REFID);
+
+    /**
+     * concept.
+     */
+    public static final RelType CONCEPT = new RelType(VALUE_CONCEPT);
+
+    private final static Map<String, RelType> reltypes = new HashMap<>();
+
+    static {
+        reltypes.put(VALUE_PARENT, PARENT);
+        reltypes.put(VALUE_CHILD, CHILD);
+        reltypes.put(VALUE_SIBLING, SIBLING);
+
+        reltypes.put(VALUE_FINISHTOSTART, FINISHTOSTART);
+        reltypes.put(VALUE_FINISHTOFINISH, FINISHTOFINISH);
+        reltypes.put(VALUE_STARTTOFINISH, STARTTOFINISH);
+        reltypes.put(VALUE_STARTTOSTART, STARTTOSTART);
+
+        reltypes.put(VALUE_DEPENDS_ON, DEPENDS_ON);
+        reltypes.put(VALUE_REFID, REFID);
+        reltypes.put(VALUE_CONCEPT, CONCEPT);
+    }
 
     private String value;
 
@@ -87,24 +170,23 @@ public class RelType extends Parameter {
         return value;
     }
 
-    public static class Factory extends Content.Factory implements ParameterFactory {
+    public static class Factory extends Content.Factory
+            implements ParameterFactory<Parameter> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
             super(RELTYPE);
         }
 
-        public Parameter createParameter(final String value) throws URISyntaxException {
-            RelType parameter = new RelType(value);
-            if (RelType.PARENT.equals(parameter)) {
-                parameter = RelType.PARENT;
-            } else if (RelType.CHILD.equals(parameter)) {
-                parameter = RelType.CHILD;
+        public Parameter createParameter(final String value)
+                throws URISyntaxException {
+            final RelType parameter = reltypes.get(value.toUpperCase());
+
+            if (parameter != null) {
+                return parameter;
             }
-            if (RelType.SIBLING.equals(parameter)) {
-                parameter = RelType.SIBLING;
-            }
-            return parameter;
+
+            return new RelType(value);
         }
     }
 

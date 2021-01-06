@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012, Ben Fortuna
  * All rights reserved.
  *
@@ -37,6 +37,8 @@ import net.fortuna.ical4j.model.ParameterFactory;
 import net.fortuna.ical4j.util.Strings;
 
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * $Id$ [18-Apr-2004]
@@ -75,6 +77,12 @@ public class Value extends Parameter {
     private static final String VALUE_URI = "URI";
 
     private static final String VALUE_UTC_OFFSET = "UTC-OFFSET";
+
+    /* Relations draft */
+
+    private static final String VALUE_REFERENCE = "REFERENCE";
+
+    private static final String VALUE_UID = "UID";
 
     /**
      * Binary value type.
@@ -146,7 +154,42 @@ public class Value extends Parameter {
      */
     public static final Value UTC_OFFSET = new Value(VALUE_UTC_OFFSET);
 
-    private String value;
+    /**
+     * XPointer referencing an associated XML artifact.
+     */
+    public static final Value REFERENCE = new Value(VALUE_REFERENCE);
+
+    /**
+     * UID for a component
+     */
+    public static final Value UID = new Value(VALUE_UID);
+
+    private final static Map<String, Value> values = new HashMap<>();
+
+    static {
+        values.put(VALUE_BINARY, BINARY);
+        values.put(VALUE_BOOLEAN, BOOLEAN);
+        values.put(VALUE_CAL_ADDRESS, CAL_ADDRESS);
+        values.put(VALUE_DATE, DATE);
+        values.put(VALUE_DATE_TIME, DATE_TIME);
+        values.put(VALUE_DURATION, DURATION);
+        values.put(VALUE_FLOAT, FLOAT);
+        values.put(VALUE_INTEGER, INTEGER);
+        values.put(VALUE_PERIOD, PERIOD);
+        values.put(VALUE_RECUR, RECUR);
+        values.put(VALUE_TEXT, TEXT);
+        values.put(VALUE_TIME, TIME);
+        values.put(VALUE_URI, URI);
+        values.put(VALUE_UTC_OFFSET, UTC_OFFSET);
+
+        /* Relations draft */
+
+        values.put(VALUE_REFERENCE, REFERENCE);
+        values.put(VALUE_UID, UID);
+
+    }
+
+    private final String value;
 
     /**
      * @param aValue a string representation of a value data type
@@ -163,45 +206,23 @@ public class Value extends Parameter {
         return value;
     }
 
-    public static class Factory extends Content.Factory implements ParameterFactory {
+    public static class Factory extends Content.Factory
+            implements ParameterFactory<Parameter> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
             super(VALUE);
         }
 
-        public Parameter createParameter(final String value) throws URISyntaxException {
-            Value parameter = new Value(value);
-            if (Value.BINARY.equals(parameter)) {
-                parameter = Value.BINARY;
-            } else if (Value.BOOLEAN.equals(parameter)) {
-                parameter = Value.BOOLEAN;
-            } else if (Value.CAL_ADDRESS.equals(parameter)) {
-                parameter = Value.CAL_ADDRESS;
-            } else if (Value.DATE.equals(parameter)) {
-                parameter = Value.DATE;
-            } else if (Value.DATE_TIME.equals(parameter)) {
-                parameter = Value.DATE_TIME;
-            } else if (Value.DURATION.equals(parameter)) {
-                parameter = Value.DURATION;
-            } else if (Value.FLOAT.equals(parameter)) {
-                parameter = Value.FLOAT;
-            } else if (Value.INTEGER.equals(parameter)) {
-                parameter = Value.INTEGER;
-            } else if (Value.PERIOD.equals(parameter)) {
-                parameter = Value.PERIOD;
-            } else if (Value.RECUR.equals(parameter)) {
-                parameter = Value.RECUR;
-            } else if (Value.TEXT.equals(parameter)) {
-                parameter = Value.TEXT;
-            } else if (Value.TIME.equals(parameter)) {
-                parameter = Value.TIME;
-            } else if (Value.URI.equals(parameter)) {
-                parameter = Value.URI;
-            } else if (Value.UTC_OFFSET.equals(parameter)) {
-                parameter = Value.UTC_OFFSET;
+        public Parameter createParameter(final String value)
+                throws URISyntaxException {
+            final Value parameter = values.get(value);
+
+            if (parameter != null) {
+                return parameter;
             }
-            return parameter;
+
+            return new Value(value);
         }
     }
 
