@@ -34,6 +34,7 @@ net.fortuna.ical4j.model.parameter.Feature$Factory
 net.fortuna.ical4j.model.parameter.Label$Factory
 
 #Relations
+net.fortuna.ical4j.model.parameter.Gap$Factory
 net.fortuna.ical4j.model.parameter.Linkrel$Factory
 
 #Eventpub

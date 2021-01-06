@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010, Ben Fortuna
+ * Copyright (c) 2012, Ben Fortuna
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,65 +29,55 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.fortuna.ical4j.model.parameter;
+package net.fortuna.ical4j.model.property;
 
-import net.fortuna.ical4j.model.Content;
-import net.fortuna.ical4j.model.Parameter;
-import net.fortuna.ical4j.model.ParameterFactory;
+import junit.framework.TestSuite;
+import net.fortuna.ical4j.model.ParameterTest;
+import net.fortuna.ical4j.model.parameter.Gap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.net.URISyntaxException;
+import static net.fortuna.ical4j.model.Parameter.GAP;
 
 /**
- * $Id: Rsvp.java,v 1.16 2010/03/06 12:57:25 fortuna Exp $ [18-Apr-2004]
+ * Created on 7/03/2005
  *
- * Defines an Order parameter.
- * @author benfortuna
+ * $Id$
+ *
+ * @author Ben Fortuna
+ *
  */
-public class Order extends Parameter {
+public class GapTest extends ParameterTest {
 
-    private static final long serialVersionUID = -5381653882942018012L;
+    private final Logger log = LoggerFactory.getLogger(GapTest.class);
 
-    private Integer order;
+    private final Gap gap;
+
+	/**
+	 * @param testMethod
+	 * @param param
+	 */
+	public GapTest(final String testMethod, final Gap param) {
+		super(testMethod, param, GAP, "");
+		this.gap = param;
+	}
 
     /**
-     * @param aValue a string representation
+     * Unit test on a duration trigger.
      */
-    public Order(final String aValue) {
-        this(Integer.valueOf(aValue));
+    public void testGapDuration() {
+        assertNotNull(gap.getDuration());
     }
 
     /**
-     * @param aValue an Integer value
+     * @return
      */
-    public Order(final Integer aValue) {
-        super(ORDER, new Factory());
-        this.order = aValue;
-    }
+    public static TestSuite suite() {
+      final TestSuite suite = new TestSuite();
 
-    /**
-     * @return Returns the order.
-     */
-    public final Integer getOrder() {
-        return order;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final String getValue() {
-        return getOrder().toString();
-    }
-
-    public static class Factory extends Content.Factory implements
-            ParameterFactory {
-        private static final long serialVersionUID = 1L;
-    
-        public Factory() {
-          super(ORDER);
-        }
-    
-        public Parameter createParameter(final String value) throws URISyntaxException {
-            return new Order(value);
-        }
+    	suite.addTest(new GapTest("testGapDuration",
+                                new Gap(java.time.Duration.ofDays(1))));
+        
+    	return suite;
     }
 }

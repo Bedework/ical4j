@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2010, Ben Fortuna
  * All rights reserved.
  *
@@ -34,60 +34,69 @@ package net.fortuna.ical4j.model.parameter;
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactory;
+import net.fortuna.ical4j.model.TemporalAmountAdapter;
 
 import java.net.URISyntaxException;
+import java.time.temporal.TemporalAmount;
 
 /**
  * $Id: Rsvp.java,v 1.16 2010/03/06 12:57:25 fortuna Exp $ [18-Apr-2004]
  *
- * Defines an Order parameter.
+ * Defines an Gap parameter.
  * @author benfortuna
  */
-public class Order extends Parameter {
+public class Gap extends Parameter {
 
     private static final long serialVersionUID = -5381653882942018012L;
 
-    private Integer order;
+    private final TemporalAmountAdapter duration;
 
     /**
      * @param aValue a string representation
      */
-    public Order(final String aValue) {
-        this(Integer.valueOf(aValue));
+    public Gap(final String aValue) {
+        this(TemporalAmountAdapter.parse(aValue));
     }
 
     /**
-     * @param aValue an Integer value
+     * @param aValue a duration value
      */
-    public Order(final Integer aValue) {
-        super(ORDER, new Factory());
-        this.order = aValue;
+    public Gap(final TemporalAmountAdapter aValue) {
+        super(GAP, new Factory());
+        this.duration = aValue;
     }
 
     /**
-     * @return Returns the order.
+     * @param aValue a duration value
      */
-    public final Integer getOrder() {
-        return order;
+    public Gap(final TemporalAmount aValue) {
+        super(GAP, new Factory());
+        this.duration = new TemporalAmountAdapter(aValue);
     }
 
     /**
-     * {@inheritDoc}
+     * @return Returns the duration.
      */
+    public final TemporalAmountAdapter getDuration() {
+        return duration;
+    }
+
+    @Override
     public final String getValue() {
-        return getOrder().toString();
+        return getDuration().toString();
     }
 
     public static class Factory extends Content.Factory implements
-            ParameterFactory {
+            ParameterFactory<Parameter> {
         private static final long serialVersionUID = 1L;
     
         public Factory() {
-          super(ORDER);
+          super(GAP);
         }
     
-        public Parameter createParameter(final String value) throws URISyntaxException {
-            return new Order(value);
+        public Parameter createParameter(final String value)
+                throws URISyntaxException {
+            return new Gap(value);
         }
     }
 }

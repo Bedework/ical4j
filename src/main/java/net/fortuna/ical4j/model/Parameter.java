@@ -229,6 +229,11 @@ public abstract class Parameter extends Content {
     public static final String VVENUE = "VVENUE";
 
     /**
+     * Relationship gap.
+     */
+    public static final String GAP = "GAP";
+
+    /**
      * Prefix to all experimental parameters.
      */
     public static final String EXPERIMENTAL_PREFIX = "X-";
