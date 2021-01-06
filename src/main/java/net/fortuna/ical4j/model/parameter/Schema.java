@@ -84,6 +84,11 @@ public class Schema extends Parameter {
         return Uris.decode(Strings.valueOf(getUri()));
     }
 
+    @Override
+    protected boolean isQuotable() {
+        return true; // force quotes
+    }
+
     public static class Factory extends Content.Factory implements ParameterFactory {
         private static final long serialVersionUID = 1L;
 

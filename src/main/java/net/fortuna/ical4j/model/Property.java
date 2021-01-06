@@ -118,9 +118,19 @@ public abstract class Property extends Content {
     public static final String LAST_MODIFIED = "LAST-MODIFIED";
 
     /**
+     * Link property name.
+     */
+    public static final String LINK = "LINK";
+
+    /**
      * Location property name.
      */
     public static final String LOCATION = "LOCATION";
+
+    /**
+     * Location type property name.
+     */
+    public static final String LOCATION_TYPE = "LOCATION-TYPE";
 
     /**
      * Organiser property name.
@@ -303,6 +313,11 @@ public abstract class Property extends Content {
     public static final String RELATED_TO = "RELATED-TO";
 
     /**
+     * Resource type property name.
+     */
+    public static final String RESOURCE_TYPE = "RESOURCE-TYPE";
+
+    /**
      * Resources property name.
      */
     public static final String RESOURCES = "RESOURCES";
@@ -336,11 +351,6 @@ public abstract class Property extends Content {
      * VVENUE locality property name.
      */
     public static final String LOCALITY = "LOCALITY";
-
-    /**
-     * VVENUE location type property name.
-     */
-    public static final String LOCATION_TYPE = "LOCATION-TYPE";
 
     /**
      * VVENUE name property name.

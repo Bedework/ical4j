@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012, Ben Fortuna
  * All rights reserved.
  *
@@ -33,88 +33,74 @@ package net.fortuna.ical4j.model.property;
 
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Escapable;
-import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyFactory;
-import net.fortuna.ical4j.model.parameter.Value;
-import net.fortuna.ical4j.util.Uris;
-import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
-import net.fortuna.ical4j.validate.ValidationRule;
-import net.fortuna.ical4j.validate.Validator;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.util.Arrays;
-
-import static net.fortuna.ical4j.model.Parameter.FMTTYPE;
-import static net.fortuna.ical4j.model.Parameter.LABEL;
-import static net.fortuna.ical4j.model.Parameter.LOCTYPE;
-import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
 
 /**
  * $Id$
  * <p/>
- * Created: [May 1 2017]
+ * Created: [Apr 6, 2004]
  * <p/>
- * Defines a STRUCTURED-LOCATION iCalendar component property.
+ * Defines a RESOURCE-TYPE iCalendar component property.
  *
+ * @author benf
  * @author Mike Douglass
  */
-public class StructuredLocation extends Property implements Escapable {
+public class ResourceType extends Property implements Escapable {
 
-    private static final long serialVersionUID = 7287564228220558361L;
+    private static final long serialVersionUID = 7753849118575885600L;
+
+    /* Defined in eventpub draft. */
+    public static final String room = "ROOM";
+    /*  A room for the event/meeting. */
+
+    public static final String projector = "PROJECTOR";
+    /*  Projection equipment. */
+
+    public static final String remoteConferenceAudio =
+            "REMOTE-CONFERENCE-AUDIO";
+    /*  Audio remote conferencing facilities. */
+
+    public static final String remoteConferenceVideo =
+            "REMOTE-CONFERENCE-VIDEO";
+    /*  Video remote conferencing facilities. */
 
     private String value;
-    private URI uriValue;
-
-    private final Validator<Property> validator = new PropertyValidator(
-            Arrays.asList(
-            new ValidationRule(OneOrLess, FMTTYPE, LABEL, LOCTYPE)));
 
     /**
      * Default constructor.
      */
-    public StructuredLocation() {
-        super(STRUCTURED_LOCATION, new ParameterList(), 
-                new Factory());
+    public ResourceType() {
+        this(null);
     }
 
     /**
      * @param aValue a value string for this component
      */
-    public StructuredLocation(final String aValue) throws URISyntaxException {
-        super(STRUCTURED_LOCATION, new ParameterList(), 
-                new Factory());
-        setValue(aValue);
+    public ResourceType(final String aValue) {
+        this(new ParameterList(), aValue);
     }
 
     /**
      * @param aList  a list of parameters for this component
      * @param aValue a value string for this component
      */
-    public StructuredLocation(final ParameterList aList, final String aValue) throws URISyntaxException {
-        super(STRUCTURED_LOCATION, aList, 
-                new Factory());
+    public ResourceType(final ParameterList aList, final String aValue) {
+        super(RESOURCE_TYPE, aList, new Factory());
         setValue(aValue);
     }
 
     /**
      * {@inheritDoc}
      */
-    public final void setValue(final String aValue) throws URISyntaxException {
-        // value can be either text or a URI - no default
-        if (Value.TEXT.equals(getParameter(Parameter.VALUE))) {
-            this.value = aValue;
-        } else if (Value.URI.equals(getParameter(Parameter.VALUE))) {
-            uriValue = Uris.create(aValue);
-            this.value = aValue;
-        } else {
-            throw new IllegalArgumentException("No valid VALUE parameter specified");
-        }
+    public final void setValue(final String aValue) {
+        this.value = aValue;
     }
 
     /**
@@ -126,23 +112,25 @@ public class StructuredLocation extends Property implements Escapable {
 
     @Override
     public void validate() throws ValidationException {
-        validator.validate(this);
+
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory<StructuredLocation> {
+    public static class Factory extends Content.Factory
+            implements PropertyFactory<ResourceType> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(STRUCTURED_LOCATION);
+            super(RESOURCE_TYPE);
         }
 
-        public StructuredLocation createProperty(final ParameterList parameters, final String value)
+        public ResourceType createProperty(final ParameterList parameters,
+                                           final String value)
                 throws IOException, URISyntaxException, ParseException {
-            return new StructuredLocation(parameters, value);
+            return new ResourceType(parameters, value);
         }
 
-        public StructuredLocation createProperty() {
-            return new StructuredLocation();
+        public ResourceType createProperty() {
+            return new ResourceType();
         }
     }
 

@@ -84,6 +84,11 @@ public abstract class Parameter extends Content {
     public static final String DELEGATED_TO = "DELEGATED-TO";
 
     /**
+     * Derived.
+     */
+    public static final String DERIVED = "DERIVED";
+
+    /**
      * Directory entry.
      */
     public static final String DIR = "DIR";
@@ -129,9 +134,9 @@ public abstract class Parameter extends Content {
     public static final String LANGUAGE = "LANGUAGE";
 
     /**
-     * Location type.
+     * Link Relationship type.
      */
-    public static final String LOCTYPE = "LOCTYPE";
+    public static final String LINKREL = "LINKREL";
 
     /**
      * Group or list membership.
@@ -169,11 +174,6 @@ public abstract class Parameter extends Content {
     public static final String RELTYPE = "RELTYPE";
 
     /**
-     * Resource type.
-     */
-    public static final String RESTYPE = "RESTYPE";
-
-    /**
      * Participation role.
      */
     public static final String ROLE = "ROLE";
@@ -204,7 +204,7 @@ public abstract class Parameter extends Content {
     public static final String SENT_BY = "SENT-BY";
 
     /**
-     * Type.
+     * Stay informed.
      */
     public static final String STAY_INFORMED = "STAY-INFORMED";
 

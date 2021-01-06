@@ -11,7 +11,9 @@ import net.fortuna.ical4j.model.component.VAvailability;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VFreeBusy;
 import net.fortuna.ical4j.model.component.VJournal;
+import net.fortuna.ical4j.model.component.VLocation;
 import net.fortuna.ical4j.model.component.VPoll;
+import net.fortuna.ical4j.model.component.VResource;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.component.VVenue;
@@ -33,7 +35,9 @@ public class DefaultComponentFactorySupplier implements Supplier<List<ComponentF
                               new VToDo.Factory(), new VVenue.Factory());
 
         final List<ComponentFactory<? extends Component>> eventPubDraft =
-                Collections.singletonList(new Participant.Factory());
+                Arrays.asList(new Participant.Factory(),
+                              new VLocation.Factory(),
+                              new VResource.Factory());
 
         final List<ComponentFactory<? extends Component>> vpollDraft =
                 Collections.singletonList(new VPoll.Factory());

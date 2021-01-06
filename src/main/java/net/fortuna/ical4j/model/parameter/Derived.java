@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012, Ben Fortuna
+ * Copyright (c) 2010, Ben Fortuna
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,56 +34,83 @@ package net.fortuna.ical4j.model.parameter;
 import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactory;
-import net.fortuna.ical4j.util.Strings;
+
+import java.net.URISyntaxException;
 
 /**
- * $Id$ [1-May-2017]
- * <p/>
- * Defines a Location Type parameter.
- * 
- * <p/>
- * Values for this parameter are taken from the values defined in
- * RFC4589.  New location types SHOULD be registered in the manner
- * laid down in that specification. 
- * <p/>
- * As new values could be defined at any time we either need to create a
- * registry which can be dynamically updated or allow any value and 
- * provide some later validation. For now we'll just treat it as a string.
- * 
+ * $Id: Rsvp.java,v 1.16 2010/03/06 12:57:25 fortuna Exp $ [18-Apr-2004]
  *
- * @author Mike Douglass
+ * Defines an RSVP parameter.
+ * @author benfortuna
  */
-public class LocType extends Parameter {
+public class Derived extends Parameter {
 
-    private static final long serialVersionUID = -8764966004966855480L;
+    private static final long serialVersionUID = -5381653882942018012L;
 
-    private String value;
+    private static final String VALUE_TRUE = "TRUE";
+
+    private static final String VALUE_FALSE = "FALSE";
 
     /**
-     * @param aValue a string representation of a format type
+     * Is a derived object.
      */
-    public LocType(final String aValue) {
-        super(LOCTYPE, new Factory());
-        this.value = Strings.unquote(aValue);
+    public static final Derived TRUE = new Derived(VALUE_TRUE);
+
+    /**
+     * Is not a derived object.
+     */
+    public static final Derived FALSE = new Derived(VALUE_FALSE);
+
+    private Boolean value;
+
+    /**
+     * @param aValue a string representation
+     */
+    public Derived(final String aValue) {
+        this(Boolean.valueOf(aValue));
+    }
+
+    /**
+     * @param aValue a boolean value
+     */
+    public Derived(final Boolean aValue) {
+        super(DERIVED, new Factory());
+        this.value = aValue;
+    }
+
+    /**
+     * @return Returns the rsvp.
+     */
+    public final Boolean getDerived() {
+        return value;
     }
 
     /**
      * {@inheritDoc}
      */
     public final String getValue() {
-        return value;
+        return getDerived().toString().toUpperCase();
     }
 
-    public static class Factory extends Content.Factory implements ParameterFactory {
+    public static class Factory extends Content.Factory
+            implements ParameterFactory<Parameter> {
         private static final long serialVersionUID = 1L;
-
+    
         public Factory() {
-            super(LOCTYPE);
+          super(DERIVED);
         }
+    
+        public Parameter createParameter(final String value)
+                throws URISyntaxException {
+            if (Boolean.TRUE.toString().equals(value)) {
+                return Derived.TRUE;
+            }
 
-        public Parameter createParameter(final String value) {
-            return new LocType(value);
+            if (Boolean.FALSE.toString().equals(value)) {
+                return Derived.FALSE;
+            }
+
+            return new Derived(value);
         }
     }
-
 }

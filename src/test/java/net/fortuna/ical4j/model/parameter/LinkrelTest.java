@@ -31,55 +31,42 @@
  */
 package net.fortuna.ical4j.model.parameter;
 
-import net.fortuna.ical4j.model.Content;
+import junit.framework.TestSuite;
 import net.fortuna.ical4j.model.Parameter;
-import net.fortuna.ical4j.model.ParameterFactory;
-import net.fortuna.ical4j.util.Strings;
+import net.fortuna.ical4j.model.ParameterTest;
+
+import java.net.URISyntaxException;
 
 /**
- * $Id$ [1-May-2017]
- * <p/>
- * Defines a Resource Type parameter.
- * 
- * <p/>
- * As new values could be defined at any time we either need to create a
- * registry which can be dynamically updated or allow any value and 
- * provide some later validation. For now we'll just treat it as a string.
- * 
+ * Created: [17/11/2008]
  *
- * @author Mike Douglass
+ * @author fortuna
  */
-public class ResType extends Parameter {
-
-    private static final long serialVersionUID = -8764966004966855480L;
-
-    private String value;
+public class LinkrelTest extends ParameterTest {
 
     /**
-     * @param aValue a string representation of a resource type
+     * @param testMethod
+     * @param parameter
+     * @param expectedValue
      */
-    public ResType(final String aValue) {
-        super(RESTYPE, new Factory());
-        this.value = Strings.unquote(aValue);
+    public LinkrelTest(final String testMethod,
+                       final Parameter parameter,
+                       final String expectedValue) {
+        super(testMethod, parameter, Parameter.LINKREL, expectedValue);
     }
 
     /**
-     * {@inheritDoc}
+     * @return
+     * @throws URISyntaxException
      */
-    public final String getValue() {
-        return value;
+    public static TestSuite suite() throws URISyntaxException {
+        final TestSuite suite = new TestSuite();
+        suite.addTest(new LinkrelTest("testGetValue",
+                                      new Linkrel("source"),
+                                      "source"));
+        suite.addTest(new LinkrelTest("testToString",
+                                      new Linkrel("source"),
+                                      "source"));
+        return suite;
     }
-
-    public static class Factory extends Content.Factory implements ParameterFactory {
-        private static final long serialVersionUID = 1L;
-
-        public Factory() {
-            super(RESTYPE);
-        }
-
-        public Parameter createParameter(final String value) {
-            return new ResType(value);
-        }
-    }
-
 }

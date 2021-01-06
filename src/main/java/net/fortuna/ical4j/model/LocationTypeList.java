@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012, Ben Fortuna
  * All rights reserved.
  *
@@ -36,7 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 /**
  * $Id LocationTypeList.java $ [23-Apr-2004]
@@ -49,13 +48,13 @@ public class LocationTypeList implements Serializable, Iterable<String> {
 
     private static final long serialVersionUID = -9181735547604179160L;
 
-    private List<String> locationTypes;
+    private final List<String> locationTypes;
 
     /**
      * Default constructor.
      */
     public LocationTypeList() {
-        locationTypes = new CopyOnWriteArrayList<String>();
+        locationTypes = new CopyOnWriteArrayList<>();
     }
 
     /**
@@ -65,7 +64,7 @@ public class LocationTypeList implements Serializable, Iterable<String> {
      *            a string representation of a list of categories
      */
     public LocationTypeList(final String aValue) {
-        locationTypes = new CopyOnWriteArrayList<String>();
+        locationTypes = new CopyOnWriteArrayList<>();
 
         final StringTokenizer t = new StringTokenizer(aValue, ",");
         while (t.hasMoreTokens()) {
@@ -78,7 +77,7 @@ public class LocationTypeList implements Serializable, Iterable<String> {
      */
     @Override
     public final String toString() {
-        return locationTypes.stream().collect(Collectors.joining(","));
+        return String.join(",", locationTypes);
     }
 
     /**
