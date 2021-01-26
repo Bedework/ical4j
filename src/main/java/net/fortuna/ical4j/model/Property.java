@@ -198,6 +198,11 @@ public abstract class Property extends Content {
     public static final String COMPLETED = "COMPLETED";
 
     /**
+     * Concept property name.
+     */
+    public static final String CONCEPT = "CONCEPT";
+
+    /**
      * Due date property name.
      */
     public static final String DUE = "DUE";
