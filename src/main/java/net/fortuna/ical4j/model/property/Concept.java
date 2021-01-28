@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012, Ben Fortuna
  * All rights reserved.
  *
@@ -117,7 +117,7 @@ public class Concept extends Property {
      * Default constructor.
      */
     public Concept() {
-        super(URL, new Factory());
+        super(CONCEPT, new Factory());
     }
 
     /**
@@ -182,7 +182,7 @@ public class Concept extends Property {
     }
 
     public static class Factory extends Content.Factory
-            implements PropertyFactory {
+            implements PropertyFactory<Property> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {

@@ -29,23 +29,36 @@ public class DefaultComponentFactorySupplier implements Supplier<List<ComponentF
     @Override
     public List<ComponentFactory<? extends Component>> get() {
         final List<ComponentFactory<? extends Component>> rfc5545 =
-                Arrays.asList(new Available.Factory(), new Daylight.Factory(), new Standard.Factory(),
-                              new VAlarm.Factory(), new VAvailability.Factory(), new VEvent.Factory(),
-                              new VFreeBusy.Factory(), new VJournal.Factory(), new VTimeZone.Factory(),
-                              new VToDo.Factory(), new VVenue.Factory());
+                Arrays.asList(
+                        new Available.Factory(),
+                        new Daylight.Factory(),
+                        new Standard.Factory(),
+                        new VAlarm.Factory(),
+                        new VAvailability.Factory(),
+                        new VEvent.Factory(),
+                        new VFreeBusy.Factory(),
+                        new VJournal.Factory(),
+                        new VTimeZone.Factory(),
+                        new VToDo.Factory(),
+                        new VVenue.Factory());
 
         final List<ComponentFactory<? extends Component>> eventPubDraft =
-                Arrays.asList(new Participant.Factory(),
-                              new VLocation.Factory(),
-                              new VResource.Factory());
+                Arrays.asList(
+                        new Participant.Factory(),
+                        new VLocation.Factory(),
+                        new VResource.Factory());
 
         final List<ComponentFactory<? extends Component>> vpollDraft =
                 Collections.singletonList(new VPoll.Factory());
+
+        final List<ComponentFactory<? extends Component>> vvenueDraft =
+                Collections.singletonList(new VVenue.Factory());
 
         final List<ComponentFactory<? extends Component>> factories = new ArrayList<>(rfc5545);
 
         factories.addAll(eventPubDraft);
         factories.addAll(vpollDraft);
+        factories.addAll(vvenueDraft);
 
         return factories;
     }
