@@ -372,7 +372,9 @@ public abstract class Component implements Serializable {
                                    .map(p -> p.getPeriods()).flatMap(PeriodList::stream).filter(rdatePeriod -> period.intersects(rdatePeriod))
                                    .collect(Collectors.toList()));
 
-        recurrenceSet.addAll(rDates.stream().filter(p -> p.getParameter(Parameter.VALUE) == Value.DATE_TIME)
+        recurrenceSet.addAll(rDates.stream()
+                                   .filter(p -> (p.getParameter(Parameter.VALUE) == Value.DATE_TIME) ||
+                                           (p.getParameter(Parameter.VALUE) == null))
                                    .map(p -> p.getDates()).flatMap(DateList::stream).filter(date -> period.includes(date))
                                    .map(rdateTime -> new Period((DateTime) rdateTime, rDuration)).collect(Collectors.toList()));
 
