@@ -17,6 +17,12 @@
     <!-- Maven Plugin Versions -->
     <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
     <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
+
+    <commons-codec.version>1.15</commons-codec.version>
+    <commons-lang3.version>3.8.1</commons-lang3.version>
+    <sun.mail.version>1.6.2</sun.mail.version>
+
+    <bw-util-deploy.version>4.0.28-SNAPSHOT</bw-util-deploy.version>
   </properties>
 
   <licenses>
@@ -47,35 +53,41 @@
       <version>1.7.25</version>
       <scope>compile</scope>
     </dependency>
+
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.11</version>
+      <version>${commons-codec.version}</version>
       <scope>compile</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.8.1</version>
+      <version>${commons-lang3.version}</version>
       <scope>compile</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-collections4</artifactId>
       <version>4.1</version>
       <scope>compile</scope>
     </dependency>
+
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
-      <version>1.6.2</version>
+      <version>${sun.mail.version}</version>
       <scope>compile</scope>
     </dependency>
+
     <dependency>
       <groupId>javax.cache</groupId>
       <artifactId>cache-api</artifactId>
       <version>1.0.0</version>
     </dependency>
+
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
@@ -83,12 +95,14 @@
       <scope>compile</scope>
       <type>pom</type>
     </dependency>
+
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-dateutil</artifactId>
       <version>2.5.4</version>
       <scope>compile</scope>
     </dependency>
+
     <dependency>
       <groupId>org.spockframework</groupId>
       <artifactId>spock-core</artifactId>
@@ -109,12 +123,14 @@
       <version>1.2.1</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.7.25</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.ehcache</groupId>
       <artifactId>ehcache</artifactId>
@@ -243,6 +259,63 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.20</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-maven-deploy-wfmodule</artifactId>
+        <version>${bw-util-deploy.version}</version>
+
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>bw-deploy-wfmodule</goal>
+            </goals>
+          </execution>
+        </executions>
+
+        <configuration>
+          <moduleName>org.bedework.ical4j</moduleName>
+
+          <jarDependencies>
+            <jarDependency>
+              <moduleName>org.bedework.org.slf4j.slf4j-api</moduleName>
+              <groupId>org.slf4j</groupId>
+              <artifactId>slf4j-api</artifactId>
+              <version>1.7.25</version>
+            </jarDependency>
+
+            <jarDependency>
+              <moduleName>org.bedework.commons-codec</moduleName>
+              <groupId>commons-codec</groupId>
+              <artifactId>commons-codec</artifactId>
+              <version>${commons-codec.version}</version>
+              <type>jar</type>
+            </jarDependency>
+
+            <jarDependency>
+              <moduleName>org.bedework.commons-lang3</moduleName>
+              <groupId>org.apache.commons</groupId>
+              <artifactId>commons-lang3</artifactId>
+              <version>${commons-lang3.version}</version>
+              <type>jar</type>
+            </jarDependency>
+
+            <jarDependency>
+              <moduleName>org.bedework.com.sun.mail</moduleName>
+              <groupId>com.sun.mail</groupId>
+              <artifactId>javax.mail</artifactId>
+              <version>${sun.mail.version}</version>
+            </jarDependency>
+          </jarDependencies>
+
+          <moduleDependencies>
+            <moduleDependency>
+              <name>org.apache.log4j</name>
+            </moduleDependency>
+          </moduleDependencies>
+        </configuration>
       </plugin>
     </plugins>
   </build>
