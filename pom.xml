@@ -21,8 +21,6 @@
     <commons-codec.version>1.15</commons-codec.version>
     <commons-lang3.version>3.8.1</commons-lang3.version>
     <sun.mail.version>1.6.2</sun.mail.version>
-
-    <bw-util-deploy.version>4.0.28-SNAPSHOT</bw-util-deploy.version>
   </properties>
 
   <licenses>
@@ -240,82 +238,8 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.5</version>
-        <executions>
-          <execution>
-            <id>default-descriptor</id>
-            <phase>process-classes</phase>
-          </execution>
-        </executions>
-        <configuration>
-          <goalPrefix>bw-util-deployment</goalPrefix>
-          <!--
-          <outputDirectory>target/dir</outputDirectory>-->
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.20</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.bedework</groupId>
-        <artifactId>bw-util-maven-deploy-wfmodule</artifactId>
-        <version>${bw-util-deploy.version}</version>
-
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>bw-deploy-wfmodule</goal>
-            </goals>
-          </execution>
-        </executions>
-
-        <configuration>
-          <moduleName>org.bedework.ical4j</moduleName>
-
-          <jarDependencies>
-            <jarDependency>
-              <moduleName>org.bedework.org.slf4j.slf4j-api</moduleName>
-              <groupId>org.slf4j</groupId>
-              <artifactId>slf4j-api</artifactId>
-              <version>1.7.25</version>
-            </jarDependency>
-
-            <jarDependency>
-              <moduleName>org.bedework.commons-codec</moduleName>
-              <groupId>commons-codec</groupId>
-              <artifactId>commons-codec</artifactId>
-              <version>${commons-codec.version}</version>
-              <type>jar</type>
-            </jarDependency>
-
-            <jarDependency>
-              <moduleName>org.bedework.commons-lang3</moduleName>
-              <groupId>org.apache.commons</groupId>
-              <artifactId>commons-lang3</artifactId>
-              <version>${commons-lang3.version}</version>
-              <type>jar</type>
-            </jarDependency>
-
-            <jarDependency>
-              <moduleName>org.bedework.com.sun.mail</moduleName>
-              <groupId>com.sun.mail</groupId>
-              <artifactId>javax.mail</artifactId>
-              <version>${sun.mail.version}</version>
-            </jarDependency>
-          </jarDependencies>
-
-          <moduleDependencies>
-            <moduleDependency>
-              <name>org.apache.log4j</name>
-            </moduleDependency>
-          </moduleDependencies>
-        </configuration>
       </plugin>
     </plugins>
   </build>
