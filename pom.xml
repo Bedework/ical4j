@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.bedework.ical4j</groupId>
   <artifactId>ical4j</artifactId>
-  <version>3.0.13</version>
+  <version>3.0.14-SNAPSHOT</version>
   <name>ical4j</name>
   <description>
     A Java library for reading and writing iCalendar (*.ics) files
@@ -41,7 +41,7 @@
     <connection>scm:git:git@github.com:Bedework/ical4j.git</connection>
     <developerConnection>scm:git:git@github.com:Bedework/ical4j.git</developerConnection>
     <url>https://github.com/Bedework/ical4j</url>
-    <tag>ical4j-3.0.13</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
