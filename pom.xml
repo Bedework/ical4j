@@ -36,6 +36,13 @@
       <id>fortuna</id>
       <name>Ben Fortuna</name>
     </developer>
+    <developer>
+      <name>Mike Douglass</name>
+      <organization>
+        Bedework Commercial Services
+      </organization>
+      <organizationUrl>https://bedework.com/</organizationUrl>
+    </developer>
   </developers>
 
   <scm>
@@ -44,6 +51,17 @@
     <url>https://github.com/Bedework/ical4j</url>
     <tag>HEAD</tag>
   </scm>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
   <dependencies>
     <dependency>
