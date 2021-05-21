@@ -39,9 +39,10 @@
   </developers>
 
   <scm>
-    <connection>scm:git@github.com:Bedework/ical4j.git</connection>
-    <developerConnection>scm:git@github.com:Bedework/ical4j.git</developerConnection>
+    <connection>scm:git:git@github.com:Bedework/ical4j.git</connection>
+    <developerConnection>scm:git:git@github.com:Bedework/ical4j.git</developerConnection>
     <url>https://github.com/Bedework/ical4j</url>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
