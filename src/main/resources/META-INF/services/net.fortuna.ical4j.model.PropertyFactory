@@ -91,3 +91,6 @@ net.fortuna.ical4j.model.property.ParticipantType$Factory
 net.fortuna.ical4j.model.property.ResourceType$Factory
 net.fortuna.ical4j.model.property.StructuredData$Factory
 net.fortuna.ical4j.model.property.StyledDescription$Factory
+
+#Tasks extensions
+net.fortuna.ical4j.model.property.EstimatedDuration$Factory

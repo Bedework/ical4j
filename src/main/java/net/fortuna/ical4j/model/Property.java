@@ -128,11 +128,6 @@ public abstract class Property extends Content {
     public static final String LOCATION = "LOCATION";
 
     /**
-     * Location type property name.
-     */
-    public static final String LOCATION_TYPE = "LOCATION-TYPE";
-
-    /**
      * Organiser property name.
      */
     public static final String ORGANIZER = "ORGANIZER";
@@ -278,6 +273,11 @@ public abstract class Property extends Content {
     public static final String DURATION = "DURATION";
 
     /**
+     * Estimated duration property name.
+     */
+    public static final String ESTIMATED_DURATION = "ESTIMATED-DURATION";
+
+    /**
      * Attachment property name.
      */
     public static final String ATTACH = "ATTACH";
@@ -395,6 +395,11 @@ public abstract class Property extends Content {
     public static final String CALENDAR_ADDRESS = "CALENDAR-ADDRESS";
 
     /**
+     * Location type property name.
+     */
+    public static final String LOCATION_TYPE = "LOCATION-TYPE";
+
+    /**
      * Participant type.
      */
     public static final String PARTICIPANT_TYPE = "PARTICIPANT-TYPE";
@@ -403,16 +408,6 @@ public abstract class Property extends Content {
      * Structured data property name.
      */
     public static final String STRUCTURED_DATA = "STRUCTURED-DATA";
-
-    /**
-     * Structured location property name.
-     */
-    public static final String STRUCTURED_LOCATION = "STRUCTURED-LOCATION";
-
-    /**
-     * Structured resource property name.
-     */
-    public static final String STRUCTURED_RESOURCE = "STRUCTURED-RESOURCE";
 
     /**
      * Styled description property name.

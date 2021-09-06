@@ -30,19 +30,23 @@ public class DefaultComponentFactorySupplier implements Supplier<List<ComponentF
     public List<ComponentFactory<? extends Component>> get() {
         final List<ComponentFactory<? extends Component>> rfc5545 =
                 Arrays.asList(
-                        new Available.Factory(),
                         new Daylight.Factory(),
                         new Standard.Factory(),
                         new VAlarm.Factory(),
-                        new VAvailability.Factory(),
                         new VEvent.Factory(),
                         new VFreeBusy.Factory(),
                         new VJournal.Factory(),
                         new VTimeZone.Factory(),
-                        new VToDo.Factory(),
-                        new VVenue.Factory());
+                        new VToDo.Factory());
 
-        final List<ComponentFactory<? extends Component>> eventPubDraft =
+        // Availability
+        final List<ComponentFactory<? extends Component>> rfc7953 =
+                Arrays.asList(
+                        new Available.Factory(),
+                        new VAvailability.Factory());
+
+        // Eventpub
+        final List<ComponentFactory<? extends Component>> rfc9073 =
                 Arrays.asList(
                         new Participant.Factory(),
                         new VLocation.Factory(),
@@ -56,7 +60,8 @@ public class DefaultComponentFactorySupplier implements Supplier<List<ComponentF
 
         final List<ComponentFactory<? extends Component>> factories = new ArrayList<>(rfc5545);
 
-        factories.addAll(eventPubDraft);
+        factories.addAll(rfc7953);
+        factories.addAll(rfc9073);
         factories.addAll(vpollDraft);
         factories.addAll(vvenueDraft);
 
