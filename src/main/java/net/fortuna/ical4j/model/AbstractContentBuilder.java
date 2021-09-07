@@ -17,6 +17,6 @@ public abstract class AbstractContentBuilder {
      * @return true if non-standard names are allowed, otherwise false
      */
     protected boolean allowIllegalNames() {
-        return CompatibilityHints.isHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING);
+        return !CompatibilityHints.isHintEnabled(CompatibilityHints.KEY_DISALLOW_ALL_NAMES);
     }
 }

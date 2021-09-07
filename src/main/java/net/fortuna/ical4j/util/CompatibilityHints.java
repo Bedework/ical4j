@@ -81,6 +81,13 @@ public final class CompatibilityHints {
      */
     public static final String KEY_VCARD_COMPATIBILITY = "ical4j.compatibility.vcard";
 
+    /**
+     * A system property key to disable allowing any name to be accepted.
+     * This is non-backwards compatible with the previosu use of relaxed parsing.
+     * Set the property to "true"to disable.
+     */
+    public static final String KEY_DISALLOW_ALL_NAMES = "ical4j.disallow.all.names";
+
     private static final Map<String, Boolean> HINTS = new ConcurrentHashMap<String, Boolean>();
     // preload known hints from the configurator
     static {
@@ -124,6 +131,6 @@ public final class CompatibilityHints {
         if (HINTS.get(key) != null) {
             return HINTS.get(key);
         }
-        return "true".equals(Configurator.getProperty(key));
+        return "true".equals(Configurator.getProperty(key).orElse("false"));
     }
 }
