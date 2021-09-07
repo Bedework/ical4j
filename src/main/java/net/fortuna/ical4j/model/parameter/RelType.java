@@ -166,6 +166,7 @@ public class RelType extends Parameter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getValue() {
         return value;
     }
@@ -178,6 +179,7 @@ public class RelType extends Parameter {
             super(RELTYPE);
         }
 
+        @Override
         public Parameter createParameter(final String value)
                 throws URISyntaxException {
             final RelType parameter = reltypes.get(value.toUpperCase());

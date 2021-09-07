@@ -75,6 +75,7 @@ public class DelegatedTo extends Parameter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getValue() {
         return getDelegatees().toString();
     }
@@ -94,6 +95,7 @@ public class DelegatedTo extends Parameter {
             super(DELEGATED_TO);
         }
 
+        @Override
         public Parameter createParameter(final String value) throws URISyntaxException {
             return new DelegatedTo(value);
         }

@@ -202,6 +202,7 @@ public class Value extends Parameter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getValue() {
         return value;
     }
@@ -214,6 +215,7 @@ public class Value extends Parameter {
             super(VALUE);
         }
 
+        @Override
         public Parameter createParameter(final String value)
                 throws URISyntaxException {
             final Value parameter = values.get(value);
