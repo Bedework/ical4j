@@ -31,10 +31,16 @@
  */
 package net.fortuna.ical4j.data;
 
-
 import junit.framework.TestCase;
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.Parameter;
+import net.fortuna.ical4j.model.ParameterFactory;
+import net.fortuna.ical4j.model.ParameterFactoryRegistry;
+import net.fortuna.ical4j.model.PropertyFactoryRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.util.Strings;
 
 import java.io.StringReader;
@@ -123,5 +129,22 @@ public class CalendarBuilderCustomRegistryTest extends TestCase {
         VEvent event = (VEvent)cal.getComponent(Component.VEVENT);
         VEvent eventBis = (VEvent)event.copy();
         assertEquals(eventBis, event);
+    }
+
+    /* (non-Javadoc)
+     * @see junit.framework.TestCase#setUp()
+     */
+    @Override
+    protected final void setUp() throws Exception {
+        CompatibilityHints.setHintEnabled(
+                CompatibilityHints.KEY_DISALLOW_ALL_NAMES, true);
+    }
+
+    /* (non-Javadoc)
+     * @see junit.framework.TestCase#tearDown()
+     */
+    @Override
+    protected final void tearDown() throws Exception {
+        CompatibilityHints.clearHintEnabled(CompatibilityHints.KEY_DISALLOW_ALL_NAMES);
     }
 }
