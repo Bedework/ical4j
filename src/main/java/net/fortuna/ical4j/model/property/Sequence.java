@@ -222,6 +222,7 @@ public class Sequence extends Property implements Comparable<Sequence> {
             return new Sequence(parameters, value);
         }
 
+        @Override
         public Property createProperty() {
             return new Sequence();
         }

@@ -31,11 +31,7 @@
  */
 package net.fortuna.ical4j.model.property;
 
-import net.fortuna.ical4j.model.Content;
-import net.fortuna.ical4j.model.LocationTypeList;
-import net.fortuna.ical4j.model.ParameterList;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyFactory;
+import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
 import net.fortuna.ical4j.validate.ValidationRule;
@@ -114,8 +110,7 @@ public class LocationType extends Property {
      * @param aList  a list of parameters for this component
      * @param aValue a value string for this component
      */
-    public LocationType(final ParameterList aList,
-                        final String aValue) {
+    public LocationType(final ParameterList aList, final String aValue) {
         super(LOCATION_TYPE, aList, new Factory());
         setValue(aValue);
     }
