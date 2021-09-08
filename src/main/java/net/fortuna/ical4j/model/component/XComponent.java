@@ -32,6 +32,7 @@
 package net.fortuna.ical4j.model.component;
 
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentContainer;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.property.Method;
@@ -47,7 +48,8 @@ import net.fortuna.ical4j.validate.Validator;
  * Implementation of an experimental component as defined in RFC2445.
  * @author Ben Fortuna
  */
-public class XComponent extends CalendarComponent {
+public class XComponent extends CalendarComponent implements
+        ComponentContainer<Component> {
 
     private static final long serialVersionUID = -3622674849097714927L;
 
@@ -70,7 +72,7 @@ public class XComponent extends CalendarComponent {
 
     @Override
     public ComponentList<Component> getComponents() {
-        return new ComponentList<>();
+        return (ComponentList<Component>)components;
     }
 
     /**

@@ -31,12 +31,7 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentFactory;
-import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.Content;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.validate.PropertyValidator;
@@ -128,11 +123,6 @@ public class VVenue extends CalendarComponent {
                 ':' +
                 getName() +
                 Strings.LINE_SEPARATOR;
-    }
-
-    @Override
-    public ComponentList<Component> getComponents() {
-        return new ComponentList<>();
     }
 
     /**

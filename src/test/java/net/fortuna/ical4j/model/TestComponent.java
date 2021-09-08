@@ -14,11 +14,6 @@ public class TestComponent extends Component{
   }
 
   @Override
-  public ComponentList<Component> getComponents() {
-    return null;
-  }
-
-  @Override
   public void validate(final boolean recurse)
           throws ValidationException {
 

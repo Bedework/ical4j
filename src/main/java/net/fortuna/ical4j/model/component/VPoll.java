@@ -32,6 +32,7 @@
 package net.fortuna.ical4j.model.component;
 
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentContainer;
 import net.fortuna.ical4j.model.ComponentFactory;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Content;
@@ -70,9 +71,6 @@ import net.fortuna.ical4j.validate.component.VPollValidator;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.text.ParseException;
 import java.time.temporal.TemporalAmount;
 import java.util.HashMap;
 import java.util.Map;
@@ -123,14 +121,15 @@ import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrMor
  * @author Ben Fortuna
  * @author Mike Douglass
  */
-public class VPoll extends CalendarComponent {
+public class VPoll extends CalendarComponent implements
+        ComponentContainer<Component> {
 
     private static final long serialVersionUID = -269658210065896668L;
 
-    private final Map<Method,
+    private static final Map<Method,
             Validator<? extends CalendarComponent>> methodValidators =
             new HashMap<>();
-    {
+    static {
         methodValidators.put(Method.ADD, new VPollValidator(
                 new ValidationRule(One, DTSTAMP, ORGANIZER,
                                    SEQUENCE, SUMMARY, UID),
@@ -222,12 +221,6 @@ public class VPoll extends CalendarComponent {
                                    TRANSP, URL)));
     }
 
-    private ComponentList<Participant> voters = new ComponentList<>();
-
-    private ComponentList<Component> candidates = new ComponentList<>();
-
-    private ComponentList<VAlarm> alarms = new ComponentList<>();
-
     /**
      * Default constructor.
      */
@@ -298,13 +291,7 @@ public class VPoll extends CalendarComponent {
     }
 
     public final void add(final Component val) {
-        if (val instanceof Participant) {
-            voters.add((Participant)val);
-        } else if (val instanceof VAlarm) {
-            alarms.add((VAlarm)val);
-        } else {
-            candidates.add(val);
-        }
+        getComponents().add(val);
     }
 
     /**
@@ -312,7 +299,7 @@ public class VPoll extends CalendarComponent {
      * @return a component list
      */
     public final ComponentList<Participant> getVoters() {
-        return voters;
+        return getComponents().getComponents(PARTICIPANT);
     }
 
     /**
@@ -320,7 +307,20 @@ public class VPoll extends CalendarComponent {
      * @return a component list
      */
     public final ComponentList<Component> getCandidates() {
-        return candidates;
+        final ComponentList<Component> components =
+                new ComponentList<>();
+        for (final Component c: getComponents()) {
+            if (c.getName().equals(PARTICIPANT)) {
+                continue;
+            }
+
+            if (c.getName().equals(VALARM)) {
+                continue;
+            }
+
+            components.add(c);
+        }
+        return components;
     }
 
     /**
@@ -328,7 +328,12 @@ public class VPoll extends CalendarComponent {
      * @return a component list
      */
     public final ComponentList<VAlarm> getAlarms() {
-        return alarms;
+        return getComponents().getComponents(VALARM);
+    }
+
+    @Override
+    public ComponentList<Component> getComponents() {
+        return (ComponentList<Component>) components;
     }
 
     /**
@@ -349,15 +354,6 @@ public class VPoll extends CalendarComponent {
         buffer.append(getName());
         buffer.append(Strings.LINE_SEPARATOR);
         return buffer.toString();
-    }
-
-    @Override
-    public ComponentList<Component> getComponents() {
-        final ComponentList<Component> res = new ComponentList<>();
-        res.addAll(voters);
-        res.addAll(candidates);
-        res.addAll(alarms);
-        return res;
     }
 
     /**
@@ -625,7 +621,8 @@ public class VPoll extends CalendarComponent {
     public boolean equals(final Object arg0) {
         if (arg0 instanceof VPoll) {
             return super.equals(arg0)
-                    && ObjectUtils.equals(alarms, ((VPoll) arg0).getAlarms());
+                    && ObjectUtils.equals(getComponents(),
+                                          ((VPoll) arg0).getComponents());
         }
         return super.equals(arg0);
     }
@@ -636,22 +633,6 @@ public class VPoll extends CalendarComponent {
     public int hashCode() {
         return new HashCodeBuilder().append(getName()).append(getProperties())
                 .append(getAlarms()).toHashCode();
-    }
-
-    /**
-     * Overrides default copy method to add support for copying alarm sub-components.
-     * @return a copy of the instance
-     * @throws ParseException where an error occurs parsing data
-     * @throws IOException where an error occurs reading data
-     * @throws URISyntaxException where an invalid URI is encountered
-     * @see net.fortuna.ical4j.model.Component#copy()
-     */
-    public Component copy() throws ParseException, IOException, URISyntaxException {
-        final VPoll copy = (VPoll) super.copy();
-        copy.voters = new ComponentList(voters);
-        copy.candidates = new ComponentList(candidates);
-        copy.alarms = new ComponentList(alarms);
-        return copy;
     }
 
     public static class Factory extends Content.Factory implements ComponentFactory<VPoll> {

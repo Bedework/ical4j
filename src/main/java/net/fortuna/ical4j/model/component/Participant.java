@@ -31,42 +31,14 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentFactory;
-import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.Content;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
-import net.fortuna.ical4j.model.property.CalendarAddress;
-import net.fortuna.ical4j.model.property.Created;
-import net.fortuna.ical4j.model.property.Description;
-import net.fortuna.ical4j.model.property.DtStamp;
-import net.fortuna.ical4j.model.property.LastModified;
-import net.fortuna.ical4j.model.property.ParticipantType;
-import net.fortuna.ical4j.model.property.Priority;
-import net.fortuna.ical4j.model.property.Sequence;
-import net.fortuna.ical4j.model.property.Status;
-import net.fortuna.ical4j.model.property.Summary;
-import net.fortuna.ical4j.model.property.Uid;
-import net.fortuna.ical4j.model.property.Url;
+import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.property.*;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
 
 import java.util.Arrays;
 
-import static net.fortuna.ical4j.model.Property.CALENDAR_ADDRESS;
-import static net.fortuna.ical4j.model.Property.CREATED;
-import static net.fortuna.ical4j.model.Property.DESCRIPTION;
-import static net.fortuna.ical4j.model.Property.DTSTAMP;
-import static net.fortuna.ical4j.model.Property.GEO;
-import static net.fortuna.ical4j.model.Property.LAST_MODIFIED;
-import static net.fortuna.ical4j.model.Property.PARTICIPANT_TYPE;
-import static net.fortuna.ical4j.model.Property.PRIORITY;
-import static net.fortuna.ical4j.model.Property.SEQUENCE;
-import static net.fortuna.ical4j.model.Property.STATUS;
-import static net.fortuna.ical4j.model.Property.SUMMARY;
-import static net.fortuna.ical4j.model.Property.UID;
-import static net.fortuna.ical4j.model.Property.URL;
+import static net.fortuna.ical4j.model.Property.*;
 
 /**
  * $Id$ [May 1 2017]
@@ -144,17 +116,14 @@ import static net.fortuna.ical4j.model.Property.URL;
  *
  * @author Mike Douglass
  */
-public class Participant extends Component {
+public class Participant extends Component implements ComponentContainer<Component> {
     private static final long serialVersionUID = -8193965477414653802L;
-    
-    private final ComponentList<Component> components;
 
     /**
      * Default constructor.
      */
     public Participant() {
         super(PARTICIPANT);
-        components = new ComponentList<>();
     }
 
     /**
@@ -163,21 +132,14 @@ public class Participant extends Component {
      */
     public Participant(final PropertyList<Property> properties) {
         super(PARTICIPANT, properties);
-        components = new ComponentList<>();
     }
 
     /**
      * Constructor.
      * @param properties a list of properties
      */
-    public Participant(final PropertyList<Property> properties,
-                       final ComponentList<Component> components) {
-        super(PARTICIPANT, properties);
-        this.components = components;
-    }
-
-    public ComponentList<Component> getComponents() {
-        return components;
+    public Participant(final PropertyList<Property> properties, final ComponentList<Component> components) {
+        super(PARTICIPANT, properties, components);
     }
 
     /**
@@ -204,6 +166,11 @@ public class Participant extends Component {
         if (recurse) {
             validateProperties();
         }
+    }
+
+    @Override
+    public ComponentList<Component> getComponents() {
+        return (ComponentList<Component>) components;
     }
 
     /**

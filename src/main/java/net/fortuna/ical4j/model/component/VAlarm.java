@@ -31,38 +31,16 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentFactory;
-import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.Content;
-import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
-import net.fortuna.ical4j.model.property.Action;
-import net.fortuna.ical4j.model.property.Attach;
-import net.fortuna.ical4j.model.property.Description;
-import net.fortuna.ical4j.model.property.Duration;
-import net.fortuna.ical4j.model.property.Method;
-import net.fortuna.ical4j.model.property.Repeat;
-import net.fortuna.ical4j.model.property.Summary;
-import net.fortuna.ical4j.model.property.Trigger;
-import net.fortuna.ical4j.validate.ComponentValidator;
-import net.fortuna.ical4j.validate.PropertyValidator;
-import net.fortuna.ical4j.validate.ValidationException;
-import net.fortuna.ical4j.validate.ValidationRule;
-import net.fortuna.ical4j.validate.Validator;
+import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.validate.*;
 
 import java.time.temporal.TemporalAmount;
 import java.util.HashMap;
 import java.util.Map;
 
-import static net.fortuna.ical4j.model.Property.ATTACH;
-import static net.fortuna.ical4j.model.Property.ATTENDEE;
-import static net.fortuna.ical4j.model.Property.DESCRIPTION;
-import static net.fortuna.ical4j.model.Property.SUMMARY;
-import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.One;
-import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
-import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrMore;
+import static net.fortuna.ical4j.model.Property.*;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.*;
 
 /**
  * $Id$ [Apr 5, 2004]
@@ -217,8 +195,8 @@ public class VAlarm extends CalendarComponent {
 
     private static final long serialVersionUID = -8193965477414653802L;
 
-    private final Map<Action, Validator> actionValidators = new HashMap<Action, Validator>();
-    {
+    private static final Map<Action, Validator> actionValidators = new HashMap<Action, Validator>();
+    static {
         actionValidators.put(Action.AUDIO, new ComponentValidator<VAlarm>(new ValidationRule(OneOrLess, ATTACH)));
         actionValidators.put(Action.DISPLAY, new ComponentValidator<VAlarm>(new ValidationRule(One, DESCRIPTION)));
         actionValidators.put(Action.EMAIL, new ComponentValidator<VAlarm>(new ValidationRule(One, DESCRIPTION, SUMMARY),
@@ -258,11 +236,6 @@ public class VAlarm extends CalendarComponent {
     public VAlarm(final TemporalAmount trigger) {
         this();
         getProperties().add(new Trigger(trigger));
-    }
-
-    @Override
-    public ComponentList<Component> getComponents() {
-        return new ComponentList<>();
     }
 
     /**
@@ -353,7 +326,7 @@ public class VAlarm extends CalendarComponent {
      * @return the ATTACH property or null if not specified
      */
     public final Attach getAttachment() {
-        return getProperty(ATTACH);
+        return getProperty(Property.ATTACH);
     }
 
     /**
@@ -361,7 +334,7 @@ public class VAlarm extends CalendarComponent {
      * @return the DESCRIPTION property or null if not specified
      */
     public final Description getDescription() {
-        return getProperty(DESCRIPTION);
+        return getProperty(Property.DESCRIPTION);
     }
 
     /**
@@ -369,7 +342,7 @@ public class VAlarm extends CalendarComponent {
      * @return the SUMMARY property or null if not specified
      */
     public final Summary getSummary() {
-        return getProperty(SUMMARY);
+        return getProperty(Property.SUMMARY);
     }
 
     public static class Factory extends Content.Factory implements ComponentFactory<VAlarm> {
@@ -386,11 +359,6 @@ public class VAlarm extends CalendarComponent {
         @Override
         public VAlarm createComponent(PropertyList properties) {
             return new VAlarm(properties);
-        }
-
-        @Override
-        public VAlarm createComponent(PropertyList properties, ComponentList subComponents) {
-            throw new UnsupportedOperationException(String.format("%s does not support sub-components", VALARM));
         }
     }
 }

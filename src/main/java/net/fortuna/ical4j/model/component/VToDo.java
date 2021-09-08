@@ -32,6 +32,7 @@
 package net.fortuna.ical4j.model.component;
 
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentContainer;
 import net.fortuna.ical4j.model.ComponentFactory;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Content;
@@ -68,9 +69,6 @@ import net.fortuna.ical4j.validate.Validator;
 import net.fortuna.ical4j.validate.component.VToDoValidator;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.text.ParseException;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -179,12 +177,12 @@ import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrMor
  * 
  * @author Ben Fortuna
  */
-public class VToDo extends CalendarComponent {
+public class VToDo extends CalendarComponent implements ComponentContainer<Component> {
 
     private static final long serialVersionUID = -269658210065896668L;
 
-    private final Map<Method, Validator> methodValidators = new HashMap<Method, Validator>();
-    {
+    private static final Map<Method, Validator> methodValidators = new HashMap<Method, Validator>();
+    static {
         methodValidators.put(Method.ADD, new VToDoValidator(new ValidationRule(One, DTSTAMP, ORGANIZER, PRIORITY, SEQUENCE, SUMMARY, UID),
                                                             new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTSTART, DUE, DURATION, GEO,
                         LAST_MODIFIED, LOCATION, PERCENT_COMPLETE, RESOURCES, STATUS, URL),
@@ -224,8 +222,6 @@ public class VToDo extends CalendarComponent {
                         LAST_MODIFIED, LOCATION, PERCENT_COMPLETE, RECURRENCE_ID, RESOURCES, STATUS, URL),
                 new ValidationRule(None, REQUEST_STATUS)));
     }
-    
-    private ComponentList<VAlarm> alarms = new ComponentList<>();
 
     /**
      * Default constructor.
@@ -250,8 +246,7 @@ public class VToDo extends CalendarComponent {
     }
 
     public VToDo(PropertyList properties, ComponentList<VAlarm> alarms) {
-        super(VTODO, properties);
-        this.alarms = alarms;
+        super(VTODO, properties, alarms);
     }
 
     /**
@@ -297,7 +292,12 @@ public class VToDo extends CalendarComponent {
      * @return a component list
      */
     public final ComponentList<VAlarm> getAlarms() {
-        return alarms;
+        return (ComponentList<VAlarm>) components.getComponents(VALARM);
+    }
+
+    @Override
+    public ComponentList<Component> getComponents() {
+        return (ComponentList<Component>) components;
     }
 
     /**
@@ -315,13 +315,6 @@ public class VToDo extends CalendarComponent {
                 ':' +
                 getName() +
                 Strings.LINE_SEPARATOR;
-    }
-
-    @Override
-    public ComponentList<Component> getComponents() {
-        final ComponentList<Component> res = new ComponentList<>();
-        res.addAll(alarms);
-        return res;
     }
 
     /**
@@ -342,13 +335,13 @@ public class VToDo extends CalendarComponent {
             // From "4.8.4.7 Unique Identifier":
             // Conformance: The property MUST be specified in the "VEVENT", "VTODO",
             // "VJOURNAL" or "VFREEBUSY" calendar components.
-            PropertyValidator.assertOne(UID,
+            PropertyValidator.assertOne(Property.UID,
                                         getProperties());
 
             // From "4.8.7.2 Date/Time Stamp":
             // Conformance: This property MUST be included in the "VEVENT", "VTODO",
             // "VJOURNAL" or "VFREEBUSY" calendar components.
-            PropertyValidator.assertOne(DTSTAMP,
+            PropertyValidator.assertOne(Property.DTSTAMP,
                                         getProperties());
         }
 
@@ -357,12 +350,12 @@ public class VToDo extends CalendarComponent {
          * dtstamp / dtstart / geo / last-mod / location / organizer / percent / priority / recurid / seq / status /
          * summary / uid / url /
          */
-        Arrays.asList(CLASS, Property.COMPLETED, CREATED, DESCRIPTION,
-                      DTSTAMP, DTSTART, GEO, LAST_MODIFIED, LOCATION, ORGANIZER,
-                      PERCENT_COMPLETE, PRIORITY, RECURRENCE_ID, SEQUENCE, STATUS,
-                      SUMMARY, UID, URL).forEach(property -> PropertyValidator.assertOneOrLess(property, getProperties()));
+        Arrays.asList(Property.CLASS, Property.COMPLETED, Property.CREATED, Property.DESCRIPTION,
+                Property.DTSTAMP, Property.DTSTART, Property.GEO, Property.LAST_MODIFIED, Property.LOCATION, Property.ORGANIZER,
+                Property.PERCENT_COMPLETE, Property.PRIORITY, Property.RECURRENCE_ID, Property.SEQUENCE, Property.STATUS,
+                Property.SUMMARY, Property.UID, Property.URL).forEach(property -> PropertyValidator.assertOneOrLess(property, getProperties()));
 
-        final Status status = getProperty(STATUS);
+        final Status status = getProperty(Property.STATUS);
         if (status != null && !Status.VTODO_NEEDS_ACTION.getValue().equals(status.getValue())
                 && !Status.VTODO_COMPLETED.getValue().equals(status.getValue())
                 && !Status.VTODO_IN_PROCESS.getValue().equals(status.getValue())
@@ -376,11 +369,11 @@ public class VToDo extends CalendarComponent {
          * same 'todoprop' due / duration /
          */
         try {
-            PropertyValidator.assertNone(DUE,
+            PropertyValidator.assertNone(Property.DUE,
                                          getProperties());
         }
         catch (ValidationException ve) {
-            PropertyValidator.assertNone(DURATION,
+            PropertyValidator.assertNone(Property.DURATION,
                                          getProperties());
         }
 
@@ -406,7 +399,7 @@ public class VToDo extends CalendarComponent {
      * @return the optional access classification property
      */
     public final Clazz getClassification() {
-        return getProperty(CLASS);
+        return getProperty(Property.CLASS);
     }
 
     /**
@@ -420,14 +413,14 @@ public class VToDo extends CalendarComponent {
      * @return the optional creation-time property
      */
     public final Created getCreated() {
-        return getProperty(CREATED);
+        return getProperty(Property.CREATED);
     }
 
     /**
      * @return the optional description property
      */
     public final Description getDescription() {
-        return getProperty(DESCRIPTION);
+        return getProperty(Property.DESCRIPTION);
     }
 
     /**
@@ -435,105 +428,105 @@ public class VToDo extends CalendarComponent {
      * @return The DtStart object representation of the start Date
      */
     public final DtStart getStartDate() {
-        return getProperty(DTSTART);
+        return getProperty(Property.DTSTART);
     }
 
     /**
      * @return the optional geographic position property
      */
     public final Geo getGeographicPos() {
-        return getProperty(GEO);
+        return getProperty(Property.GEO);
     }
 
     /**
      * @return the optional last-modified property
      */
     public final LastModified getLastModified() {
-        return getProperty(LAST_MODIFIED);
+        return getProperty(Property.LAST_MODIFIED);
     }
 
     /**
      * @return the optional location property
      */
     public final Location getLocation() {
-        return getProperty(LOCATION);
+        return getProperty(Property.LOCATION);
     }
 
     /**
      * @return the optional organizer property
      */
     public final Organizer getOrganizer() {
-        return getProperty(ORGANIZER);
+        return getProperty(Property.ORGANIZER);
     }
 
     /**
      * @return the optional percentage complete property
      */
     public final PercentComplete getPercentComplete() {
-        return getProperty(PERCENT_COMPLETE);
+        return getProperty(Property.PERCENT_COMPLETE);
     }
 
     /**
      * @return the optional priority property
      */
     public final Priority getPriority() {
-        return getProperty(PRIORITY);
+        return getProperty(Property.PRIORITY);
     }
 
     /**
      * @return the optional date-stamp property
      */
     public final DtStamp getDateStamp() {
-        return getProperty(DTSTAMP);
+        return getProperty(Property.DTSTAMP);
     }
 
     /**
      * @return the optional sequence number property
      */
     public final Sequence getSequence() {
-        return getProperty(SEQUENCE);
+        return getProperty(Property.SEQUENCE);
     }
 
     /**
      * @return the optional status property
      */
     public final Status getStatus() {
-        return getProperty(STATUS);
+        return getProperty(Property.STATUS);
     }
 
     /**
      * @return the optional summary property
      */
     public final Summary getSummary() {
-        return getProperty(SUMMARY);
+        return getProperty(Property.SUMMARY);
     }
 
     /**
      * @return the optional URL property
      */
     public final Url getUrl() {
-        return getProperty(URL);
+        return getProperty(Property.URL);
     }
 
     /**
      * @return the optional recurrence identifier property
      */
     public final RecurrenceId getRecurrenceId() {
-        return getProperty(RECURRENCE_ID);
+        return getProperty(Property.RECURRENCE_ID);
     }
 
     /**
      * @return the optional Duration property
      */
     public final Duration getDuration() {
-        return getProperty(DURATION);
+        return getProperty(Property.DURATION);
     }
 
     /**
      * @return the optional due property
      */
     public final Due getDue() {
-        return getProperty(DUE);
+        return getProperty(Property.DUE);
     }
 
     /**
@@ -541,7 +534,7 @@ public class VToDo extends CalendarComponent {
      * @return a Uid instance, or null if no UID property exists
      */
     public final Uid getUid() {
-        return getProperty(UID);
+        return getProperty(Property.UID);
     }
 
     /**
@@ -551,7 +544,7 @@ public class VToDo extends CalendarComponent {
     public boolean equals(final Object arg0) {
         if (arg0 instanceof VToDo) {
             return super.equals(arg0)
-                    && Objects.equals(alarms, ((VToDo) arg0).getAlarms());
+                    && Objects.equals(getAlarms(), ((VToDo) arg0).getAlarms());
         }
         return super.equals(arg0);
     }
@@ -563,21 +556,6 @@ public class VToDo extends CalendarComponent {
     public int hashCode() {
         return new HashCodeBuilder().append(getName()).append(getProperties())
                 .append(getAlarms()).toHashCode();
-    }
-
-    /**
-     * Overrides default copy method to add support for copying alarm sub-components.
-     * @return a copy of the instance
-     * @throws ParseException where an error occurs parsing data
-     * @throws IOException where an error occurs reading data
-     * @throws URISyntaxException where an invalid URI is encountered
-     * @see net.fortuna.ical4j.model.Component#copy()
-     */
-    @Override
-    public Component copy() throws ParseException, IOException, URISyntaxException {
-        final VToDo copy = (VToDo) super.copy();
-        copy.alarms = new ComponentList<VAlarm>(alarms);
-        return copy;
     }
 
     public static class Factory extends Content.Factory implements ComponentFactory<VToDo> {
@@ -592,7 +570,7 @@ public class VToDo extends CalendarComponent {
         }
 
         @Override
-        public VToDo createComponent(PropertyList properties) {
+        public VToDo createComponent(PropertyList<Property> properties) {
             return new VToDo(properties);
         }
 

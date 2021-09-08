@@ -42,6 +42,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.Comparator;
+import java.util.function.Function;
 
 /**
  * Defines an iCalendar property. Subclasses of this class provide additional validation and typed values for specific
@@ -55,7 +57,7 @@ import java.text.ParseException;
  *         <p/>
  *         $Id$ [Apr 5, 2004]
  */
-public abstract class Property extends Content {
+public abstract class Property extends Content implements Comparable<Property> {
 
     private static final long serialVersionUID = 7048785558435608687L;
 
@@ -585,8 +587,7 @@ public abstract class Property extends Content {
      * @throws URISyntaxException possibly thrown by setting the value of certain properties
      * @throws ParseException     possibly thrown by setting the value of certain properties
      */
-    public abstract void setValue(String aValue) throws IOException,
-            URISyntaxException, ParseException;
+    public abstract void setValue(String aValue) throws IOException, URISyntaxException, ParseException;
 
     /**
      * Perform validation on a property.
@@ -633,5 +634,16 @@ public abstract class Property extends Content {
         // Deep copy parameter list..
         final ParameterList params = new ParameterList(getParameters(), false);
         return factory.createProperty(params, getValue());
+    }
+
+    @Override
+    public int compareTo(Property o) {
+        if (this.equals(o)) {
+            return 0;
+        }
+        return Comparator.comparing(Property::getName)
+                         .thenComparing(Property::getValue)
+                         .thenComparing((Function<Property, ParameterList>) Property::getParameters)
+                         .compare(this, o);
     }
 }

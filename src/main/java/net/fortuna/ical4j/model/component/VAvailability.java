@@ -31,13 +31,7 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentFactory;
-import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.Content;
-import net.fortuna.ical4j.model.Parameter;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStamp;
@@ -101,11 +95,9 @@ import java.util.Arrays;
  * @author Ben Fortuna
  * @author Mike Douglass
  */
-public class VAvailability extends CalendarComponent {
+public class VAvailability extends CalendarComponent implements ComponentContainer<Available> {
 
 	private static final long serialVersionUID = -3001603309266267258L;
-	
-	private ComponentList<Available> available;
 
     /**
      * Default constructor.
@@ -116,7 +108,6 @@ public class VAvailability extends CalendarComponent {
 
     public VAvailability(boolean initialise) {
         super(VAVAILABILITY);
-        this.available = new ComponentList<Available>();
         if (initialise) {
             getProperties().add(new DtStamp());
         }
@@ -128,7 +119,6 @@ public class VAvailability extends CalendarComponent {
      */
     public VAvailability(final PropertyList properties) {
         super(VAVAILABILITY, properties);
-        this.available = new ComponentList<Available>();
     }
 
     /**
@@ -137,15 +127,7 @@ public class VAvailability extends CalendarComponent {
      * @param available a list of available components
      */
     public VAvailability(final PropertyList properties, final ComponentList<Available> available) {
-        super(VAVAILABILITY, properties);
-        this.available = available;
-    }
-
-    @Override
-    public ComponentList<Component> getComponents() {
-        final ComponentList<Component> res = new ComponentList<>();
-        res.addAll(available);
-        return res;
+        super(VAVAILABILITY, properties, available);
     }
 
     /**
@@ -153,7 +135,12 @@ public class VAvailability extends CalendarComponent {
      * @return a component list
      */
     public final ComponentList<Available> getAvailable() {
-        return available;
+        return getComponents();
+    }
+
+    @Override
+    public ComponentList<Available> getComponents() {
+        return (ComponentList<Available>) components;
     }
 
     /**

@@ -114,11 +114,6 @@ public abstract class Observance extends Component {
         super(name, properties);
     }
 
-    @Override
-    public ComponentList<Component> getComponents() {
-        return new ComponentList<>();
-    }
-
     /**
      * {@inheritDoc}
      */

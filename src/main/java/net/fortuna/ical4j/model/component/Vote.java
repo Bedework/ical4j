@@ -94,11 +94,6 @@ public class Vote extends Component {
         return buffer.toString();
     }
 
-    @Override
-    public ComponentList<Component> getComponents() {
-        return new ComponentList<>();
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -162,12 +157,6 @@ public class Vote extends Component {
         @Override
         public Vote createComponent(final PropertyList properties) {
             return new Vote(properties);
-        }
-
-        @Override
-        public Vote createComponent(final PropertyList properties,
-                                    final ComponentList subComponents) {
-            throw new UnsupportedOperationException(String.format("%s does not support sub-components", VOTE));
         }
     }
 }
