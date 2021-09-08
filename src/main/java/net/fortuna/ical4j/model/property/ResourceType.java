@@ -32,7 +32,7 @@
 package net.fortuna.ical4j.model.property;
 
 import net.fortuna.ical4j.model.Content;
-import net.fortuna.ical4j.model.Escapable;
+import net.fortuna.ical4j.model.Encodable;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyFactory;
@@ -52,7 +52,7 @@ import java.text.ParseException;
  * @author benf
  * @author Mike Douglass
  */
-public class ResourceType extends Property implements Escapable {
+public class ResourceType extends Property implements Encodable {
 
     private static final long serialVersionUID = 7753849118575885600L;
 

@@ -32,7 +32,7 @@
 package net.fortuna.ical4j.model.property;
 
 import net.fortuna.ical4j.model.Content;
-import net.fortuna.ical4j.model.Escapable;
+import net.fortuna.ical4j.model.Encodable;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
@@ -64,7 +64,7 @@ import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLes
  *
  * @author benf
  */
-public class StyledDescription extends Property implements Escapable {
+public class StyledDescription extends Property implements Encodable {
 
     private static final long serialVersionUID = 7287564228220558361L;
 

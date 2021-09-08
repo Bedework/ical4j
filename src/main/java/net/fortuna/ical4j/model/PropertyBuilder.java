@@ -1,17 +1,22 @@
 package net.fortuna.ical4j.model;
 
 import net.fortuna.ical4j.model.property.XProperty;
-import net.fortuna.ical4j.util.Strings;
+import org.apache.commons.codec.DecoderException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+/**
+ * Provides a configurable builder for creating {@link Property} instances from {@link String} values.
+ *
+ * You can specify an arbitrary list of supported property factories, and a list of property names to ignore.
+ */
 public class PropertyBuilder extends AbstractContentBuilder {
 
-    private List<PropertyFactory<?>> factories = new ArrayList<>();
+    private final List<PropertyFactory<?>> factories;
 
     private String name;
 
@@ -19,9 +24,12 @@ public class PropertyBuilder extends AbstractContentBuilder {
 
     private ParameterList parameters = new ParameterList();
 
-    public PropertyBuilder factories(List<PropertyFactory<?>> factories) {
-        this.factories.addAll(factories);
-        return this;
+    public PropertyBuilder() {
+        this(Collections.emptyList());
+    }
+
+    public PropertyBuilder(List<PropertyFactory<?>> factories) {
+        this.factories = factories;
     }
 
     public PropertyBuilder name(String name) {
@@ -43,12 +51,16 @@ public class PropertyBuilder extends AbstractContentBuilder {
 
     public Property build() throws ParseException, IOException, URISyntaxException {
         Property property = null;
+        String decodedValue;
+        try {
+            decodedValue = PropertyCodec.INSTANCE.decode(value);
+        } catch (DecoderException e) {
+            decodedValue = value;
+        }
+
         for (PropertyFactory<?> factory : factories) {
             if (factory.supports(name)) {
                 property = factory.createProperty(parameters, value);
-                if (property instanceof Escapable) {
-                    property.setValue(Strings.unescape(value));
-                }
             }
         }
 
@@ -60,6 +72,10 @@ public class PropertyBuilder extends AbstractContentBuilder {
             } else {
                 throw new IllegalArgumentException("Illegal property [" + name + "]");
             }
+        }
+
+        if (property instanceof Encodable) {
+            property.setValue(decodedValue);
         }
 
         return property;

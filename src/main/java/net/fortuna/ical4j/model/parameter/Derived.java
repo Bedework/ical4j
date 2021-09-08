@@ -32,6 +32,7 @@
 package net.fortuna.ical4j.model.parameter;
 
 import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Encodable;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterFactory;
 
@@ -43,7 +44,7 @@ import java.net.URISyntaxException;
  * Defines an RSVP parameter.
  * @author benfortuna
  */
-public class Derived extends Parameter {
+public class Derived extends Parameter implements Encodable {
 
     private static final long serialVersionUID = -5381653882942018012L;
 

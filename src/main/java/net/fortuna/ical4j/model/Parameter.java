@@ -32,6 +32,7 @@
 package net.fortuna.ical4j.model;
 
 import net.fortuna.ical4j.util.Strings;
+import org.apache.commons.codec.EncoderException;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -259,22 +260,18 @@ public abstract class Parameter extends Content {
         final StringBuilder b = new StringBuilder();
         b.append(getName());
         b.append('=');
-        if (isQuotable()) {
-            b.append(Strings.quote(Strings.valueOf(getValue())));
+        String value;
+        if (this instanceof Encodable) {
+            try {
+                value = ParameterCodec.INSTANCE.encode(getValue());
+            } catch (EncoderException e) {
+                value = getValue();
+            }
         } else {
-            b.append(Strings.valueOf(getValue()));
+            value = getValue();
         }
+        b.append(Strings.valueOf(value));
         return b.toString();
-    }
-
-    /**
-     * Indicates whether the current parameter value should be quoted.
-     *
-     * @return true if the value should be quoted, otherwise false
-     */
-    protected boolean isQuotable() {
-        return Strings.PARAM_QUOTE_PATTERN.matcher(Strings.valueOf(getValue()))
-                .find();
     }
 
     /**

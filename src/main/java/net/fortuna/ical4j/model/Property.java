@@ -35,6 +35,7 @@ import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.XProperty;
 import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.validate.ValidationException;
+import org.apache.commons.codec.EncoderException;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -521,20 +522,21 @@ public abstract class Property extends Content {
             buffer.append(getParameters());
         }
         buffer.append(':');
-        boolean needsEscape = false;
-        if (this instanceof XProperty) {
-            Value valParam = getParameter(Parameter.VALUE);
-            if (valParam == null || valParam.equals(Value.TEXT)) {
-                needsEscape = true;
+        String value;
+
+        if (this instanceof XProperty && getParameter(Parameter.VALUE) != null
+                && !Value.TEXT.equals(getParameter(Parameter.VALUE))) {
+            value = getValue();
+        } else if (this instanceof Encodable) {
+            try {
+                value = PropertyCodec.INSTANCE.encode(getValue());
+            } catch (EncoderException e) {
+                value = getValue();
             }
-        } else if (this instanceof Escapable) {
-            needsEscape = true;
-        }
-        if (needsEscape) {
-            buffer.append(Strings.escape(Strings.valueOf(getValue())));
         } else {
-            buffer.append(Strings.valueOf(getValue()));
+            value = getValue();
         }
+        buffer.append(Strings.valueOf(value));
         buffer.append(Strings.LINE_SEPARATOR);
 
         return buffer.toString();

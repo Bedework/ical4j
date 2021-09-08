@@ -31,16 +31,20 @@
  */
 package net.fortuna.ical4j.data;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.ParameterFactoryRegistry;
+import net.fortuna.ical4j.model.PropertyFactoryRegistry;
+import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Parses and builds an iCalendar model from an input stream. Note that this class is not thread-safe.
@@ -56,7 +60,7 @@ import java.util.function.Supplier;
  */
 public class CalendarBuilder implements Consumer<Calendar> {
 
-    private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     private final CalendarParser parser;
 
@@ -122,23 +126,20 @@ public class CalendarBuilder implements Consumer<Calendar> {
     public CalendarBuilder(CalendarParser parser, PropertyFactoryRegistry propertyFactoryRegistry,
                            ParameterFactoryRegistry parameterFactoryRegistry, TimeZoneRegistry tzRegistry) {
 
-        this(parser, parameterFactoryRegistry, propertyFactoryRegistry, new DefaultComponentFactorySupplier(),
-                tzRegistry);
+        this(parser, new ContentHandlerContext().withParameterFactorySupplier(parameterFactoryRegistry)
+                        .withPropertyFactorySupplier(propertyFactoryRegistry), tzRegistry);
     }
 
     /**
      * @param parser                   a custom calendar parser
      * @param tzRegistry               a custom timezone registry
      */
-    public CalendarBuilder(CalendarParser parser, Supplier<List<ParameterFactory<?>>> parameterFactorySupplier,
-                           Supplier<List<PropertyFactory<?>>> propertyFactorySupplier,
-                           Supplier<List<ComponentFactory<?>>> componentFactorySupplier,
+    public CalendarBuilder(CalendarParser parser, ContentHandlerContext contentHandlerContext,
                            TimeZoneRegistry tzRegistry) {
 
         this.parser = parser;
         this.tzRegistry = tzRegistry;
-        this.contentHandler = new DefaultContentHandler(this, tzRegistry, parameterFactorySupplier,
-                propertyFactorySupplier, componentFactorySupplier);
+        this.contentHandler = new DefaultContentHandler(this, tzRegistry, contentHandlerContext);
     }
 
     @Override

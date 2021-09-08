@@ -82,7 +82,7 @@ import java.text.ParseException;
  *
  * @author Mike Douglass
  */
-public class TzidAliasOf extends Property implements Escapable {
+public class TzidAliasOf extends Property implements Encodable {
 
     private static final long serialVersionUID = -522764921502407137L;
 

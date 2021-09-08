@@ -31,11 +31,7 @@
  */
 package net.fortuna.ical4j.model.property;
 
-import net.fortuna.ical4j.model.Content;
-import net.fortuna.ical4j.model.Escapable;
-import net.fortuna.ical4j.model.ParameterList;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyFactory;
+import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
 import net.fortuna.ical4j.validate.ValidationRule;
@@ -59,7 +55,7 @@ import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLes
  * @author benf
  * @author Mike Douglass
  */
-public class Region extends Property implements Escapable {
+public class Region extends Property implements Encodable {
 
     private static final long serialVersionUID = 7753849118575885600L;
 
