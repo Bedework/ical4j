@@ -95,7 +95,7 @@ import java.util.Arrays;
  * @author Ben Fortuna
  * @author Mike Douglass
  */
-public class VAvailability extends CalendarComponent implements ComponentContainer<Available> {
+public class VAvailability extends CalendarComponent implements ComponentContainer<Component> {
 
 	private static final long serialVersionUID = -3001603309266267258L;
 
@@ -135,12 +135,12 @@ public class VAvailability extends CalendarComponent implements ComponentContain
      * @return a component list
      */
     public final ComponentList<Available> getAvailable() {
-        return getComponents();
+        return getComponents().getComponents(AVAILABLE);
     }
 
     @Override
-    public ComponentList<Available> getComponents() {
-        return (ComponentList<Available>) components;
+    public ComponentList<Component> getComponents() {
+        return (ComponentList<Component>) components;
     }
 
     /**
