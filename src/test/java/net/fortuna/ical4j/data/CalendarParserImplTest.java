@@ -75,6 +75,8 @@ public class CalendarParserImplTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
+        CompatibilityHints.setHintEnabled(
+                CompatibilityHints.KEY_DISALLOW_ALL_NAMES, true);
     }
 
     /* (non-Javadoc)
@@ -84,6 +86,7 @@ public class CalendarParserImplTest extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         CompatibilityHints.clearHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING);
+        CompatibilityHints.clearHintEnabled(CompatibilityHints.KEY_DISALLOW_ALL_NAMES);
     }
 
     /**
