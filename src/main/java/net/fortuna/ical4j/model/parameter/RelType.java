@@ -72,11 +72,15 @@ public class RelType extends Parameter implements Encodable {
 
     /* relations draft others */
 
+    private static final String VALUE_CONCEPT = "CONCEPT";
+
     private static final String VALUE_DEPENDS_ON = "DEPENDS-ON";
 
-    private static final String VALUE_REFID = "REFID";
+    private static final String VALUE_FIRST = "FIRST";
 
-    private static final String VALUE_CONCEPT = "CONCEPT";
+    private static final String VALUE_LAST = "LAST";
+
+    private static final String VALUE_REFID = "REFID";
 
     /**
      * Parent.
@@ -122,20 +126,32 @@ public class RelType extends Parameter implements Encodable {
     /* relations draft others */
 
     /**
+     * concept.
+     */
+    public static final RelType CONCEPT = new RelType(VALUE_CONCEPT);
+
+    /**
      * depends-on.
      */
     public static final RelType DEPENDS_ON =
             new RelType(VALUE_DEPENDS_ON);
 
     /**
+     * first.
+     */
+    public static final RelType FIRST =
+            new RelType(VALUE_FIRST);
+
+    /**
+     * last.
+     */
+    public static final RelType LAST =
+            new RelType(VALUE_LAST);
+
+    /**
      * refid.
      */
     public static final RelType REFID = new RelType(VALUE_REFID);
-
-    /**
-     * concept.
-     */
-    public static final RelType CONCEPT = new RelType(VALUE_CONCEPT);
 
     private final static Map<String, RelType> reltypes = new HashMap<>();
 
@@ -149,9 +165,11 @@ public class RelType extends Parameter implements Encodable {
         reltypes.put(VALUE_STARTTOFINISH, STARTTOFINISH);
         reltypes.put(VALUE_STARTTOSTART, STARTTOSTART);
 
-        reltypes.put(VALUE_DEPENDS_ON, DEPENDS_ON);
-        reltypes.put(VALUE_REFID, REFID);
         reltypes.put(VALUE_CONCEPT, CONCEPT);
+        reltypes.put(VALUE_DEPENDS_ON, DEPENDS_ON);
+        reltypes.put(VALUE_FIRST, FIRST);
+        reltypes.put(VALUE_LAST, LAST);
+        reltypes.put(VALUE_REFID, REFID);
     }
 
     private String value;
