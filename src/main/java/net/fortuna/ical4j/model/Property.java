@@ -403,6 +403,11 @@ public abstract class Property extends Content implements Comparable<Property> {
     public static final String LOCATION_TYPE = "LOCATION-TYPE";
 
     /**
+     * Location relative to property name.
+     */
+    public static final String RELATIVE_TO = "RELATIVE-TO";
+
+    /**
      * Participant type.
      */
     public static final String PARTICIPANT_TYPE = "PARTICIPANT-TYPE";
