@@ -19,7 +19,7 @@
 
     <commons-codec.version>1.15</commons-codec.version>
     <commons-lang3.version>3.8.1</commons-lang3.version>
-    <groovy.version>3.0.7</groovy.version>
+    <groovy.version>3.0.14</groovy.version>
     <sun.mail.version>1.6.2</sun.mail.version>
   </properties>
 
