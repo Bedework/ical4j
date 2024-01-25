@@ -52,9 +52,9 @@ import static net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo.ST
  * Defines a CLASS iCalendar property.
  * <p/>
  * <pre>
- *     4.8.1.3 Classification
+ *     4.8.1.3 Relative-to
  *
- *        Property Name: CLASS
+ *        Property Name: RELATIVE_TO
  *
  *        Purpose: This property defines whether a vlocation is related
  *                  to dtstart or dtend.
@@ -96,14 +96,14 @@ public class RelativeTo extends Property {
      * Default constructor.
      */
     public RelativeTo() {
-        super(CLASS, new Factory());
+        super(RELATIVE_TO, new Factory());
     }
 
     /**
      * @param aValue a value string for this component
      */
     public RelativeTo(final String aValue) {
-        super(CLASS, new Factory());
+        super(RELATIVE_TO, new Factory());
         this.value = aValue;
     }
 
@@ -112,7 +112,7 @@ public class RelativeTo extends Property {
      * @param aValue a value string for this component
      */
     public RelativeTo(final ParameterList aList, final String aValue) {
-        super(CLASS, aList, new Factory());
+        super(RELATIVE_TO, aList, new Factory());
         this.value = aValue;
     }
 
@@ -136,7 +136,7 @@ public class RelativeTo extends Property {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(CLASS);
+            super(RELATIVE_TO);
         }
 
         @Override
