@@ -87,8 +87,6 @@ public class CalendarBuilderTest extends TestCase {
                 CompatibilityHints.KEY_NOTES_COMPATIBILITY, true);
         CompatibilityHints.setHintEnabled(
                 CompatibilityHints.KEY_RELAXED_VALIDATION, true);
-        CompatibilityHints.setHintEnabled(
-                CompatibilityHints.KEY_DISALLOW_ALL_NAMES, true);
 
         // uncomment for testing invalid calendars in relaxed parsing mode..
 //        CompatibilityHints.setHintEnabled(
@@ -103,7 +101,6 @@ public class CalendarBuilderTest extends TestCase {
         CompatibilityHints.clearHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING);
         CompatibilityHints.clearHintEnabled(CompatibilityHints.KEY_NOTES_COMPATIBILITY);
         CompatibilityHints.clearHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION);
-        CompatibilityHints.clearHintEnabled(CompatibilityHints.KEY_DISALLOW_ALL_NAMES);
     }
 
     /**
@@ -112,15 +109,8 @@ public class CalendarBuilderTest extends TestCase {
      * @throws ValidationException
      */
     public void testBuildValid() throws IOException, ParserException, ValidationException {
-        Calendar calendar = null;
-        try {
-            calendar = builder.build(fin);
-            calendar.validate();
-        } catch (final ValidationException ve) {
-            ve.printStackTrace();
-            log.debug(calendar.toString());
-            throw ve;
-        }
+        Calendar calendar = builder.build(fin);
+        calendar.validate();
     }
 
     /**

@@ -12,6 +12,6 @@ class ServiceLoaderComponentFactorySupplierTest extends Specification {
         def factories = supplier.get()
 
         then: 'count matches expected'
-        factories.size() == 14
+        factories.size() == 16
     }
 }
