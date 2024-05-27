@@ -33,6 +33,7 @@ package net.fortuna.ical4j.model.property;
 
 import junit.framework.TestSuite;
 import net.fortuna.ical4j.model.PropertyTest;
+import net.fortuna.ical4j.model.property.immutable.ImmutableClazz;
 
 /**
  * Created: [19/11/2008]
@@ -62,21 +63,21 @@ public class ClazzTest extends PropertyTest {
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest(new ClazzTest(Clazz.CONFIDENTIAL, "CONFIDENTIAL"));
-        suite.addTest(new ClazzTest(Clazz.PRIVATE, "PRIVATE"));
-        suite.addTest(new ClazzTest(Clazz.PUBLIC, "PUBLIC"));
+        suite.addTest(new ClazzTest(ImmutableClazz.CONFIDENTIAL, "CONFIDENTIAL"));
+        suite.addTest(new ClazzTest(ImmutableClazz.PRIVATE, "PRIVATE"));
+        suite.addTest(new ClazzTest(ImmutableClazz.PUBLIC, "PUBLIC"));
 
-        suite.addTest(new ClazzTest("testEquals", Clazz.CONFIDENTIAL));
-        suite.addTest(new ClazzTest("testEquals", Clazz.PRIVATE));
-        suite.addTest(new ClazzTest("testEquals", Clazz.PUBLIC));
+        suite.addTest(new ClazzTest("testEquals", ImmutableClazz.CONFIDENTIAL));
+        suite.addTest(new ClazzTest("testEquals", ImmutableClazz.PRIVATE));
+        suite.addTest(new ClazzTest("testEquals", ImmutableClazz.PUBLIC));
 
-        suite.addTest(new ClazzTest("testValidation", Clazz.CONFIDENTIAL));
-        suite.addTest(new ClazzTest("testValidation", Clazz.PRIVATE));
-        suite.addTest(new ClazzTest("testValidation", Clazz.PUBLIC));
+        suite.addTest(new ClazzTest("testValidation", ImmutableClazz.CONFIDENTIAL));
+        suite.addTest(new ClazzTest("testValidation", ImmutableClazz.PRIVATE));
+        suite.addTest(new ClazzTest("testValidation", ImmutableClazz.PUBLIC));
 
-        suite.addTest(new ClazzTest("testImmutable", Clazz.CONFIDENTIAL));
-        suite.addTest(new ClazzTest("testImmutable", Clazz.PRIVATE));
-        suite.addTest(new ClazzTest("testImmutable", Clazz.PUBLIC));
+        suite.addTest(new ClazzTest("testImmutable", ImmutableClazz.CONFIDENTIAL));
+        suite.addTest(new ClazzTest("testImmutable", ImmutableClazz.PRIVATE));
+        suite.addTest(new ClazzTest("testImmutable", ImmutableClazz.PUBLIC));
         return suite;
     }
 }

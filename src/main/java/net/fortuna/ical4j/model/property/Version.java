@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
+import static net.fortuna.ical4j.model.property.immutable.ImmutableVersion.VERSION_2_0;
+
 /**
  * $Id$
  * <p/>
@@ -57,40 +59,7 @@ public class Version extends Property {
 
     private static final long serialVersionUID = 8872508067309087704L;
 
-    /**
-     * iCalendar version 2.0.
-     */
-    public static final Version VERSION_2_0 = new ImmutableVersion("2.0");
-
-    /**
-     * @author Ben Fortuna An immutable instance of Version.
-     */
-    private static final class ImmutableVersion extends Version {
-
-        private static final long serialVersionUID = -5040679357859594835L;
-
-        private ImmutableVersion(final String value) {
-            super(new ParameterList(true), value);
-        }
-
-        @Override
-        public void setValue(final String aValue) {
-            throw new UnsupportedOperationException(
-                    "Cannot modify constant instances");
-        }
-
-        @Override
-        public void setMaxVersion(final String maxVersion) {
-            throw new UnsupportedOperationException(
-                    "Cannot modify constant instances");
-        }
-
-        @Override
-        public void setMinVersion(final String minVersion) {
-            throw new UnsupportedOperationException(
-                    "Cannot modify constant instances");
-        }
-    }
+    public static final String VALUE_2_0 = "2.0";
 
     private String minVersion;
 

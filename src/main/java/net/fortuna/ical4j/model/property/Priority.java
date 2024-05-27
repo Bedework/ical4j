@@ -42,6 +42,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
+import static net.fortuna.ical4j.model.property.immutable.ImmutablePriority.HIGH;
+import static net.fortuna.ical4j.model.property.immutable.ImmutablePriority.LOW;
+import static net.fortuna.ical4j.model.property.immutable.ImmutablePriority.MEDIUM;
+import static net.fortuna.ical4j.model.property.immutable.ImmutablePriority.UNDEFINED;
+
 /**
  * $Id$
  * <p/>
@@ -130,49 +135,10 @@ public class Priority extends Property {
 
     private static final long serialVersionUID = -5654367843953827397L;
 
-    /**
-     * Undefined priority.
-     */
-    public static final Priority UNDEFINED = new ImmutablePriority(0);
-
-    /**
-     * High priority.
-     */
-    public static final Priority HIGH = new ImmutablePriority(1);
-
-    /**
-     * Medium priority.
-     */
-    public static final Priority MEDIUM = new ImmutablePriority(5);
-
-    /**
-     * Low priority.
-     */
-    public static final Priority LOW = new ImmutablePriority(9);
-
-    /**
-     * @author Ben Fortuna An immutable instance of Priority.
-     */
-    private static final class ImmutablePriority extends Priority {
-
-        private static final long serialVersionUID = 5884973714694108418L;
-
-        private ImmutablePriority(final int level) {
-            super(new ParameterList(true), level);
-        }
-
-        @Override
-        public void setValue(final String aValue) {
-            throw new UnsupportedOperationException(
-                    "Cannot modify constant instances");
-        }
-
-        @Override
-        public void setLevel(final int level) {
-            throw new UnsupportedOperationException(
-                    "Cannot modify constant instances");
-        }
-    }
+    public static final int VALUE_UNDEFINED = 0;
+    public static final int VALUE_HIGH = 1;
+    public static final int VALUE_MEDIUM = 5;
+    public static final int VALUE_LOW = 9;
 
     private int level;
 

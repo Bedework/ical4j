@@ -33,6 +33,7 @@ package net.fortuna.ical4j.model.property;
 
 import junit.framework.TestSuite;
 import net.fortuna.ical4j.model.PropertyTest;
+import net.fortuna.ical4j.model.property.immutable.ImmutableBusyType;
 
 /**
  * $Id$
@@ -65,30 +66,30 @@ public class BusyTypeTest extends PropertyTest {
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
         suite.addTest(new BusyTypeTest(new BusyType("value"), "value"));
-        suite.addTest(new BusyTypeTest(BusyType.BUSY, "BUSY"));
-        suite.addTest(new BusyTypeTest(BusyType.BUSY_TENTATIVE,
+        suite.addTest(new BusyTypeTest(ImmutableBusyType.BUSY, "BUSY"));
+        suite.addTest(new BusyTypeTest(ImmutableBusyType.BUSY_TENTATIVE,
                 "BUSY-TENTATIVE"));
-        suite.addTest(new BusyTypeTest(BusyType.BUSY_UNAVAILABLE,
+        suite.addTest(new BusyTypeTest(ImmutableBusyType.BUSY_UNAVAILABLE,
                 "BUSY-UNAVAILABLE"));
 
-        suite.addTest(new BusyTypeTest("testEquals", BusyType.BUSY));
-        suite.addTest(new BusyTypeTest("testEquals", BusyType.BUSY_TENTATIVE));
+        suite.addTest(new BusyTypeTest("testEquals", ImmutableBusyType.BUSY));
+        suite.addTest(new BusyTypeTest("testEquals", ImmutableBusyType.BUSY_TENTATIVE));
         suite
                 .addTest(new BusyTypeTest("testEquals",
-                        BusyType.BUSY_UNAVAILABLE));
+                        ImmutableBusyType.BUSY_UNAVAILABLE));
 
-        suite.addTest(new BusyTypeTest("testValidation", BusyType.BUSY));
+        suite.addTest(new BusyTypeTest("testValidation", ImmutableBusyType.BUSY));
         suite.addTest(new BusyTypeTest("testValidation",
-                BusyType.BUSY_TENTATIVE));
+                ImmutableBusyType.BUSY_TENTATIVE));
         suite.addTest(new BusyTypeTest("testValidation",
-                BusyType.BUSY_UNAVAILABLE));
+                ImmutableBusyType.BUSY_UNAVAILABLE));
 
-        suite.addTest(new BusyTypeTest("testImmutable", BusyType.BUSY));
+        suite.addTest(new BusyTypeTest("testImmutable", ImmutableBusyType.BUSY));
         suite
                 .addTest(new BusyTypeTest("testImmutable",
-                        BusyType.BUSY_TENTATIVE));
+                        ImmutableBusyType.BUSY_TENTATIVE));
         suite.addTest(new BusyTypeTest("testImmutable",
-                BusyType.BUSY_UNAVAILABLE));
+                ImmutableBusyType.BUSY_UNAVAILABLE));
         return suite;
     }
 }

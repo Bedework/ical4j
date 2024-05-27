@@ -5,8 +5,17 @@ import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Version;
-import net.fortuna.ical4j.transform.*;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
+import net.fortuna.ical4j.transform.AddTransformer;
+import net.fortuna.ical4j.transform.CancelTransformer;
+import net.fortuna.ical4j.transform.CounterTransformer;
+import net.fortuna.ical4j.transform.DeclineCounterTransformer;
+import net.fortuna.ical4j.transform.PublishTransformer;
+import net.fortuna.ical4j.transform.RefreshTransformer;
+import net.fortuna.ical4j.transform.ReplyTransformer;
+import net.fortuna.ical4j.transform.RequestTransformer;
+import net.fortuna.ical4j.transform.Transformer;
 import net.fortuna.ical4j.util.Calendars;
 import net.fortuna.ical4j.util.UidGenerator;
 
@@ -25,21 +34,21 @@ public abstract class AbstractUserAgent<T extends CalendarComponent> implements 
     public AbstractUserAgent(ProdId prodId, Organizer organizer, UidGenerator uidGenerator) {
         this.prodId = prodId;
         transformers = new HashMap<>();
-        transformers.put(Method.PUBLISH, new PublishTransformer(organizer, uidGenerator,true));
-        transformers.put(Method.REQUEST, new RequestTransformer(organizer, uidGenerator));
-        transformers.put(Method.ADD, new AddTransformer(organizer, uidGenerator));
-        transformers.put(Method.CANCEL, new CancelTransformer(organizer, uidGenerator));
-        transformers.put(Method.REPLY, new ReplyTransformer(uidGenerator));
-        transformers.put(Method.REFRESH, new RefreshTransformer(uidGenerator));
-        transformers.put(Method.COUNTER, new CounterTransformer(uidGenerator));
-        transformers.put(Method.DECLINE_COUNTER, new DeclineCounterTransformer(organizer, uidGenerator));
+        transformers.put(ImmutableMethod.PUBLISH, new PublishTransformer(organizer, uidGenerator, true));
+        transformers.put(ImmutableMethod.REQUEST, new RequestTransformer(organizer, uidGenerator));
+        transformers.put(ImmutableMethod.ADD, new AddTransformer(organizer, uidGenerator));
+        transformers.put(ImmutableMethod.CANCEL, new CancelTransformer(organizer, uidGenerator));
+        transformers.put(ImmutableMethod.REPLY, new ReplyTransformer(uidGenerator));
+        transformers.put(ImmutableMethod.REFRESH, new RefreshTransformer(uidGenerator));
+        transformers.put(ImmutableMethod.COUNTER, new CounterTransformer(uidGenerator));
+        transformers.put(ImmutableMethod.DECLINE_COUNTER, new DeclineCounterTransformer(organizer, uidGenerator));
     }
 
     @SafeVarargs
     protected final Calendar wrap(Method method, T... component) {
         Calendar calendar = Calendars.wrap(component);
         calendar.getProperties().add(prodId);
-        calendar.getProperties().add(Version.VERSION_2_0);
+        calendar.getProperties().add(ImmutableVersion.VERSION_2_0);
         return transform(method, calendar);
     }
 

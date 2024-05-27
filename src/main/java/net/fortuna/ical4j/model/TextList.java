@@ -136,4 +136,24 @@ public class TextList implements Serializable, Iterable<String> {
     public final int size() {
         return texts.size();
     }
+
+    /**
+     * @return true if the list contains the parameter
+     */
+    public final boolean contains(final String val) {
+        return texts.contains(val);
+    }
+
+    /**
+     * @return true if the list contains the parameter
+     */
+    public final boolean containsIgnoreCase(final String val) {
+        for (final String s: texts) {
+            if (s.equalsIgnoreCase(val)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

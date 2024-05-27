@@ -32,6 +32,7 @@
 package net.fortuna.ical4j.model.property;
 
 import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.property.immutable.ImmutablePollMode;
 import net.fortuna.ical4j.validate.ValidationException;
 
 import java.io.IOException;
@@ -51,34 +52,6 @@ import java.text.ParseException;
 public class PollMode extends Property {
 
     private static final long serialVersionUID = 4939943639175551481L;
-
-    /**
-     * Constant for basic poll-mode.
-     */
-    public static final PollMode BASIC = new ImmutablePollMode("BASIC");
-
-    /**
-     * @author Ben Fortuna An immutable instance of PollMode.
-     */
-    private static final class ImmutablePollMode extends PollMode {
-
-        private static final long serialVersionUID = 5978394762293365042L;
-
-        /**
-         * @param value
-         */
-        private ImmutablePollMode(final String value) {
-            super(new ParameterList(true), value);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void setValue(final String aValue) {
-            throw new UnsupportedOperationException(
-                    "Cannot modify constant instances");
-        }
-    }
 
     private String value;
 
@@ -140,9 +113,9 @@ public class PollMode extends Property {
                 throws IOException, URISyntaxException, ParseException {
             final PollMode pollMode;
 
-            if (PollMode.BASIC
+            if (ImmutablePollMode.BASIC
                     .getValue().equals(value)) {
-                pollMode = PollMode.BASIC;
+                pollMode = ImmutablePollMode.BASIC;
             } else {
                 pollMode = new PollMode(parameters, value);
             }

@@ -33,6 +33,7 @@ package net.fortuna.ical4j.model.property;
 
 import junit.framework.TestSuite;
 import net.fortuna.ical4j.model.PropertyTest;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
 
 import java.text.ParseException;
 
@@ -46,7 +47,7 @@ import java.text.ParseException;
 public class MethodTest extends PropertyTest {
 
     /**
-     * @param property
+     * @param method
      * @param expectedValue
      */
     public MethodTest(Method method, String expectedValue) {
@@ -67,41 +68,41 @@ public class MethodTest extends PropertyTest {
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest(new MethodTest(Method.ADD, "ADD"));
-        suite.addTest(new MethodTest(Method.CANCEL, "CANCEL"));
-        suite.addTest(new MethodTest(Method.COUNTER, "COUNTER"));
-        suite.addTest(new MethodTest(Method.DECLINE_COUNTER, "DECLINECOUNTER"));
-        suite.addTest(new MethodTest(Method.PUBLISH, "PUBLISH"));
-        suite.addTest(new MethodTest(Method.REFRESH, "REFRESH"));
-        suite.addTest(new MethodTest(Method.REPLY, "REPLY"));
-        suite.addTest(new MethodTest(Method.REQUEST, "REQUEST"));
+        suite.addTest(new MethodTest(ImmutableMethod.ADD, "ADD"));
+        suite.addTest(new MethodTest(ImmutableMethod.CANCEL, "CANCEL"));
+        suite.addTest(new MethodTest(ImmutableMethod.COUNTER, "COUNTER"));
+        suite.addTest(new MethodTest(ImmutableMethod.DECLINE_COUNTER, "DECLINECOUNTER"));
+        suite.addTest(new MethodTest(ImmutableMethod.PUBLISH, "PUBLISH"));
+        suite.addTest(new MethodTest(ImmutableMethod.REFRESH, "REFRESH"));
+        suite.addTest(new MethodTest(ImmutableMethod.REPLY, "REPLY"));
+        suite.addTest(new MethodTest(ImmutableMethod.REQUEST, "REQUEST"));
         
-        suite.addTest(new MethodTest("testValidation", Method.ADD));
-        suite.addTest(new MethodTest("testValidation", Method.CANCEL));
-        suite.addTest(new MethodTest("testValidation", Method.COUNTER));
-        suite.addTest(new MethodTest("testValidation", Method.DECLINE_COUNTER));
-        suite.addTest(new MethodTest("testValidation", Method.PUBLISH));
-        suite.addTest(new MethodTest("testValidation", Method.REFRESH));
-        suite.addTest(new MethodTest("testValidation", Method.REPLY));
-        suite.addTest(new MethodTest("testValidation", Method.REQUEST));
+        suite.addTest(new MethodTest("testValidation", ImmutableMethod.ADD));
+        suite.addTest(new MethodTest("testValidation", ImmutableMethod.CANCEL));
+        suite.addTest(new MethodTest("testValidation", ImmutableMethod.COUNTER));
+        suite.addTest(new MethodTest("testValidation", ImmutableMethod.DECLINE_COUNTER));
+        suite.addTest(new MethodTest("testValidation", ImmutableMethod.PUBLISH));
+        suite.addTest(new MethodTest("testValidation", ImmutableMethod.REFRESH));
+        suite.addTest(new MethodTest("testValidation", ImmutableMethod.REPLY));
+        suite.addTest(new MethodTest("testValidation", ImmutableMethod.REQUEST));
         
-        suite.addTest(new MethodTest("testEquals", Method.ADD));
-        suite.addTest(new MethodTest("testEquals", Method.CANCEL));
-        suite.addTest(new MethodTest("testEquals", Method.COUNTER));
-        suite.addTest(new MethodTest("testEquals", Method.DECLINE_COUNTER));
-        suite.addTest(new MethodTest("testEquals", Method.PUBLISH));
-        suite.addTest(new MethodTest("testEquals", Method.REFRESH));
-        suite.addTest(new MethodTest("testEquals", Method.REPLY));
-        suite.addTest(new MethodTest("testEquals", Method.REQUEST));
+        suite.addTest(new MethodTest("testEquals", ImmutableMethod.ADD));
+        suite.addTest(new MethodTest("testEquals", ImmutableMethod.CANCEL));
+        suite.addTest(new MethodTest("testEquals", ImmutableMethod.COUNTER));
+        suite.addTest(new MethodTest("testEquals", ImmutableMethod.DECLINE_COUNTER));
+        suite.addTest(new MethodTest("testEquals", ImmutableMethod.PUBLISH));
+        suite.addTest(new MethodTest("testEquals", ImmutableMethod.REFRESH));
+        suite.addTest(new MethodTest("testEquals", ImmutableMethod.REPLY));
+        suite.addTest(new MethodTest("testEquals", ImmutableMethod.REQUEST));
         
-        suite.addTest(new MethodTest("testImmutable", Method.ADD));
-        suite.addTest(new MethodTest("testImmutable", Method.CANCEL));
-        suite.addTest(new MethodTest("testImmutable", Method.COUNTER));
-        suite.addTest(new MethodTest("testImmutable", Method.DECLINE_COUNTER));
-        suite.addTest(new MethodTest("testImmutable", Method.PUBLISH));
-        suite.addTest(new MethodTest("testImmutable", Method.REFRESH));
-        suite.addTest(new MethodTest("testImmutable", Method.REPLY));
-        suite.addTest(new MethodTest("testImmutable", Method.REQUEST));
+        suite.addTest(new MethodTest("testImmutable", ImmutableMethod.ADD));
+        suite.addTest(new MethodTest("testImmutable", ImmutableMethod.CANCEL));
+        suite.addTest(new MethodTest("testImmutable", ImmutableMethod.COUNTER));
+        suite.addTest(new MethodTest("testImmutable", ImmutableMethod.DECLINE_COUNTER));
+        suite.addTest(new MethodTest("testImmutable", ImmutableMethod.PUBLISH));
+        suite.addTest(new MethodTest("testImmutable", ImmutableMethod.REFRESH));
+        suite.addTest(new MethodTest("testImmutable", ImmutableMethod.REPLY));
+        suite.addTest(new MethodTest("testImmutable", ImmutableMethod.REQUEST));
         
         return suite;
     }

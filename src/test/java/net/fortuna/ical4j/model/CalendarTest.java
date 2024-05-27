@@ -36,7 +36,11 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.parameter.TzId;
 import net.fortuna.ical4j.model.parameter.Value;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.RRule;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.immutable.ImmutableCalScale;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
 import net.fortuna.ical4j.validate.ValidationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +49,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
-import static net.fortuna.ical4j.model.WeekDay.*;
+import static net.fortuna.ical4j.model.WeekDay.FR;
+import static net.fortuna.ical4j.model.WeekDay.MO;
+import static net.fortuna.ical4j.model.WeekDay.TH;
+import static net.fortuna.ical4j.model.WeekDay.TU;
+import static net.fortuna.ical4j.model.WeekDay.WE;
 
 /**
  * Created on 16/03/2005
@@ -64,8 +72,8 @@ public class CalendarTest {
     public void setUp() {
         calendar = new Calendar();
         calendar.getProperties().add(new ProdId("-//Ben Fortuna//iCal4j 1.0//EN"));
-        calendar.getProperties().add(Version.VERSION_2_0);
-        calendar.getProperties().add(CalScale.GREGORIAN);
+        calendar.getProperties().add(ImmutableVersion.VERSION_2_0);
+        calendar.getProperties().add(ImmutableCalScale.GREGORIAN);
         VEvent vEvent = new VEvent();
         vEvent.getProperties().add(new Uid("1"));
         calendar.getComponents().add(vEvent);

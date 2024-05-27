@@ -41,6 +41,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
+import static net.fortuna.ical4j.model.property.immutable.ImmutableAction.AUDIO;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableAction.DISPLAY;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableAction.EMAIL;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableAction.PROCEDURE;
+
 /**
  * $Id$
  * <p/>
@@ -54,49 +59,10 @@ public class Action extends Property {
 
     private static final long serialVersionUID = -2353353838411753712L;
 
-    /**
-     * Constant action for playing an audible sound.
-     */
-    public static final Action AUDIO = new ImmutableAction("AUDIO");
-
-    /**
-     * Constant action for displaying a visible notification.
-     */
-    public static final Action DISPLAY = new ImmutableAction("DISPLAY");
-
-    /**
-     * Constant action for sending an email.
-     */
-    public static final Action EMAIL = new ImmutableAction("EMAIL");
-
-    /**
-     * Constant action for a procedure.
-     */
-    public static final Action PROCEDURE = new ImmutableAction("PROCEDURE");
-
-    /**
-     * @author Ben Fortuna An immutable instance of Action.
-     */
-    private static final class ImmutableAction extends Action {
-
-        private static final long serialVersionUID = -2752235951243969905L;
-
-        /**
-         * @param value
-         */
-        private ImmutableAction(final String value) {
-            super(new ParameterList(true), value);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setValue(final String aValue) {
-            throw new UnsupportedOperationException(
-                    "Cannot modify constant instances");
-        }
-    }
+    public static final String VALUE_AUDIO = "AUDIO";
+    public static final String VALUE_DISPLAY = "DISPLAY";
+    public static final String VALUE_EMAIL = "EMAIL";
+    public static final String VALUE_PROCEDURE = "PROCEDURE";
 
     private String value;
 

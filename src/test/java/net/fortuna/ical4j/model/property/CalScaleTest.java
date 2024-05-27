@@ -33,6 +33,7 @@ package net.fortuna.ical4j.model.property;
 
 import junit.framework.TestSuite;
 import net.fortuna.ical4j.model.PropertyTest;
+import net.fortuna.ical4j.model.property.immutable.ImmutableCalScale;
 
 /**
  * $Id$
@@ -66,8 +67,8 @@ public class CalScaleTest extends PropertyTest {
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest(new CalScaleTest(CalScale.GREGORIAN, "GREGORIAN"));
-        suite.addTest(new CalScaleTest("testImmutable", CalScale.GREGORIAN));
+        suite.addTest(new CalScaleTest(ImmutableCalScale.GREGORIAN, "GREGORIAN"));
+        suite.addTest(new CalScaleTest("testImmutable", ImmutableCalScale.GREGORIAN));
         return suite;
     }
 }

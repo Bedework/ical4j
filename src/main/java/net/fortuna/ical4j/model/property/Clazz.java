@@ -41,6 +41,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
+import static net.fortuna.ical4j.model.property.immutable.ImmutableClazz.CONFIDENTIAL;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableClazz.PRIVATE;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableClazz.PUBLIC;
+
 /**
  * $Id$
  * <p/>
@@ -100,44 +104,9 @@ public class Clazz extends Property {
 
     private static final long serialVersionUID = 4939943639175551481L;
 
-    /**
-     * Constant for public classification.
-     */
-    public static final Clazz PUBLIC = new ImmutableClazz("PUBLIC");
-
-    /**
-     * Constant for private classification.
-     */
-    public static final Clazz PRIVATE = new ImmutableClazz("PRIVATE");
-
-    /**
-     * Constant for confidential classification.
-     */
-    public static final Clazz CONFIDENTIAL = new ImmutableClazz("CONFIDENTIAL");
-
-    /**
-     * @author Ben Fortuna An immutable instance of Clazz.
-     */
-    private static final class ImmutableClazz extends Clazz {
-
-        private static final long serialVersionUID = 5978394762293365042L;
-
-        /**
-         * @param value
-         */
-        private ImmutableClazz(final String value) {
-            super(new ParameterList(true), value);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setValue(final String aValue) {
-            throw new UnsupportedOperationException(
-                    "Cannot modify constant instances");
-        }
-    }
+    public static final String VALUE_PUBLIC = "PUBLIC";
+    public static final String VALUE_PRIVATE = "PRIVATE";
+    public static final String VALUE_CONFIDENTIAL = "CONFIDENTIAL";
 
     private String value;
 

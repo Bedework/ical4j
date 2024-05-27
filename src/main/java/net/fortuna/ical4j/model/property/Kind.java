@@ -35,68 +35,68 @@ import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyFactory;
+import net.fortuna.ical4j.model.property.immutable.ImmutableKind;
 import net.fortuna.ical4j.validate.ValidationException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
-import static net.fortuna.ical4j.model.property.immutable.ImmutableBusyType.BUSY;
-import static net.fortuna.ical4j.model.property.immutable.ImmutableBusyType.BUSY_TENTATIVE;
-import static net.fortuna.ical4j.model.property.immutable.ImmutableBusyType.BUSY_UNAVAILABLE;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableKind.*;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableKind.GROUP;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableKind.INDIVIDUAL;
 
 /**
  * $Id$
+ * <p/>
+ * Created: [May 21, 2024]
+ * <p/>
+ * Defines a KIND iCalendar component property.
+ * <p/>
+ * <pre>
+ kind = "KIND" kindparams ":"
+                 "INDIVIDUAL"   ; An individual
+                 / "GROUP"        ; A group of individuals
+                 / "RESOURCE"     ; A physical resource
+                 / "LOCATION"     ; A location resource e.g a room
+                 / iana-token CRLF
+
+ kindparams = *(";" other-param) * </pre>
  *
- * Created: [Apr 6, 2004]
- *
- * Defines a BUSYTYPE iCalendar component property.
- *
- *    Format Definition:  This property is defined by the following
- *    notation:
- *
- *      busytype      = "BUSYTYPE" busytypeparam ":" busytypevalue CRLF
- *
- *      busytypeparam = *(";" xparam)
- *
- *      busytypevalue = "BUSY" / "BUSY-UNAVAILABLE" /
- *                      "BUSY-TENTATIVE" / iana-token / x-name
- *                      ; Default is "BUSY-UNAVAILABLE"
- *
- * @author Ben Fortuna
  * @author Mike Douglass
  */
-public class BusyType extends Property {
+public class Kind extends Property {
 
-    private static final long serialVersionUID = -5140360270562621159L;
+    private static final long serialVersionUID = 7401102230299289898L;
 
-    public static final String VALUE_BUSY = "BUSY";
-    public static final String VALUE_BUSY_UNAVAILABLE = "BUSY-UNAVAILABLE";
-    public static final String VALUE_BUSY_TENTATIVE = "BUSY-TENTATIVE";
+    public static final String VALUE_INDIVIDUAL = "INDIVIDUAL";
+    public static final String VALUE_GROUP = "GROUP";
+    public static final String VALUE_RESOURCE = "RESOURCE";
+    public static final String VALUE_LOCATION = "LOCATION";
 
     private String value;
 
     /**
      * Default constructor.
      */
-    public BusyType() {
-        super(BUSYTYPE, new Factory());
+    public Kind() {
+        super(KIND, new Factory());
     }
 
     /**
      * @param aValue a value string for this component
      */
-    public BusyType(final String aValue) {
-        super(BUSYTYPE, new Factory());
+    public Kind(final String aValue) {
+        super(KIND, new Factory());
         this.value = aValue;
     }
 
     /**
-     * @param aList a list of parameters for this component
+     * @param aList  a list of parameters for this component
      * @param aValue a value string for this component
      */
-    public BusyType(final ParameterList aList, final String aValue) {
-        super(BUSYTYPE, aList, new Factory());
+    public Kind(final ParameterList aList, final String aValue) {
+        super(KIND, aList, new Factory());
         this.value = aValue;
     }
 
@@ -121,33 +121,31 @@ public class BusyType extends Property {
 
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory<BusyType> {
+    public static class Factory extends Content.Factory implements PropertyFactory<Kind> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(BUSYTYPE);
+            super(KIND);
         }
 
         @Override
-        public BusyType createProperty(final ParameterList parameters, final String value)
+        public Kind createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
 
-            BusyType busyType;
-            if (BUSY.getValue().equals(value)) {
-                busyType = BUSY;
-            } else if (BUSY_TENTATIVE.getValue().equals(value)) {
-                busyType = BUSY_TENTATIVE;
-            } else if (BUSY_UNAVAILABLE.getValue().equals(value)) {
-                busyType = BUSY_UNAVAILABLE;
-            } else {
-                busyType = new BusyType(parameters, value);
+            if (parameters.isEmpty()) {
+                switch (value.toUpperCase()) {
+                    case VALUE_INDIVIDUAL: return INDIVIDUAL;
+                    case VALUE_GROUP: return GROUP;
+                    case VALUE_RESOURCE: return RESOURCE;
+                    case VALUE_LOCATION: return ImmutableKind.LOCATION;
+                }
             }
-            return busyType;
+            return new Kind(parameters, value);
         }
 
         @Override
-        public BusyType createProperty() {
-            return new BusyType();
+        public Kind createProperty() {
+            return new Kind();
         }
     }
 

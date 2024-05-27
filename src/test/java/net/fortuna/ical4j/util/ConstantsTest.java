@@ -34,6 +34,7 @@ package net.fortuna.ical4j.util;
 import junit.framework.TestCase;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.property.Action;
+import net.fortuna.ical4j.model.property.immutable.ImmutableAction;
 
 /**
  * Created: [15/12/2008]
@@ -43,13 +44,13 @@ import net.fortuna.ical4j.model.property.Action;
 public class ConstantsTest extends TestCase {
 
     public void testForPropertyConstant() {
-        Property origProp = Action.AUDIO;
+        Property origProp = ImmutableAction.AUDIO;
         Property resProp = Constants.forProperty(origProp);
-        assertTrue("forPropertyConstant", resProp == Action.AUDIO);
+        assertTrue("forPropertyConstant", resProp == ImmutableAction.AUDIO);
 
-        origProp = new Action(Action.AUDIO.getValue());
+        origProp = new Action(ImmutableAction.AUDIO.getValue());
         resProp = Constants.forProperty(origProp);
-        assertTrue("forPropertyConstant", resProp == Action.AUDIO);
+        assertTrue("forPropertyConstant", resProp == ImmutableAction.AUDIO);
     }
 
     public void testForPropertyNotConstant() {

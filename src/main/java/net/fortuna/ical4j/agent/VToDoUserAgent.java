@@ -2,9 +2,9 @@ package net.fortuna.ical4j.agent;
 
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VToDo;
-import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
 import net.fortuna.ical4j.transform.RequestTransformer;
 import net.fortuna.ical4j.util.UidGenerator;
 
@@ -34,7 +34,7 @@ public class VToDoUserAgent extends AbstractUserAgent<VToDo> {
      */
     @Override
     public Calendar publish(VToDo... component) {
-        Calendar published = wrap(Method.PUBLISH, component);
+        Calendar published = wrap(ImmutableMethod.PUBLISH, component);
         published.validate();
         return published;
     }
@@ -91,7 +91,7 @@ public class VToDoUserAgent extends AbstractUserAgent<VToDo> {
      */
     @Override
     public Calendar request(VToDo... component) {
-        Calendar request = wrap(Method.REQUEST, component);
+        Calendar request = wrap(ImmutableMethod.REQUEST, component);
         request.validate();
         return request;
     }
@@ -134,7 +134,7 @@ public class VToDoUserAgent extends AbstractUserAgent<VToDo> {
      */
     @Override
     public Calendar reply(Calendar request) {
-        Calendar reply = transform(Method.REPLY, request);
+        Calendar reply = transform(ImmutableMethod.REPLY, request);
         reply.validate();
         return reply;
     }
@@ -165,7 +165,7 @@ public class VToDoUserAgent extends AbstractUserAgent<VToDo> {
      */
     @Override
     public Calendar add(VToDo component) {
-        Calendar add = wrap(Method.ADD, component);
+        Calendar add = wrap(ImmutableMethod.ADD, component);
         add.validate();
         return add;
     }
@@ -211,7 +211,7 @@ public class VToDoUserAgent extends AbstractUserAgent<VToDo> {
      */
     @Override
     public Calendar cancel(VToDo... component) {
-        Calendar cancel = wrap(Method.CANCEL, component);
+        Calendar cancel = wrap(ImmutableMethod.CANCEL, component);
         cancel.validate();
         return cancel;
     }
@@ -240,7 +240,7 @@ public class VToDoUserAgent extends AbstractUserAgent<VToDo> {
      */
     @Override
     public Calendar refresh(VToDo component) {
-        Calendar refresh = wrap(Method.REFRESH, component);
+        Calendar refresh = wrap(ImmutableMethod.REFRESH, component);
         refresh.validate();
         return refresh;
     }
@@ -268,7 +268,7 @@ public class VToDoUserAgent extends AbstractUserAgent<VToDo> {
      */
     @Override
     public Calendar counter(Calendar request) {
-        Calendar counter = transform(Method.COUNTER, request);
+        Calendar counter = transform(ImmutableMethod.COUNTER, request);
         counter.validate();
         return counter;
     }
@@ -286,7 +286,7 @@ public class VToDoUserAgent extends AbstractUserAgent<VToDo> {
      */
     @Override
     public Calendar declineCounter(Calendar counter) {
-        Calendar declineCounter = transform(Method.DECLINE_COUNTER, counter);
+        Calendar declineCounter = transform(ImmutableMethod.DECLINE_COUNTER, counter);
         declineCounter.validate();
         return declineCounter;
     }

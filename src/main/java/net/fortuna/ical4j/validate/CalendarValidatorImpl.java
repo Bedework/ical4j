@@ -4,7 +4,23 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.CalendarComponent;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Categories;
+import net.fortuna.ical4j.model.property.Color;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.Image;
+import net.fortuna.ical4j.model.property.LastModified;
+import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.Name;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.RefreshInterval;
+import net.fortuna.ical4j.model.property.Source;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
+import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.XProperty;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
 import java.util.ArrayList;
@@ -59,7 +75,7 @@ public class CalendarValidatorImpl implements Validator<Calendar> {
 
         if (!CompatibilityHints.isHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION)) {
             // require VERSION:2.0 for RFC2445..
-            if (!Version.VERSION_2_0.equals(target.getProperty(Property.VERSION))) {
+            if (!ImmutableVersion.VERSION_2_0.equals(target.getProperty(Property.VERSION))) {
                 throw new ValidationException("Unsupported Version: " + target.getProperty(Property.VERSION).getValue());
             }
         }
@@ -82,28 +98,28 @@ public class CalendarValidatorImpl implements Validator<Calendar> {
 //        if (!CompatibilityHints.isHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION)) {
         // validate method..
         final Method method = target.getProperty(Property.METHOD);
-        if (Method.PUBLISH.equals(method)) {
+        if (ImmutableMethod.PUBLISH.equals(method)) {
             new PublishValidator().validate(target);
         }
-        else if (Method.REQUEST.equals(target.getProperty(Property.METHOD))) {
+        else if (ImmutableMethod.REQUEST.equals(target.getProperty(Property.METHOD))) {
             new RequestValidator().validate(target);
         }
-        else if (Method.REPLY.equals(target.getProperty(Property.METHOD))) {
+        else if (ImmutableMethod.REPLY.equals(target.getProperty(Property.METHOD))) {
             new ReplyValidator().validate(target);
         }
-        else if (Method.ADD.equals(target.getProperty(Property.METHOD))) {
+        else if (ImmutableMethod.ADD.equals(target.getProperty(Property.METHOD))) {
             new AddValidator().validate(target);
         }
-        else if (Method.CANCEL.equals(target.getProperty(Property.METHOD))) {
+        else if (ImmutableMethod.CANCEL.equals(target.getProperty(Property.METHOD))) {
             new CancelValidator().validate(target);
         }
-        else if (Method.REFRESH.equals(target.getProperty(Property.METHOD))) {
+        else if (ImmutableMethod.REFRESH.equals(target.getProperty(Property.METHOD))) {
             new RefreshValidator().validate(target);
         }
-        else if (Method.COUNTER.equals(target.getProperty(Property.METHOD))) {
+        else if (ImmutableMethod.COUNTER.equals(target.getProperty(Property.METHOD))) {
             new CounterValidator().validate(target);
         }
-        else if (Method.DECLINE_COUNTER.equals(target.getProperty(Property.METHOD))) {
+        else if (ImmutableMethod.DECLINE_COUNTER.equals(target.getProperty(Property.METHOD))) {
             new DeclineCounterValidator().validate(target);
         }
 //        }

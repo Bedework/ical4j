@@ -40,6 +40,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static net.fortuna.ical4j.model.Property.*;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableAction.AUDIO;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableAction.DISPLAY;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableAction.EMAIL;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableAction.PROCEDURE;
 import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.*;
 
 /**
@@ -197,11 +201,11 @@ public class VAlarm extends CalendarComponent {
 
     private static final Map<Action, Validator> actionValidators = new HashMap<Action, Validator>();
     static {
-        actionValidators.put(Action.AUDIO, new ComponentValidator<VAlarm>(new ValidationRule(OneOrLess, ATTACH)));
-        actionValidators.put(Action.DISPLAY, new ComponentValidator<VAlarm>(new ValidationRule(One, DESCRIPTION)));
-        actionValidators.put(Action.EMAIL, new ComponentValidator<VAlarm>(new ValidationRule(One, DESCRIPTION, SUMMARY),
+        actionValidators.put(AUDIO, new ComponentValidator<VAlarm>(new ValidationRule(OneOrLess, ATTACH)));
+        actionValidators.put(DISPLAY, new ComponentValidator<VAlarm>(new ValidationRule(One, DESCRIPTION)));
+        actionValidators.put(EMAIL, new ComponentValidator<VAlarm>(new ValidationRule(One, DESCRIPTION, SUMMARY),
                 new ValidationRule(OneOrMore, ATTENDEE)));
-        actionValidators.put(Action.PROCEDURE, new ComponentValidator<VAlarm>(new ValidationRule(One, ATTACH),
+        actionValidators.put(PROCEDURE, new ComponentValidator<VAlarm>(new ValidationRule(One, ATTACH),
                 new ValidationRule(OneOrLess, DESCRIPTION)));
     }
 

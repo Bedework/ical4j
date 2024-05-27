@@ -42,6 +42,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
+import static net.fortuna.ical4j.model.property.immutable.ImmutableCalScale.GREGORIAN;
+
 /**
  * $Id$
  * <p/>
@@ -55,34 +57,7 @@ public class CalScale extends Property {
 
     private static final long serialVersionUID = 7446184786984981423L;
 
-    /**
-     * Constant for Gregorian calendar representation.
-     */
-    public static final CalScale GREGORIAN = new ImmutableCalScale("GREGORIAN");
-
-    /**
-     * @author Ben Fortuna An immutable instance of CalScale.
-     */
-    private static final class ImmutableCalScale extends CalScale {
-
-        private static final long serialVersionUID = 1750949550694413878L;
-
-        /**
-         * @param value
-         */
-        private ImmutableCalScale(final String value) {
-            super(new ParameterList(true), value);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setValue(final String aValue) {
-            throw new UnsupportedOperationException(
-                    "Cannot modify constant instances");
-        }
-    }
+    public static final String VALUE_GREGORIAN = "GREGORIAN";
 
     private String value;
 

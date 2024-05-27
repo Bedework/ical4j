@@ -410,6 +410,11 @@ public abstract class Property extends Content implements Comparable<Property> {
     /**
      * Participant type.
      */
+    public static final String KIND = "KIND";
+
+    /**
+     * Participant type.
+     */
     public static final String PARTICIPANT_TYPE = "PARTICIPANT-TYPE";
 
     /**

@@ -35,6 +35,7 @@ import net.fortuna.ical4j.model.Content;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyFactory;
+import net.fortuna.ical4j.model.property.immutable.ImmutablePollCompletion;
 import net.fortuna.ical4j.validate.ValidationException;
 
 import java.io.IOException;
@@ -114,43 +115,21 @@ public class PollCompletion extends Property {
     /**
      * Server responsible for choosing and submitting winner.
      */
-    public static final PollCompletion POLL_COMPLETION_SERVER =
-            new ImmutablePollCompletion("SERVER");
+    public static final String VALUE_SERVER = "SERVER";
 
     /**
      * Server responsible for submitting winner.
      */
-    public static final PollCompletion POLL_COMPLETION_SERVER_SUBMIT =
-            new ImmutablePollCompletion("SERVER-SUBMIT");
+    public static final String VALUE_SERVER_SUBMIT = "SERVER-SUBMIT";
 
     /**
      * Server responsible for choosing winner.
      */
-    public static final PollCompletion POLL_COMPLETION_SERVER_CHOICE =
-            new ImmutablePollCompletion("SERVER-CHOICE");
+    public static final String VALUE_SERVER_CHOICE = "SERVER-CHOICE";
     /**
      * Client responsible for choosing and submitting winner.
      */
-    public static final PollCompletion POLL_COMPLETION_CLIENT =
-            new ImmutablePollCompletion("CLIENT");
-
-    /**
-     * @author Mike Douglass An immutable instance of PollCompletion.
-     */
-    private static final class ImmutablePollCompletion extends
-            PollCompletion {
-
-        private static final long serialVersionUID = 7771868877237685612L;
-
-        private ImmutablePollCompletion(final String value) {
-            super(new ParameterList(true), value);
-        }
-
-        public void setValue(final String aValue) {
-            throw new UnsupportedOperationException(
-                    "Cannot modify constant instances");
-        }
-    }
+    public static final String VALUE_CLIENT = "CLIENT";
 
     private String value;
 
@@ -209,18 +188,18 @@ public class PollCompletion extends Property {
                 throws IOException, URISyntaxException, ParseException {
 
             final PollCompletion pollCompletion;
-            if (PollCompletion.POLL_COMPLETION_SERVER
+            if (ImmutablePollCompletion.POLL_COMPLETION_SERVER
                     .getValue().equals(value)) {
-                pollCompletion = PollCompletion.POLL_COMPLETION_SERVER;
-            } else if (PollCompletion.POLL_COMPLETION_SERVER_CHOICE
+                pollCompletion = ImmutablePollCompletion.POLL_COMPLETION_SERVER;
+            } else if (ImmutablePollCompletion.POLL_COMPLETION_SERVER_CHOICE
                     .getValue().equals(value)) {
-                pollCompletion = PollCompletion.POLL_COMPLETION_SERVER_CHOICE;
-            } else if (PollCompletion.POLL_COMPLETION_SERVER_SUBMIT
+                pollCompletion = ImmutablePollCompletion.POLL_COMPLETION_SERVER_CHOICE;
+            } else if (ImmutablePollCompletion.POLL_COMPLETION_SERVER_SUBMIT
                     .getValue().equals(value)) {
-                pollCompletion = PollCompletion.POLL_COMPLETION_SERVER_SUBMIT;
-            } else if (PollCompletion.POLL_COMPLETION_CLIENT
+                pollCompletion = ImmutablePollCompletion.POLL_COMPLETION_SERVER_SUBMIT;
+            } else if (ImmutablePollCompletion.POLL_COMPLETION_CLIENT
                     .getValue().equals(value)) {
-                pollCompletion = PollCompletion.POLL_COMPLETION_CLIENT;
+                pollCompletion = ImmutablePollCompletion.POLL_COMPLETION_CLIENT;
             } else {
                 pollCompletion = new PollCompletion(parameters, value);
             }

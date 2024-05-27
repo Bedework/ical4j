@@ -31,9 +31,42 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentContainer;
+import net.fortuna.ical4j.model.ComponentFactory;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Parameter;
+import net.fortuna.ical4j.model.Period;
+import net.fortuna.ical4j.model.PeriodList;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.parameter.Value;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.Clazz;
+import net.fortuna.ical4j.model.property.Created;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.DtEnd;
+import net.fortuna.ical4j.model.property.DtStamp;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.Geo;
+import net.fortuna.ical4j.model.property.LastModified;
+import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.Organizer;
+import net.fortuna.ical4j.model.property.Priority;
+import net.fortuna.ical4j.model.property.RecurrenceId;
+import net.fortuna.ical4j.model.property.Sequence;
+import net.fortuna.ical4j.model.property.Status;
+import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Transp;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
+import net.fortuna.ical4j.model.property.immutable.ImmutableStatus;
+import net.fortuna.ical4j.model.property.immutable.ImmutableTransp;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.util.Dates;
 import net.fortuna.ical4j.util.Strings;
@@ -53,8 +86,40 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static net.fortuna.ical4j.model.Property.*;
-import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.*;
+import static net.fortuna.ical4j.model.Property.ATTACH;
+import static net.fortuna.ical4j.model.Property.ATTENDEE;
+import static net.fortuna.ical4j.model.Property.CATEGORIES;
+import static net.fortuna.ical4j.model.Property.CLASS;
+import static net.fortuna.ical4j.model.Property.CONTACT;
+import static net.fortuna.ical4j.model.Property.CREATED;
+import static net.fortuna.ical4j.model.Property.DESCRIPTION;
+import static net.fortuna.ical4j.model.Property.DTEND;
+import static net.fortuna.ical4j.model.Property.DTSTAMP;
+import static net.fortuna.ical4j.model.Property.DTSTART;
+import static net.fortuna.ical4j.model.Property.DURATION;
+import static net.fortuna.ical4j.model.Property.EXDATE;
+import static net.fortuna.ical4j.model.Property.EXRULE;
+import static net.fortuna.ical4j.model.Property.GEO;
+import static net.fortuna.ical4j.model.Property.LAST_MODIFIED;
+import static net.fortuna.ical4j.model.Property.LOCATION;
+import static net.fortuna.ical4j.model.Property.ORGANIZER;
+import static net.fortuna.ical4j.model.Property.PRIORITY;
+import static net.fortuna.ical4j.model.Property.RDATE;
+import static net.fortuna.ical4j.model.Property.RECURRENCE_ID;
+import static net.fortuna.ical4j.model.Property.RELATED_TO;
+import static net.fortuna.ical4j.model.Property.REQUEST_STATUS;
+import static net.fortuna.ical4j.model.Property.RESOURCES;
+import static net.fortuna.ical4j.model.Property.RRULE;
+import static net.fortuna.ical4j.model.Property.SEQUENCE;
+import static net.fortuna.ical4j.model.Property.STATUS;
+import static net.fortuna.ical4j.model.Property.SUMMARY;
+import static net.fortuna.ical4j.model.Property.TRANSP;
+import static net.fortuna.ical4j.model.Property.UID;
+import static net.fortuna.ical4j.model.Property.URL;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.None;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.One;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
+import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrMore;
 
 /**
  * $Id$ [Apr 5, 2004]
@@ -201,40 +266,40 @@ public class VEvent extends CalendarComponent implements ComponentContainer<Comp
 
     private static final Map<Method, Validator> methodValidators = new HashMap<Method, Validator>();
     static {
-        methodValidators.put(Method.ADD, new VEventValidator(new ValidationRule(One, DTSTAMP, DTSTART, ORGANIZER, SEQUENCE, SUMMARY, UID),
-                new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND, DURATION, GEO,
+        methodValidators.put(ImmutableMethod.ADD, new VEventValidator(new ValidationRule(One, DTSTAMP, DTSTART, ORGANIZER, SEQUENCE, SUMMARY, UID),
+                                                                      new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND, DURATION, GEO,
                         LAST_MODIFIED, LOCATION, PRIORITY, RESOURCES, STATUS, TRANSP, URL),
-                new ValidationRule(None, RECURRENCE_ID, REQUEST_STATUS)));
-        methodValidators.put(Method.CANCEL, new VEventValidator(false, new ValidationRule(One, DTSTAMP, DTSTART, ORGANIZER, SEQUENCE, UID),
+                                                                      new ValidationRule(None, RECURRENCE_ID, REQUEST_STATUS)));
+        methodValidators.put(ImmutableMethod.CANCEL, new VEventValidator(false, new ValidationRule(One, DTSTAMP, DTSTART, ORGANIZER, SEQUENCE, UID),
                                                                 new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND, DTSTART, DURATION, GEO,
                         LAST_MODIFIED, LOCATION, PRIORITY, RECURRENCE_ID, RESOURCES, STATUS, SUMMARY, TRANSP, URL),
                                                                 new ValidationRule(None, REQUEST_STATUS)));
-        methodValidators.put(Method.COUNTER, new VEventValidator(new ValidationRule(One, DTSTAMP, DTSTART, SEQUENCE, SUMMARY, UID),
+        methodValidators.put(ImmutableMethod.COUNTER, new VEventValidator(new ValidationRule(One, DTSTAMP, DTSTART, SEQUENCE, SUMMARY, UID),
                 new ValidationRule(One, true, ORGANIZER),
                 new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND, DURATION, GEO,
                         LAST_MODIFIED, LOCATION, PRIORITY, RECURRENCE_ID, RESOURCES, STATUS, TRANSP, URL)));
-        methodValidators.put(Method.DECLINE_COUNTER, new VEventValidator(false, new ValidationRule(One, DTSTAMP, ORGANIZER, UID),
+        methodValidators.put(ImmutableMethod.DECLINE_COUNTER, new VEventValidator(false, new ValidationRule(One, DTSTAMP, ORGANIZER, UID),
                 new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE),
                 new ValidationRule(None, ATTACH, ATTENDEE, CATEGORIES, CLASS, CONTACT, CREATED, DESCRIPTION, DTEND,
                         DTSTART, DURATION, EXDATE, EXRULE, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RDATE, RELATED_TO,
                         RESOURCES, RRULE, STATUS, SUMMARY, TRANSP, URL)));
-        methodValidators.put(Method.PUBLISH, new VEventValidator(new ValidationRule(One, DTSTART, UID),
+        methodValidators.put(ImmutableMethod.PUBLISH, new VEventValidator(new ValidationRule(One, DTSTART, UID),
                 new ValidationRule(One, true, DTSTAMP, ORGANIZER, SUMMARY),
                 new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND,
                         DURATION, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RESOURCES, STATUS, TRANSP, URL),
                 new ValidationRule(None, true, ATTENDEE),
                 new ValidationRule(None, REQUEST_STATUS)));
-        methodValidators.put(Method.REFRESH, new VEventValidator(false, new ValidationRule(One, ATTENDEE, DTSTAMP, ORGANIZER, UID),
+        methodValidators.put(ImmutableMethod.REFRESH, new VEventValidator(false, new ValidationRule(One, ATTENDEE, DTSTAMP, ORGANIZER, UID),
                 new ValidationRule(OneOrLess, RECURRENCE_ID),
                 new ValidationRule(None, ATTACH, CATEGORIES, CLASS, CONTACT, CREATED, DESCRIPTION, DTEND, DTSTART,
                         DURATION, EXDATE, EXRULE, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RDATE, RELATED_TO,
                         REQUEST_STATUS, RESOURCES, RRULE, SEQUENCE, STATUS, SUMMARY, TRANSP, URL)));
-        methodValidators.put(Method.REPLY, new VEventValidator(CompatibilityHints.isHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION),
+        methodValidators.put(ImmutableMethod.REPLY, new VEventValidator(CompatibilityHints.isHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION),
                 new ValidationRule(One, ATTENDEE, DTSTAMP, ORGANIZER, UID),
                 new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND,
                         DTSTART, DURATION, GEO, LAST_MODIFIED, LOCATION, PRIORITY, RESOURCES, STATUS, SUMMARY, TRANSP,
                         URL)));
-        methodValidators.put(Method.REQUEST, new VEventValidator(new ValidationRule(OneOrMore, true, ATTENDEE),
+        methodValidators.put(ImmutableMethod.REQUEST, new VEventValidator(new ValidationRule(OneOrMore, true, ATTENDEE),
                 new ValidationRule(One, DTSTAMP, DTSTART, ORGANIZER, SUMMARY, UID),
                 new ValidationRule(OneOrLess, SEQUENCE, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTEND, DURATION, GEO,
                         LAST_MODIFIED, LOCATION, PRIORITY, RECURRENCE_ID, RESOURCES, STATUS, TRANSP, URL)));
@@ -385,9 +450,9 @@ public class VEvent extends CalendarComponent implements ComponentContainer<Comp
                 Property.TRANSP, Property.UID, Property.URL, Property.RECURRENCE_ID).forEach(property -> PropertyValidator.assertOneOrLess(property, getProperties()));
 
         final Status status = getProperty(Property.STATUS);
-        if (status != null && !Status.VEVENT_TENTATIVE.getValue().equals(status.getValue())
-                && !Status.VEVENT_CONFIRMED.getValue().equals(status.getValue())
-                && !Status.VEVENT_CANCELLED.getValue().equals(status.getValue())) {
+        if (status != null && !ImmutableStatus.VEVENT_TENTATIVE.getValue().equals(status.getValue())
+                && !ImmutableStatus.VEVENT_CONFIRMED.getValue().equals(status.getValue())
+                && !ImmutableStatus.VEVENT_CANCELLED.getValue().equals(status.getValue())) {
             throw new ValidationException("Status property ["
                     + status.toString() + "] is not applicable for VEVENT");
         }
@@ -487,7 +552,7 @@ public class VEvent extends CalendarComponent implements ComponentContainer<Comp
             final Date rangeEnd, final boolean normalise) {
         PeriodList periods = new PeriodList();
         // if component is transparent return empty list..
-        if (!Transp.TRANSPARENT.equals(getProperty(Property.TRANSP))) {
+        if (!ImmutableTransp.TRANSPARENT.equals(getProperty(Property.TRANSP))) {
 
 //          try {
           periods = calculateRecurrenceSet(new Period(new DateTime(rangeStart),

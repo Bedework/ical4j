@@ -61,6 +61,8 @@ import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Url;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
+import net.fortuna.ical4j.model.property.immutable.ImmutableStatus;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.validate.PropertyValidator;
@@ -105,7 +107,6 @@ import static net.fortuna.ical4j.model.Property.SUMMARY;
 import static net.fortuna.ical4j.model.Property.TRANSP;
 import static net.fortuna.ical4j.model.Property.UID;
 import static net.fortuna.ical4j.model.Property.URL;
-import static net.fortuna.ical4j.model.property.ParticipantType.VOTER;
 import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.None;
 import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.One;
 import static net.fortuna.ical4j.validate.ValidationRule.ValidationType.OneOrLess;
@@ -130,7 +131,7 @@ public class VPoll extends CalendarComponent implements
             Validator<? extends CalendarComponent>> methodValidators =
             new HashMap<>();
     static {
-        methodValidators.put(Method.ADD, new VPollValidator(
+        methodValidators.put(ImmutableMethod.ADD, new VPollValidator(
                 new ValidationRule(One, DTSTAMP, ORGANIZER,
                                    SEQUENCE, SUMMARY, UID),
                 new ValidationRule(OneOrLess, CATEGORIES, CLASS,
@@ -140,7 +141,7 @@ public class VPoll extends CalendarComponent implements
                                    STATUS, TRANSP, URL),
                 new ValidationRule(None, RECURRENCE_ID, REQUEST_STATUS)));
 
-        methodValidators.put(Method.CANCEL, new VPollValidator(
+        methodValidators.put(ImmutableMethod.CANCEL, new VPollValidator(
                 new ValidationRule(
                         One, DTSTAMP, ORGANIZER,
                         SEQUENCE, UID),
@@ -152,7 +153,7 @@ public class VPoll extends CalendarComponent implements
                         TRANSP, URL),
                 new ValidationRule(None, REQUEST_STATUS)));
 
-        methodValidators.put(Method.COUNTER, new VPollValidator(
+        methodValidators.put(ImmutableMethod.COUNTER, new VPollValidator(
                 new ValidationRule(One, DTSTAMP, SEQUENCE,
                                    SUMMARY, UID),
                 new ValidationRule(One, true, ORGANIZER),
@@ -162,7 +163,7 @@ public class VPoll extends CalendarComponent implements
                                    LOCATION, PRIORITY, RECURRENCE_ID,
                                    RESOURCES, STATUS, TRANSP, URL)));
 
-        methodValidators.put(Method.DECLINE_COUNTER, new VPollValidator(
+        methodValidators.put(ImmutableMethod.DECLINE_COUNTER, new VPollValidator(
                 new ValidationRule(One, DTSTAMP, ORGANIZER, UID),
                 new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE),
                 new ValidationRule(None, ATTACH, ATTENDEE, CATEGORIES,
@@ -174,7 +175,7 @@ public class VPoll extends CalendarComponent implements
                                    RRULE, STATUS, SUMMARY, TRANSP,
                                    URL)));
 
-        methodValidators.put(Method.PUBLISH, new VPollValidator(
+        methodValidators.put(ImmutableMethod.PUBLISH, new VPollValidator(
                 new ValidationRule(One, DTSTAMP, UID),
                 new ValidationRule(One, true, ORGANIZER, SUMMARY),
                 new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE,
@@ -186,7 +187,7 @@ public class VPoll extends CalendarComponent implements
                 new ValidationRule(None, true, ATTENDEE),
                 new ValidationRule(None, REQUEST_STATUS)));
 
-        methodValidators.put(Method.REFRESH, new VPollValidator(
+        methodValidators.put(ImmutableMethod.REFRESH, new VPollValidator(
                 new ValidationRule(One, ATTENDEE, DTSTAMP, ORGANIZER,
                                    UID),
                 new ValidationRule(OneOrLess, RECURRENCE_ID),
@@ -199,7 +200,7 @@ public class VPoll extends CalendarComponent implements
                                    RESOURCES, RRULE, SEQUENCE, STATUS,
                                    SUMMARY, TRANSP, URL)));
 
-        methodValidators.put(Method.REPLY, new VPollValidator(
+        methodValidators.put(ImmutableMethod.REPLY, new VPollValidator(
                 new ValidationRule(One, ATTENDEE, DTSTAMP, ORGANIZER,
                                    UID),
                 new ValidationRule(OneOrLess, RECURRENCE_ID, SEQUENCE,
@@ -209,7 +210,7 @@ public class VPoll extends CalendarComponent implements
                                    LOCATION, PRIORITY, RESOURCES,
                                    STATUS, SUMMARY, TRANSP, URL)));
 
-        methodValidators.put(Method.REQUEST, new VPollValidator(
+        methodValidators.put(ImmutableMethod.REQUEST, new VPollValidator(
                 new ValidationRule(OneOrMore, true, ATTENDEE),
                 new ValidationRule(One, DTSTAMP, ORGANIZER,
                                    SUMMARY, UID),
@@ -295,10 +296,10 @@ public class VPoll extends CalendarComponent implements
     }
 
     /**
-     * Returns the list of voters for this poll.
+     * Returns the list of participants for this poll.
      * @return a component list
      */
-    public final ComponentList<Participant> getVoters() {
+    public final ComponentList<Participant> getParticipants() {
         return getComponents().getComponents(PARTICIPANT);
     }
 
@@ -347,7 +348,7 @@ public class VPoll extends CalendarComponent implements
         buffer.append(Strings.LINE_SEPARATOR);
         buffer.append(getProperties());
         buffer.append(getAlarms());
-        buffer.append(getVoters());
+        buffer.append(getParticipants());
         buffer.append(getCandidates());
         buffer.append(END);
         buffer.append(':');
@@ -367,13 +368,7 @@ public class VPoll extends CalendarComponent implements
             vAlarm.validate(recurse);
         }
 
-        for (final Participant participant : getVoters()) {
-            if (!VOTER.equals(participant.getParticipantType())) {
-                throw new ValidationException("VPOLL voter" +
-                        " must have type "
-                        + VOTER + ": found " +
-                        participant.getParticipantType());
-            }
+        for (final Participant participant: getParticipants()) {
             participant.validate(recurse);
         }
 
@@ -436,10 +431,10 @@ public class VPoll extends CalendarComponent implements
                 getProperties());
 
         final Status status = getProperty(Property.STATUS);
-        if (status != null && !Status.VTODO_NEEDS_ACTION.getValue().equals(status.getValue())
-                && !Status.VTODO_COMPLETED.getValue().equals(status.getValue())
-                && !Status.VTODO_IN_PROCESS.getValue().equals(status.getValue())
-                && !Status.VTODO_CANCELLED.getValue().equals(status.getValue())) {
+        if (status != null && !ImmutableStatus.VTODO_NEEDS_ACTION.getValue().equalsIgnoreCase(status.getValue())
+                && !ImmutableStatus.VTODO_COMPLETED.getValue().equalsIgnoreCase(status.getValue())
+                && !ImmutableStatus.VTODO_IN_PROCESS.getValue().equalsIgnoreCase(status.getValue())
+                && !ImmutableStatus.VTODO_CANCELLED.getValue().equalsIgnoreCase(status.getValue())) {
             throw new ValidationException("Status property ["
                     + status.toString() + "] may not occur in VTODO");
         }

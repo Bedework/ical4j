@@ -41,6 +41,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
+import static net.fortuna.ical4j.model.property.immutable.ImmutableTransp.OPAQUE;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableTransp.TRANSPARENT;
+
 /**
  * $Id$
  * <p/>
@@ -100,33 +103,9 @@ public class Transp extends Property {
 
     private static final long serialVersionUID = 3801479657311785518L;
 
-    /**
-     * Opaque.
-     */
-    public static final Transp OPAQUE = new ImmutableTransp("OPAQUE");
 
-    /**
-     * Transparent.
-     */
-    public static final Transp TRANSPARENT = new ImmutableTransp("TRANSPARENT");
-
-    /**
-     * @author Ben Fortuna An immutable instance of Transp.
-     */
-    private static final class ImmutableTransp extends Transp {
-
-        private static final long serialVersionUID = -6595830107310111996L;
-
-        private ImmutableTransp(final String value) {
-            super(new ParameterList(true), value);
-        }
-
-        @Override
-        public void setValue(final String aValue) {
-            throw new UnsupportedOperationException(
-                    "Cannot modify constant instances");
-        }
-    }
+    public static final String VALUE_OPAQUE = "OPAQUE";
+    public static final String VALUE_TRANSPARENT = "TRANSPARENT";
 
     private String value;
 

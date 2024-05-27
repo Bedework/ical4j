@@ -35,7 +35,14 @@ import junit.framework.TestSuite;
 import net.fortuna.ical4j.model.ComponentTest;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.parameter.FmtType;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.Attach;
+import net.fortuna.ical4j.model.property.Attendee;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.Repeat;
+import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Trigger;
+import net.fortuna.ical4j.model.property.immutable.ImmutableAction;
 
 import java.io.IOException;
 import java.net.URI;
@@ -78,13 +85,13 @@ public class VAlarmTest extends ComponentTest {
         suite.addTest(new VAlarmTest("testValidationException", alarm));
 
         alarm = (VAlarm) alarm.copy();
-        alarm.getProperties().add(Action.DISPLAY);
+        alarm.getProperties().add(ImmutableAction.DISPLAY);
         alarm.getProperties().add(new Description("Testing display"));
         suite.addTest(new VAlarmTest("testValidation", alarm));
         
         // Test duration/repeat validation..
         alarm = new VAlarm(java.time.Duration.ofHours(2));
-        alarm.getProperties().add(Action.DISPLAY);
+        alarm.getProperties().add(ImmutableAction.DISPLAY);
         alarm.getProperties().add(new Description("Testing display"));
         Duration duration = new Duration(java.time.Duration.ofMinutes(2));
         alarm.getProperties().add(duration);
@@ -100,7 +107,7 @@ public class VAlarmTest extends ComponentTest {
         
         //testValidationEmail..
         alarm = new VAlarm(java.time.Duration.ofDays(-2));
-        alarm.getProperties().add(Action.EMAIL);
+        alarm.getProperties().add(ImmutableAction.EMAIL);
         alarm.getProperties().add(new Attendee("mailto:john_doe@example.com"));
         alarm.getProperties().add(new Summary("*** REMINDER: SEND AGENDA FOR WEEKLY STAFF MEETING ***"));
         alarm.getProperties().add(new Description("A draft agenda needs to be sent out to the attendees " 

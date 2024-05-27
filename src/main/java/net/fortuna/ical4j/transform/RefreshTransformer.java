@@ -32,6 +32,7 @@
 package net.fortuna.ical4j.transform;
 
 import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
 import net.fortuna.ical4j.util.UidGenerator;
 
 /**
@@ -45,7 +46,7 @@ import net.fortuna.ical4j.util.UidGenerator;
 public class RefreshTransformer extends AbstractMethodTransformer {
 
     public RefreshTransformer(UidGenerator uidGenerator) {
-        super(Method.REFRESH, uidGenerator, true, false);
+        super(ImmutableMethod.REFRESH, uidGenerator, true, false);
     }
 
 }

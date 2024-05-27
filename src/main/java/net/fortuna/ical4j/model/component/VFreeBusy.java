@@ -34,6 +34,7 @@ package net.fortuna.ical4j.model.component;
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.parameter.FbType;
 import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.validate.*;
 
@@ -207,14 +208,14 @@ public class VFreeBusy extends CalendarComponent implements ComponentContainer<C
 
     private static final Map<Method, Validator> methodValidators = new HashMap<Method, Validator>();
     static {
-        methodValidators.put(Method.PUBLISH, new ComponentValidator<VFreeBusy>(new ValidationRule(OneOrMore, FREEBUSY),
-                                                                               new ValidationRule(One, DTSTAMP, DTSTART, DTEND, ORGANIZER, UID),
-                                                                               new ValidationRule(OneOrLess, URL),
-                                                                               new ValidationRule(None, ATTENDEE, DURATION, REQUEST_STATUS)));
-        methodValidators.put(Method.REPLY, new ComponentValidator(new ValidationRule(One, ATTENDEE, DTSTAMP, DTEND, DTSTART, ORGANIZER, UID),
+        methodValidators.put(ImmutableMethod.PUBLISH, new ComponentValidator<VFreeBusy>(new ValidationRule(OneOrMore, FREEBUSY),
+                                                                                        new ValidationRule(One, DTSTAMP, DTSTART, DTEND, ORGANIZER, UID),
+                                                                                        new ValidationRule(OneOrLess, URL),
+                                                                                        new ValidationRule(None, ATTENDEE, DURATION, REQUEST_STATUS)));
+        methodValidators.put(ImmutableMethod.REPLY, new ComponentValidator(new ValidationRule(One, ATTENDEE, DTSTAMP, DTEND, DTSTART, ORGANIZER, UID),
                 new ValidationRule(OneOrLess, URL),
                 new ValidationRule(None, DURATION, SEQUENCE)));
-        methodValidators.put(Method.REQUEST, new ComponentValidator(new ValidationRule(OneOrMore, ATTENDEE),
+        methodValidators.put(ImmutableMethod.REQUEST, new ComponentValidator(new ValidationRule(OneOrMore, ATTENDEE),
                 new ValidationRule(One, DTEND, DTSTAMP, DTSTART, ORGANIZER, UID),
                 new ValidationRule(None, FREEBUSY, DURATION, REQUEST_STATUS, URL)));
     }

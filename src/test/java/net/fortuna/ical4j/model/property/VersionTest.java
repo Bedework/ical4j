@@ -31,13 +31,13 @@
  */
 package net.fortuna.ical4j.model.property;
 
+import junit.framework.TestSuite;
+import net.fortuna.ical4j.model.PropertyTest;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-
-import junit.framework.TestSuite;
-
-import net.fortuna.ical4j.model.PropertyTest;
 
 /**
  * Created on 16/03/2005
@@ -97,10 +97,10 @@ public class VersionTest extends PropertyTest {
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest(new VersionTest(Version.VERSION_2_0, "2.0"));
-        suite.addTest(new VersionTest("testImmutable", Version.VERSION_2_0));
-        suite.addTest(new VersionTest("testValidation", Version.VERSION_2_0));
-        suite.addTest(new VersionTest("testEquals", Version.VERSION_2_0));
+        suite.addTest(new VersionTest(ImmutableVersion.VERSION_2_0, "2.0"));
+        suite.addTest(new VersionTest("testImmutable", ImmutableVersion.VERSION_2_0));
+        suite.addTest(new VersionTest("testValidation", ImmutableVersion.VERSION_2_0));
+        suite.addTest(new VersionTest("testEquals", ImmutableVersion.VERSION_2_0));
         return suite;
     }
 }

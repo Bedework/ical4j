@@ -31,10 +31,11 @@
  */
 package net.fortuna.ical4j.model.property;
 
-import java.text.ParseException;
-
 import junit.framework.TestSuite;
 import net.fortuna.ical4j.model.PropertyTest;
+import net.fortuna.ical4j.model.property.immutable.ImmutablePriority;
+
+import java.text.ParseException;
 
 /**
  * $Id$
@@ -67,25 +68,25 @@ public class PriorityTest extends PropertyTest {
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest(new PriorityTest(Priority.UNDEFINED, "0"));
-        suite.addTest(new PriorityTest(Priority.HIGH, "1"));
-        suite.addTest(new PriorityTest(Priority.MEDIUM, "5"));
-        suite.addTest(new PriorityTest(Priority.LOW, "9"));
+        suite.addTest(new PriorityTest(ImmutablePriority.UNDEFINED, "0"));
+        suite.addTest(new PriorityTest(ImmutablePriority.HIGH, "1"));
+        suite.addTest(new PriorityTest(ImmutablePriority.MEDIUM, "5"));
+        suite.addTest(new PriorityTest(ImmutablePriority.LOW, "9"));
         
-        suite.addTest(new PriorityTest("testValidation", Priority.UNDEFINED));
-        suite.addTest(new PriorityTest("testValidation", Priority.HIGH));
-        suite.addTest(new PriorityTest("testValidation", Priority.MEDIUM));
-        suite.addTest(new PriorityTest("testValidation", Priority.LOW));
+        suite.addTest(new PriorityTest("testValidation", ImmutablePriority.UNDEFINED));
+        suite.addTest(new PriorityTest("testValidation", ImmutablePriority.HIGH));
+        suite.addTest(new PriorityTest("testValidation", ImmutablePriority.MEDIUM));
+        suite.addTest(new PriorityTest("testValidation", ImmutablePriority.LOW));
         
-        suite.addTest(new PriorityTest("testEquals", Priority.UNDEFINED));
-        suite.addTest(new PriorityTest("testEquals", Priority.HIGH));
-        suite.addTest(new PriorityTest("testEquals", Priority.MEDIUM));
-        suite.addTest(new PriorityTest("testEquals", Priority.LOW));
+        suite.addTest(new PriorityTest("testEquals", ImmutablePriority.UNDEFINED));
+        suite.addTest(new PriorityTest("testEquals", ImmutablePriority.HIGH));
+        suite.addTest(new PriorityTest("testEquals", ImmutablePriority.MEDIUM));
+        suite.addTest(new PriorityTest("testEquals", ImmutablePriority.LOW));
         
-        suite.addTest(new PriorityTest("testImmutable", Priority.UNDEFINED));
-        suite.addTest(new PriorityTest("testImmutable", Priority.HIGH));
-        suite.addTest(new PriorityTest("testImmutable", Priority.MEDIUM));
-        suite.addTest(new PriorityTest("testImmutable", Priority.LOW));
+        suite.addTest(new PriorityTest("testImmutable", ImmutablePriority.UNDEFINED));
+        suite.addTest(new PriorityTest("testImmutable", ImmutablePriority.HIGH));
+        suite.addTest(new PriorityTest("testImmutable", ImmutablePriority.MEDIUM));
+        suite.addTest(new PriorityTest("testImmutable", ImmutablePriority.LOW));
         
         return suite;
     }

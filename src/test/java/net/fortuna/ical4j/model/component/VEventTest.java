@@ -39,6 +39,7 @@ import net.fortuna.ical4j.model.Recur.Frequency;
 import net.fortuna.ical4j.model.parameter.TzId;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
 import net.fortuna.ical4j.util.*;
 import net.fortuna.ical4j.validate.ValidationException;
 import org.slf4j.Logger;
@@ -81,7 +82,7 @@ public class VEventTest extends CalendarComponentTest {
 
     /**
      * @param testMethod
-     * @param component
+     * @param event
      */
     public VEventTest(String testMethod, VEvent event) {
         super(testMethod, event);
@@ -145,7 +146,7 @@ public class VEventTest extends CalendarComponentTest {
     }
 
     /**
-     * @param filename
+     * @param resourceString
      * @return
      */
     private net.fortuna.ical4j.model.Calendar loadCalendar(String resourceString)
@@ -760,11 +761,11 @@ public class VEventTest extends CalendarComponentTest {
         for (int i = 0; i < testFiles.length; i++) {
             log.info("Sample [" + testFiles[i] + "]");
             net.fortuna.ical4j.model.Calendar calendar = Calendars.load(testFiles[i]);
-            if (Method.PUBLISH.equals(calendar.getProperty(Property.METHOD))) {
+            if (ImmutableMethod.PUBLISH.equals(calendar.getProperty(Property.METHOD))) {
                 calendar.getComponents(Component.VEVENT).forEach(calendarComponent -> {
                     suite.addTest(new VEventTest("testPublishValidation", (VEvent) calendarComponent));
                 });
-            } else if (Method.REQUEST.equals(calendar.getProperty(Property.METHOD))) {
+            } else if (ImmutableMethod.REQUEST.equals(calendar.getProperty(Property.METHOD))) {
                 calendar.getComponents(Component.VEVENT).forEach(calendarComponent -> {
                     suite.addTest(new VEventTest("testRequestValidation", (VEvent) calendarComponent));
                 });

@@ -36,6 +36,7 @@ import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
 import net.fortuna.ical4j.validate.EmptyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
 import net.fortuna.ical4j.validate.Validator;
@@ -106,7 +107,7 @@ public abstract class CalendarComponent extends Component {
      * @deprecated
      */
     public final void validatePublish() throws ValidationException {
-        validate(Method.PUBLISH);
+        validate(ImmutableMethod.PUBLISH);
     }
 
     /**
@@ -115,7 +116,7 @@ public abstract class CalendarComponent extends Component {
      * @deprecated
      */
     public final void validateRequest() throws ValidationException {
-        validate(Method.REQUEST);
+        validate(ImmutableMethod.REQUEST);
     }
 
     /**
@@ -124,7 +125,7 @@ public abstract class CalendarComponent extends Component {
      * @deprecated
      */
     public final void validateReply() throws ValidationException {
-        validate(Method.REPLY);
+        validate(ImmutableMethod.REPLY);
     }
 
     /**
@@ -133,7 +134,7 @@ public abstract class CalendarComponent extends Component {
      * @deprecated
      */
     public final void validateAdd() throws ValidationException {
-        validate(Method.ADD);
+        validate(ImmutableMethod.ADD);
     }
 
     /**
@@ -142,7 +143,7 @@ public abstract class CalendarComponent extends Component {
      * @deprecated
      */
     public final void validateCancel() throws ValidationException {
-        validate(Method.CANCEL);
+        validate(ImmutableMethod.CANCEL);
     }
 
     /**
@@ -151,7 +152,7 @@ public abstract class CalendarComponent extends Component {
      * @deprecated
      */
     public final void validateRefresh() throws ValidationException {
-        validate(Method.REFRESH);
+        validate(ImmutableMethod.REFRESH);
     }
 
     /**
@@ -160,7 +161,7 @@ public abstract class CalendarComponent extends Component {
      * @deprecated
      */
     public final void validateCounter() throws ValidationException {
-        validate(Method.COUNTER);
+        validate(ImmutableMethod.COUNTER);
     }
 
     /**
@@ -169,7 +170,7 @@ public abstract class CalendarComponent extends Component {
      * @deprecated
      */
     public final void validateDeclineCounter() throws ValidationException {
-        validate(Method.DECLINE_COUNTER);
+        validate(ImmutableMethod.DECLINE_COUNTER);
     }
 
 }

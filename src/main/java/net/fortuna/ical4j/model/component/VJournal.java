@@ -33,6 +33,8 @@ package net.fortuna.ical4j.model.component;
 
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
+import net.fortuna.ical4j.model.property.immutable.ImmutableStatus;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.validate.*;
 
@@ -108,14 +110,14 @@ public class VJournal extends CalendarComponent implements ComponentContainer<Co
 
     private static final Map<Method, Validator> methodValidators = new HashMap<Method, Validator>();
     static {
-        methodValidators.put(Method.ADD, new ComponentValidator<VJournal>(new ValidationRule(One, DESCRIPTION, DTSTAMP, DTSTART, ORGANIZER, SEQUENCE, UID),
-                                                                          new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, LAST_MODIFIED, STATUS, SUMMARY, URL),
-                                                                          new ValidationRule(None, ATTENDEE, RECURRENCE_ID)));
-        methodValidators.put(Method.CANCEL, new ComponentValidator(new ValidationRule(One, DTSTAMP, ORGANIZER, SEQUENCE, UID),
+        methodValidators.put(ImmutableMethod.ADD, new ComponentValidator<VJournal>(new ValidationRule(One, DESCRIPTION, DTSTAMP, DTSTART, ORGANIZER, SEQUENCE, UID),
+                                                                                   new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, LAST_MODIFIED, STATUS, SUMMARY, URL),
+                                                                                   new ValidationRule(None, ATTENDEE, RECURRENCE_ID)));
+        methodValidators.put(ImmutableMethod.CANCEL, new ComponentValidator(new ValidationRule(One, DTSTAMP, ORGANIZER, SEQUENCE, UID),
                 new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, DESCRIPTION, DTSTART, LAST_MODIFIED,
                         RECURRENCE_ID, STATUS, SUMMARY, URL),
                 new ValidationRule(None, REQUEST_STATUS)));
-        methodValidators.put(Method.PUBLISH, new ComponentValidator(new ValidationRule(One, DESCRIPTION, DTSTAMP, DTSTART, ORGANIZER, UID),
+        methodValidators.put(ImmutableMethod.PUBLISH, new ComponentValidator(new ValidationRule(One, DESCRIPTION, DTSTAMP, DTSTART, ORGANIZER, UID),
                 new ValidationRule(OneOrLess, CATEGORIES, CLASS, CREATED, LAST_MODIFIED, RECURRENCE_ID, SEQUENCE, STATUS,
                         SUMMARY, URL),
                 new ValidationRule(None, ATTENDEE)));
@@ -186,9 +188,9 @@ public class VJournal extends CalendarComponent implements ComponentContainer<Co
                 Property.STATUS, Property.SUMMARY, Property.UID, Property.URL).forEach(property -> PropertyValidator.assertOneOrLess(property, getProperties()));
 
         final Status status = getProperty(Property.STATUS);
-        if (status != null && !Status.VJOURNAL_DRAFT.getValue().equals(status.getValue())
-                && !Status.VJOURNAL_FINAL.getValue().equals(status.getValue())
-                && !Status.VJOURNAL_CANCELLED.getValue().equals(status.getValue())) {
+        if (status != null && !ImmutableStatus.VJOURNAL_DRAFT.getValue().equals(status.getValue())
+                && !ImmutableStatus.VJOURNAL_FINAL.getValue().equals(status.getValue())
+                && !ImmutableStatus.VJOURNAL_CANCELLED.getValue().equals(status.getValue())) {
             throw new ValidationException("Status property ["
                     + status.toString() + "] may not occur in VJOURNAL");
         }

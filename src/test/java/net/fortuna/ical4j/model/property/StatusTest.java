@@ -31,10 +31,11 @@
  */
 package net.fortuna.ical4j.model.property;
 
-import java.text.ParseException;
-
 import junit.framework.TestSuite;
 import net.fortuna.ical4j.model.PropertyTest;
+import net.fortuna.ical4j.model.property.immutable.ImmutableStatus;
+
+import java.text.ParseException;
 
 /**
  * $Id$
@@ -46,7 +47,7 @@ import net.fortuna.ical4j.model.PropertyTest;
 public class StatusTest extends PropertyTest {
 
     /**
-     * @param property
+     * @param status
      * @param expectedValue
      */
     public StatusTest(Status status, String expectedValue) {
@@ -67,49 +68,49 @@ public class StatusTest extends PropertyTest {
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest(new StatusTest(Status.VEVENT_CANCELLED, "CANCELLED"));
-        suite.addTest(new StatusTest(Status.VEVENT_CONFIRMED, "CONFIRMED"));
-        suite.addTest(new StatusTest(Status.VEVENT_TENTATIVE, "TENTATIVE"));
-        suite.addTest(new StatusTest(Status.VJOURNAL_CANCELLED, "CANCELLED"));
-        suite.addTest(new StatusTest(Status.VJOURNAL_DRAFT, "DRAFT"));
-        suite.addTest(new StatusTest(Status.VJOURNAL_FINAL, "FINAL"));
-        suite.addTest(new StatusTest(Status.VTODO_CANCELLED, "CANCELLED"));
-        suite.addTest(new StatusTest(Status.VTODO_COMPLETED, "COMPLETED"));
-        suite.addTest(new StatusTest(Status.VTODO_IN_PROCESS, "IN-PROCESS"));
-        suite.addTest(new StatusTest(Status.VTODO_NEEDS_ACTION, "NEEDS-ACTION"));
+        suite.addTest(new StatusTest(ImmutableStatus.VEVENT_CANCELLED, "CANCELLED"));
+        suite.addTest(new StatusTest(ImmutableStatus.VEVENT_CONFIRMED, "CONFIRMED"));
+        suite.addTest(new StatusTest(ImmutableStatus.VEVENT_TENTATIVE, "TENTATIVE"));
+        suite.addTest(new StatusTest(ImmutableStatus.VJOURNAL_CANCELLED, "CANCELLED"));
+        suite.addTest(new StatusTest(ImmutableStatus.VJOURNAL_DRAFT, "DRAFT"));
+        suite.addTest(new StatusTest(ImmutableStatus.VJOURNAL_FINAL, "FINAL"));
+        suite.addTest(new StatusTest(ImmutableStatus.VTODO_CANCELLED, "CANCELLED"));
+        suite.addTest(new StatusTest(ImmutableStatus.VTODO_COMPLETED, "COMPLETED"));
+        suite.addTest(new StatusTest(ImmutableStatus.VTODO_IN_PROCESS, "IN-PROCESS"));
+        suite.addTest(new StatusTest(ImmutableStatus.VTODO_NEEDS_ACTION, "NEEDS-ACTION"));
         
-        suite.addTest(new StatusTest("testValidation", Status.VEVENT_CANCELLED));
-        suite.addTest(new StatusTest("testValidation", Status.VEVENT_CONFIRMED));
-        suite.addTest(new StatusTest("testValidation", Status.VEVENT_TENTATIVE));
-        suite.addTest(new StatusTest("testValidation", Status.VJOURNAL_CANCELLED));
-        suite.addTest(new StatusTest("testValidation", Status.VJOURNAL_DRAFT));
-        suite.addTest(new StatusTest("testValidation", Status.VJOURNAL_FINAL));
-        suite.addTest(new StatusTest("testValidation", Status.VTODO_CANCELLED));
-        suite.addTest(new StatusTest("testValidation", Status.VTODO_COMPLETED));
-        suite.addTest(new StatusTest("testValidation", Status.VTODO_IN_PROCESS));
-        suite.addTest(new StatusTest("testValidation", Status.VTODO_NEEDS_ACTION));
+        suite.addTest(new StatusTest("testValidation", ImmutableStatus.VEVENT_CANCELLED));
+        suite.addTest(new StatusTest("testValidation", ImmutableStatus.VEVENT_CONFIRMED));
+        suite.addTest(new StatusTest("testValidation", ImmutableStatus.VEVENT_TENTATIVE));
+        suite.addTest(new StatusTest("testValidation", ImmutableStatus.VJOURNAL_CANCELLED));
+        suite.addTest(new StatusTest("testValidation", ImmutableStatus.VJOURNAL_DRAFT));
+        suite.addTest(new StatusTest("testValidation", ImmutableStatus.VJOURNAL_FINAL));
+        suite.addTest(new StatusTest("testValidation", ImmutableStatus.VTODO_CANCELLED));
+        suite.addTest(new StatusTest("testValidation", ImmutableStatus.VTODO_COMPLETED));
+        suite.addTest(new StatusTest("testValidation", ImmutableStatus.VTODO_IN_PROCESS));
+        suite.addTest(new StatusTest("testValidation", ImmutableStatus.VTODO_NEEDS_ACTION));
         
-        suite.addTest(new StatusTest("testEquals", Status.VEVENT_CANCELLED));
-        suite.addTest(new StatusTest("testEquals", Status.VEVENT_CONFIRMED));
-        suite.addTest(new StatusTest("testEquals", Status.VEVENT_TENTATIVE));
-        suite.addTest(new StatusTest("testEquals", Status.VJOURNAL_CANCELLED));
-        suite.addTest(new StatusTest("testEquals", Status.VJOURNAL_DRAFT));
-        suite.addTest(new StatusTest("testEquals", Status.VJOURNAL_FINAL));
-        suite.addTest(new StatusTest("testEquals", Status.VTODO_CANCELLED));
-        suite.addTest(new StatusTest("testEquals", Status.VTODO_COMPLETED));
-        suite.addTest(new StatusTest("testEquals", Status.VTODO_IN_PROCESS));
-        suite.addTest(new StatusTest("testEquals", Status.VTODO_NEEDS_ACTION));
+        suite.addTest(new StatusTest("testEquals", ImmutableStatus.VEVENT_CANCELLED));
+        suite.addTest(new StatusTest("testEquals", ImmutableStatus.VEVENT_CONFIRMED));
+        suite.addTest(new StatusTest("testEquals", ImmutableStatus.VEVENT_TENTATIVE));
+        suite.addTest(new StatusTest("testEquals", ImmutableStatus.VJOURNAL_CANCELLED));
+        suite.addTest(new StatusTest("testEquals", ImmutableStatus.VJOURNAL_DRAFT));
+        suite.addTest(new StatusTest("testEquals", ImmutableStatus.VJOURNAL_FINAL));
+        suite.addTest(new StatusTest("testEquals", ImmutableStatus.VTODO_CANCELLED));
+        suite.addTest(new StatusTest("testEquals", ImmutableStatus.VTODO_COMPLETED));
+        suite.addTest(new StatusTest("testEquals", ImmutableStatus.VTODO_IN_PROCESS));
+        suite.addTest(new StatusTest("testEquals", ImmutableStatus.VTODO_NEEDS_ACTION));
         
-        suite.addTest(new StatusTest("testImmutable", Status.VEVENT_CANCELLED));
-        suite.addTest(new StatusTest("testImmutable", Status.VEVENT_CONFIRMED));
-        suite.addTest(new StatusTest("testImmutable", Status.VEVENT_TENTATIVE));
-        suite.addTest(new StatusTest("testImmutable", Status.VJOURNAL_CANCELLED));
-        suite.addTest(new StatusTest("testImmutable", Status.VJOURNAL_DRAFT));
-        suite.addTest(new StatusTest("testImmutable", Status.VJOURNAL_FINAL));
-        suite.addTest(new StatusTest("testImmutable", Status.VTODO_CANCELLED));
-        suite.addTest(new StatusTest("testImmutable", Status.VTODO_COMPLETED));
-        suite.addTest(new StatusTest("testImmutable", Status.VTODO_IN_PROCESS));
-        suite.addTest(new StatusTest("testImmutable", Status.VTODO_NEEDS_ACTION));
+        suite.addTest(new StatusTest("testImmutable", ImmutableStatus.VEVENT_CANCELLED));
+        suite.addTest(new StatusTest("testImmutable", ImmutableStatus.VEVENT_CONFIRMED));
+        suite.addTest(new StatusTest("testImmutable", ImmutableStatus.VEVENT_TENTATIVE));
+        suite.addTest(new StatusTest("testImmutable", ImmutableStatus.VJOURNAL_CANCELLED));
+        suite.addTest(new StatusTest("testImmutable", ImmutableStatus.VJOURNAL_DRAFT));
+        suite.addTest(new StatusTest("testImmutable", ImmutableStatus.VJOURNAL_FINAL));
+        suite.addTest(new StatusTest("testImmutable", ImmutableStatus.VTODO_CANCELLED));
+        suite.addTest(new StatusTest("testImmutable", ImmutableStatus.VTODO_COMPLETED));
+        suite.addTest(new StatusTest("testImmutable", ImmutableStatus.VTODO_IN_PROCESS));
+        suite.addTest(new StatusTest("testImmutable", ImmutableStatus.VTODO_NEEDS_ACTION));
         return suite;
     }
 

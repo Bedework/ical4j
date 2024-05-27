@@ -52,16 +52,46 @@ public class ParticipantType extends Property implements Encodable {
 
     private static final long serialVersionUID = 7753849118575885600L;
 
-    public static final ParticipantType VOTER =
-            new ParticipantType("VOTER");
+    public static final String VALUE_OWNER = "OWNER";
 
-    private String value;
+    public static final String VALUE_ATTENDEE = "ATTENDEE";
+
+    public static final String VALUE_OPTIONAL = "OPTIONAL";
+
+    public static final String VALUE_INFORMATIONAL = "INFORMATIONAL";
+
+    public static final String VALUE_CHAIR = "CHAIR";
+
+    public static final String VALUE_ACTIVE = "ACTIVE";
+
+    public static final String VALUE_INACTIVE = "INACTIVE";
+
+    public static final String VALUE_SPONSOR = "SPONSOR";
+
+    public static final String VALUE_CONTACT = "CONTACT";
+
+    public static final String VALUE_BOOKING_CONTACT = "BOOKING-CONTACT";
+
+    public static final String VALUE_EMERGENCY_CONTACT = "EMERGENCY-CONTACT";
+
+    public static final String VALUE_PUBLICITY_CONTACT = "PUBLICITY-CONTACT";
+
+    public static final String VALUE_PLANNER_CONTACT = "PLANNER-CONTACT";
+
+    public static final String VALUE_PERFORMER = "PERFORMER";
+
+    public static final String VALUE_SPEAKER = "SPEAKER";
+
+    public static final String VALUE_VOTER = "VOTER";
+
+    private TextList types;
 
     /**
      * Default constructor.
      */
     public ParticipantType() {
-        this(null);
+        super(PARTICIPANT_TYPE, new ParameterList(), new Factory());
+        types = new TextList();
     }
 
     /**
@@ -84,14 +114,21 @@ public class ParticipantType extends Property implements Encodable {
      * {@inheritDoc}
      */
     public final void setValue(final String aValue) {
-        this.value = aValue;
+        types = new TextList(aValue);
+    }
+
+    /**
+     * @return Returns the types.
+     */
+    public final TextList getTypes() {
+        return types;
     }
 
     /**
      * {@inheritDoc}
      */
     public final String getValue() {
-        return value;
+        return types.toString();
     }
 
     @Override
@@ -108,16 +145,7 @@ public class ParticipantType extends Property implements Encodable {
 
         public ParticipantType createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
-            final ParticipantType participantType;
-
-            if (ParticipantType.VOTER
-                    .getValue().equals(value)) {
-                participantType = ParticipantType.VOTER;
-            } else {
-                participantType = new ParticipantType(parameters, value);
-            }
-
-            return participantType;
+            return new ParticipantType(parameters, value);
         }
 
         public ParticipantType createProperty() {
