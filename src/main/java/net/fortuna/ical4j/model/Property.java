@@ -408,14 +408,46 @@ public abstract class Property extends Content implements Comparable<Property> {
     public static final String RELATIVE_TO = "RELATIVE-TO";
 
     /**
-     * Participant type.
+     * Participant delegated from.
+     */
+    public static final String PARTICIPATION_DELEGATED_FROM =
+            "PARTICIPATION-DELEGATED-FROM";
+
+    /**
+     * Participant delegated to.
+     */
+    public static final String PARTICIPATION_DELEGATED_TO =
+            "PARTICIPATION-DELEGATED-TO";
+
+    /**
+     * Participant Expect reply.
+     */
+    public static final String EXPECT_REPLY = "EXPECT-REPLY";
+
+    /**
+     * Participant kind.
      */
     public static final String KIND = "KIND";
+
+    /**
+     * lang.
+     */
+    public static final String LANG = "LANG";
+
+    /**
+     * Participant Member of.
+     */
+    public static final String MEMBER_OF = "MEMBER-OF";
 
     /**
      * Participant type.
      */
     public static final String PARTICIPANT_TYPE = "PARTICIPANT-TYPE";
+
+    /**
+     * Participant Scheduling-agent.
+     */
+    public static final String SCHEDULING_AGENT = "SCHEDULING-AGENT";
 
     /**
      * Structured data property name.
