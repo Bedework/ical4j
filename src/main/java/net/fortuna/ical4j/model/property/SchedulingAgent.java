@@ -41,47 +41,76 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
-import static net.fortuna.ical4j.model.property.immutable.ImmutableExpectReply.FALSE;
-import static net.fortuna.ical4j.model.property.immutable.ImmutableExpectReply.TRUE;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableSchedulingAgent.CLIENT;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableSchedulingAgent.NONE;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableSchedulingAgent.SERVER;
 
 /**
  * $Id$
  * <p/>
  * Created: [Apr 6, 2004]
  * <p/>
- * Defines an EXPECT-REPLY iCalendar property.
+ * Defines a STATUS iCalendar component property.
  * <p/>
  * <pre>
-     expect-reply = "EXPECT-REPLY"
-                     expect-replyparams ":"
-                     ( "TRUE" / "FALSE") CRLF
+ Property name
+ SCHEDULING-AGENT
 
-     expect-replyparams = *(";" other-param)
+ Purpose
+     This is who is responsible for sending scheduling messages with this calendar object to the participant.
+
+ Property Parameters
+     Non-standard or iana parameters can be specified on this property.
+
+ Conformance
+     This property MAY be specified once in the PARTICIPANT component.
+
+ Format Definition
+     This property is defined by the following notation:
+
+     scheduling-agent = "SCHEDULING-AGENT"
+
+     scheduling-agentparams ":"
+                         ( "SERVER" /
+                         "CLIENT" /
+                         "NONE") CRLF
+
+ scheduling-agentparams = *(";" other-param)
+
+     The value MUST be one of the following values, another value registered in the IANA "JSCalendar Enum Values" registry, or a vendor-specific value.
+
+ SERVER
+     The calendar server will send the scheduling messages.
+
+ CLIENT
+     The calendar client will send the scheduling messages.
+
+ NONE
+     No scheduling messages are to be sent to this participant.
  * </pre>
  *
  * @author Ben Fortuna
  */
-public class ExpectReply extends Property {
+public class SchedulingAgent extends Property {
 
-    private static final long serialVersionUID = 4939943639175551481L;
-
-    public static final String VALUE_TRUE = "TRUE";
-    public static final String VALUE_FALSE = "FALSE";
+    public static final String VALUE_SERVER = "SERVER";
+    public static final String VALUE_CLIENT = "CLIENT";
+    public static final String VALUE_NONE = "NONE";
 
     private String value;
 
     /**
      * Default constructor.
      */
-    public ExpectReply() {
-        super(EXPECT_REPLY, new Factory());
+    public SchedulingAgent() {
+        super(SCHEDULING_AGENT, new Factory());
     }
 
     /**
      * @param aValue a value string for this component
      */
-    public ExpectReply(final String aValue) {
-        super(EXPECT_REPLY, new Factory());
+    public SchedulingAgent(final String aValue) {
+        super(SCHEDULING_AGENT, new Factory());
         this.value = aValue;
     }
 
@@ -89,8 +118,8 @@ public class ExpectReply extends Property {
      * @param aList  a list of parameters for this component
      * @param aValue a value string for this component
      */
-    public ExpectReply(final ParameterList aList, final String aValue) {
-        super(EXPECT_REPLY, aList, new Factory());
+    public SchedulingAgent(final ParameterList aList, final String aValue) {
+        super(SCHEDULING_AGENT, aList, new Factory());
         this.value = aValue;
     }
 
@@ -110,34 +139,36 @@ public class ExpectReply extends Property {
         return value;
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory<ExpectReply> {
-        private static final long serialVersionUID = 1L;
-
-        public Factory() {
-            super(EXPECT_REPLY);
-        }
-
-        @Override
-        public ExpectReply createProperty(final ParameterList parameters, final String value)
-                throws IOException, URISyntaxException, ParseException {
-
-            if (parameters.isEmpty()) {
-                switch (value) {
-                    case VALUE_TRUE: return TRUE;
-                    case VALUE_FALSE: return FALSE;
-                }
-            }
-            return new ExpectReply(parameters, value);
-        }
-
-        @Override
-        public ExpectReply createProperty() {
-            return new ExpectReply();
-        }
-    }
-
     @Override
     public void validate() throws ValidationException {
 
     }
+
+    public static class Factory extends Content.Factory implements PropertyFactory<SchedulingAgent> {
+        private static final long serialVersionUID = 1L;
+
+        public Factory() {
+            super(SCHEDULING_AGENT);
+        }
+
+        @Override
+        public SchedulingAgent createProperty(final ParameterList parameters, final String value)
+                throws IOException, URISyntaxException, ParseException {
+
+            if (parameters.isEmpty()) {
+                switch (value) {
+                    case VALUE_SERVER: return SERVER;
+                    case VALUE_CLIENT: return CLIENT;
+                    case VALUE_NONE: return NONE;
+                }
+            }
+            return new SchedulingAgent(parameters, value);
+        }
+
+        @Override
+        public SchedulingAgent createProperty() {
+            return new SchedulingAgent();
+        }
+    }
+
 }

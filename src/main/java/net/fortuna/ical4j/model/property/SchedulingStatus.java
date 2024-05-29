@@ -41,47 +41,56 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
-import static net.fortuna.ical4j.model.property.immutable.ImmutableExpectReply.FALSE;
-import static net.fortuna.ical4j.model.property.immutable.ImmutableExpectReply.TRUE;
-
 /**
  * $Id$
  * <p/>
  * Created: [Apr 6, 2004]
  * <p/>
- * Defines an EXPECT-REPLY iCalendar property.
+ * Defines a STATUS iCalendar component property.
  * <p/>
  * <pre>
-     expect-reply = "EXPECT-REPLY"
-                     expect-replyparams ":"
-                     ( "TRUE" / "FALSE") CRLF
+ Property name
+ SCHEDULING-STATUS
 
-     expect-replyparams = *(";" other-param)
+ Purpose
+     This is a list of status codes, returned from the processing of the most recent scheduling message sent to this participant. The status codes MUST be valid statcode values as defined in the ABNF in Section 3.8.8.3 of [RFC5545].
+
+     Servers MUST only add or change this property when they send a scheduling message to the participant. Clients SHOULD NOT change or remove this property if it was provided by the server. Clients MAY add, change, or remove the property for participants where the client is handling the scheduling.This property MUST NOT be included in scheduling messages.
+
+ Property Parameters
+     Non-standard or iana parameters can be specified on this property.
+
+ Conformance
+     This property MAY be specified in any appropriate component.
+
+ Format Definition
+     This property is defined by the following notation:
+
+ scheduling-status = "SCHEDULING-STATUS"
+
+ scheduling-statusparams ":" TEXT CRLF
+
+ scheduling-statusparams = *(";" other-param)
  * </pre>
  *
  * @author Ben Fortuna
  */
-public class ExpectReply extends Property {
-
-    private static final long serialVersionUID = 4939943639175551481L;
-
-    public static final String VALUE_TRUE = "TRUE";
-    public static final String VALUE_FALSE = "FALSE";
+public class SchedulingStatus extends Property {
 
     private String value;
 
     /**
      * Default constructor.
      */
-    public ExpectReply() {
-        super(EXPECT_REPLY, new Factory());
+    public SchedulingStatus() {
+        super(SCHEDULING_STATUS, new Factory());
     }
 
     /**
      * @param aValue a value string for this component
      */
-    public ExpectReply(final String aValue) {
-        super(EXPECT_REPLY, new Factory());
+    public SchedulingStatus(final String aValue) {
+        super(SCHEDULING_STATUS, new Factory());
         this.value = aValue;
     }
 
@@ -89,8 +98,8 @@ public class ExpectReply extends Property {
      * @param aList  a list of parameters for this component
      * @param aValue a value string for this component
      */
-    public ExpectReply(final ParameterList aList, final String aValue) {
-        super(EXPECT_REPLY, aList, new Factory());
+    public SchedulingStatus(final ParameterList aList, final String aValue) {
+        super(SCHEDULING_STATUS, aList, new Factory());
         this.value = aValue;
     }
 
@@ -110,34 +119,29 @@ public class ExpectReply extends Property {
         return value;
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory<ExpectReply> {
-        private static final long serialVersionUID = 1L;
-
-        public Factory() {
-            super(EXPECT_REPLY);
-        }
-
-        @Override
-        public ExpectReply createProperty(final ParameterList parameters, final String value)
-                throws IOException, URISyntaxException, ParseException {
-
-            if (parameters.isEmpty()) {
-                switch (value) {
-                    case VALUE_TRUE: return TRUE;
-                    case VALUE_FALSE: return FALSE;
-                }
-            }
-            return new ExpectReply(parameters, value);
-        }
-
-        @Override
-        public ExpectReply createProperty() {
-            return new ExpectReply();
-        }
-    }
-
     @Override
     public void validate() throws ValidationException {
 
     }
+
+    public static class Factory extends Content.Factory implements PropertyFactory<SchedulingStatus> {
+        private static final long serialVersionUID = 1L;
+
+        public Factory() {
+            super(STATUS);
+        }
+
+        @Override
+        public SchedulingStatus createProperty(final ParameterList parameters, final String value)
+                throws IOException, URISyntaxException, ParseException {
+
+            return new SchedulingStatus(parameters, value);
+        }
+
+        @Override
+        public SchedulingStatus createProperty() {
+            return new SchedulingStatus();
+        }
+    }
+
 }

@@ -41,8 +41,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
-import static net.fortuna.ical4j.model.property.immutable.ImmutableExpectReply.FALSE;
-import static net.fortuna.ical4j.model.property.immutable.ImmutableExpectReply.TRUE;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableSchedulingForceSend.FALSE;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableSchedulingForceSend.TRUE;
 
 /**
  * $Id$
@@ -52,16 +52,17 @@ import static net.fortuna.ical4j.model.property.immutable.ImmutableExpectReply.T
  * Defines an EXPECT-REPLY iCalendar property.
  * <p/>
  * <pre>
-     expect-reply = "EXPECT-REPLY"
-                     expect-replyparams ":"
-                     ( "TRUE" / "FALSE") CRLF
+     scheduling-force-send = "SCHEDULING-FORCE-SEND"
 
-     expect-replyparams = *(";" other-param)
+     scheduling-force-sendparams ":"
+                         ( "TRUE" / "FALSE") CRLF
+
+     scheduling-force-sendparams = *(";" other-param)
  * </pre>
  *
  * @author Ben Fortuna
  */
-public class ExpectReply extends Property {
+public class SchedulingForceSend extends Property {
 
     private static final long serialVersionUID = 4939943639175551481L;
 
@@ -73,15 +74,15 @@ public class ExpectReply extends Property {
     /**
      * Default constructor.
      */
-    public ExpectReply() {
-        super(EXPECT_REPLY, new Factory());
+    public SchedulingForceSend() {
+        super(SCHEDULING_FORCE_SEND, new Factory());
     }
 
     /**
      * @param aValue a value string for this component
      */
-    public ExpectReply(final String aValue) {
-        super(EXPECT_REPLY, new Factory());
+    public SchedulingForceSend(final String aValue) {
+        super(SCHEDULING_FORCE_SEND, new Factory());
         this.value = aValue;
     }
 
@@ -89,8 +90,8 @@ public class ExpectReply extends Property {
      * @param aList  a list of parameters for this component
      * @param aValue a value string for this component
      */
-    public ExpectReply(final ParameterList aList, final String aValue) {
-        super(EXPECT_REPLY, aList, new Factory());
+    public SchedulingForceSend(final ParameterList aList, final String aValue) {
+        super(SCHEDULING_FORCE_SEND, aList, new Factory());
         this.value = aValue;
     }
 
@@ -110,15 +111,15 @@ public class ExpectReply extends Property {
         return value;
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory<ExpectReply> {
+    public static class Factory extends Content.Factory implements PropertyFactory<SchedulingForceSend> {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(EXPECT_REPLY);
+            super(SCHEDULING_FORCE_SEND);
         }
 
         @Override
-        public ExpectReply createProperty(final ParameterList parameters, final String value)
+        public SchedulingForceSend createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
 
             if (parameters.isEmpty()) {
@@ -127,12 +128,12 @@ public class ExpectReply extends Property {
                     case VALUE_FALSE: return FALSE;
                 }
             }
-            return new ExpectReply(parameters, value);
+            return new SchedulingForceSend(parameters, value);
         }
 
         @Override
-        public ExpectReply createProperty() {
-            return new ExpectReply();
+        public SchedulingForceSend createProperty() {
+            return new SchedulingForceSend();
         }
     }
 

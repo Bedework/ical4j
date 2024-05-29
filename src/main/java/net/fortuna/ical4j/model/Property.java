@@ -425,6 +425,11 @@ public abstract class Property extends Content implements Comparable<Property> {
     public static final String EXPECT_REPLY = "EXPECT-REPLY";
 
     /**
+     * Participant invited-by.
+     */
+    public static final String INVITED_BY = "INVITED-BY";
+
+    /**
      * Participant kind.
      */
     public static final String KIND = "KIND";
@@ -448,6 +453,21 @@ public abstract class Property extends Content implements Comparable<Property> {
      * Participant Scheduling-agent.
      */
     public static final String SCHEDULING_AGENT = "SCHEDULING-AGENT";
+
+    /**
+     * Participant Scheduling-agent.
+     */
+    public static final String SCHEDULING_DTSTAMP = "SCHEDULING-DTSTAMP";
+
+    /**
+     * Participant Scheduling-force-send.
+     */
+    public static final String SCHEDULING_FORCE_SEND = "SCHEDULING-FORCE-SEND";
+
+    /**
+     * Participant Scheduling-status.
+     */
+    public static final String SCHEDULING_STATUS = "SCHEDULING-STATUS";
 
     /**
      * Structured data property name.

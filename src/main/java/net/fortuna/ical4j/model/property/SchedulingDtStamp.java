@@ -32,112 +32,100 @@
 package net.fortuna.ical4j.model.property;
 
 import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyFactory;
-import net.fortuna.ical4j.validate.ValidationException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-
-import static net.fortuna.ical4j.model.property.immutable.ImmutableExpectReply.FALSE;
-import static net.fortuna.ical4j.model.property.immutable.ImmutableExpectReply.TRUE;
 
 /**
  * $Id$
  * <p/>
  * Created: [Apr 6, 2004]
  * <p/>
- * Defines an EXPECT-REPLY iCalendar property.
+ * Defines a PARTICIPANT SCHEDULING-DTSTAMP iCalendar component property.
  * <p/>
  * <pre>
-     expect-reply = "EXPECT-REPLY"
-                     expect-replyparams ":"
-                     ( "TRUE" / "FALSE") CRLF
+ scheduling-dtstamp = "SCHEDULING-DTSTAMP"
 
-     expect-replyparams = *(";" other-param)
+ scheduling-dtstampparams ":" DATE-TIME CRLF
+
+ scheduling-dtstampparams = *(";" other-param)
  * </pre>
  *
  * @author Ben Fortuna
  */
-public class ExpectReply extends Property {
+public class SchedulingDtStamp extends UtcProperty {
 
-    private static final long serialVersionUID = 4939943639175551481L;
-
-    public static final String VALUE_TRUE = "TRUE";
-    public static final String VALUE_FALSE = "FALSE";
-
-    private String value;
+    private static final long serialVersionUID = 7581197869433744070L;
 
     /**
-     * Default constructor.
+     * Default constructor. Initialises the dateTime value to the time of instantiation.
      */
-    public ExpectReply() {
-        super(EXPECT_REPLY, new Factory());
+    public SchedulingDtStamp() {
+        super(SCHEDULING_DTSTAMP, new Factory());
     }
 
     /**
-     * @param aValue a value string for this component
+     * @param aValue a string representation of a DTSTAMP value
+     * @throws ParseException if the specified value is not a valid representation
      */
-    public ExpectReply(final String aValue) {
-        super(EXPECT_REPLY, new Factory());
-        this.value = aValue;
+    public SchedulingDtStamp(final String aValue) throws ParseException {
+        this(new ParameterList(), aValue);
     }
 
     /**
      * @param aList  a list of parameters for this component
      * @param aValue a value string for this component
+     * @throws ParseException where the specified value string is not a valid date-time/date representation
      */
-    public ExpectReply(final ParameterList aList, final String aValue) {
-        super(EXPECT_REPLY, aList, new Factory());
-        this.value = aValue;
+    public SchedulingDtStamp(final ParameterList aList, final String aValue)
+            throws ParseException {
+        super(SCHEDULING_DTSTAMP, aList, new Factory());
+        setValue(aValue);
     }
 
     /**
-     * {@inheritDoc}
+     * @param aDate a date representing a date-time
      */
-    @Override
-    public void setValue(final String aValue) {
-        this.value = aValue;
+    public SchedulingDtStamp(final DateTime aDate) {
+        super(SCHEDULING_DTSTAMP, new Factory());
+        // time must be in UTC..
+        aDate.setUtc(true);
+        setDate(aDate);
     }
 
     /**
-     * {@inheritDoc}
+     * @param aList a list of parameters for this component
+     * @param aDate a date representing a date-time
      */
-    @Override
-    public final String getValue() {
-        return value;
+    public SchedulingDtStamp(final ParameterList aList, final DateTime aDate) {
+        super(SCHEDULING_DTSTAMP, aList, new Factory());
+        // time must be in UTC..
+        aDate.setUtc(true);
+        setDate(aDate);
     }
 
-    public static class Factory extends Content.Factory implements PropertyFactory<ExpectReply> {
+    public static class Factory extends Content.Factory implements PropertyFactory {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(EXPECT_REPLY);
+            super(SCHEDULING_DTSTAMP);
         }
 
         @Override
-        public ExpectReply createProperty(final ParameterList parameters, final String value)
+        public Property createProperty(final ParameterList parameters, final String value)
                 throws IOException, URISyntaxException, ParseException {
-
-            if (parameters.isEmpty()) {
-                switch (value) {
-                    case VALUE_TRUE: return TRUE;
-                    case VALUE_FALSE: return FALSE;
-                }
-            }
-            return new ExpectReply(parameters, value);
+            return new SchedulingDtStamp(parameters, value);
         }
 
         @Override
-        public ExpectReply createProperty() {
-            return new ExpectReply();
+        public Property createProperty() {
+            return new SchedulingDtStamp();
         }
     }
 
-    @Override
-    public void validate() throws ValidationException {
-
-    }
 }
