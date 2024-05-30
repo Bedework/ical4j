@@ -1,10 +1,10 @@
 BEGIN:VCALENDAR
-PRODID:-//tzurl.org//NONSGML Olson 2020b//EN
+PRODID:-//tzurl.org//NONSGML Olson 2023d//EN
 VERSION:2.0
 BEGIN:VTIMEZONE
-TZID:/tzurl.org/2020b/America/Denver
-LAST-MODIFIED:20201010T011804Z
-TZURL:http://tzurl.org/zoneinfo-global/America/Denver
+TZID:/tzurl.org/2023d/America/Denver
+LAST-MODIFIED:20231222T233359Z
+TZURL:https://www.tzurl.org/zoneinfo-global/America/Denver
 X-LIC-LOCATION:America/Denver
 X-PROLEPTIC-TZNAME:LMT
 BEGIN:STANDARD

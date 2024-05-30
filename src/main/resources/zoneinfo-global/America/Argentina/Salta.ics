@@ -1,10 +1,10 @@
 BEGIN:VCALENDAR
-PRODID:-//tzurl.org//NONSGML Olson 2020b//EN
+PRODID:-//tzurl.org//NONSGML Olson 2023d//EN
 VERSION:2.0
 BEGIN:VTIMEZONE
-TZID:/tzurl.org/2020b/America/Argentina/Salta
-LAST-MODIFIED:20201010T011804Z
-TZURL:http://tzurl.org/zoneinfo-global/America/Argentina/Salta
+TZID:/tzurl.org/2023d/America/Argentina/Salta
+LAST-MODIFIED:20231222T233400Z
+TZURL:https://www.tzurl.org/zoneinfo-global/America/Argentina/Salta
 X-LIC-LOCATION:America/Argentina/Salta
 X-PROLEPTIC-TZNAME:LMT
 BEGIN:STANDARD
