@@ -10,7 +10,7 @@
 
   <groupId>org.bedework.ical4j</groupId>
   <artifactId>ical4j</artifactId>
-  <version>3.0.18-SNAPSHOT</version>
+  <version>3.0.19</version>
 
   <name>ical4j</name>
   <description>
