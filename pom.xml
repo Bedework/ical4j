@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.bedework</groupId>
     <artifactId>bedework-parent</artifactId>
-    <version>33</version>
+    <version>59</version>
   </parent>
 
   <groupId>org.bedework.ical4j</groupId>
   <artifactId>ical4j</artifactId>
-  <version>3.0.19</version>
+  <version>3.0.18-SNAPSHOT</version>
 
   <name>ical4j</name>
   <description>
