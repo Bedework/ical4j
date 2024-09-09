@@ -48,7 +48,7 @@ import java.text.ParseException;
  * @author benf
  * @author Mike Douglass
  */
-public class ParticipantType extends Property implements Encodable {
+public class ParticipantType extends Property {
 
     private static final long serialVersionUID = 7753849118575885600L;
 
