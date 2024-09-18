@@ -398,6 +398,11 @@ public abstract class Property extends Content implements Comparable<Property> {
     public static final String CALENDAR_ADDRESS = "CALENDAR-ADDRESS";
 
     /**
+     * Participant email address property name.
+     */
+    public static final String EMAIL_ADDRESS = "EMAIL";
+
+    /**
      * Location type property name.
      */
     public static final String LOCATION_TYPE = "LOCATION-TYPE";
@@ -406,6 +411,12 @@ public abstract class Property extends Content implements Comparable<Property> {
      * Location relative to property name.
      */
     public static final String RELATIVE_TO = "RELATIVE-TO";
+
+    /**
+     * Participant delegated from.
+     */
+    public static final String PARTICIPATION_STATUS =
+            "PARTICIPATION-STATUS";
 
     /**
      * Participant delegated from.
@@ -463,6 +474,11 @@ public abstract class Property extends Content implements Comparable<Property> {
      * Participant Scheduling-force-send.
      */
     public static final String SCHEDULING_FORCE_SEND = "SCHEDULING-FORCE-SEND";
+
+    /**
+     * Participant Scheduling-sequence.
+     */
+    public static final String SCHEDULING_SEQUENCE = "SCHEDULING-SEQUENCE";
 
     /**
      * Participant Scheduling-status.

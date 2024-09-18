@@ -107,14 +107,14 @@ public class ParticipationStatus extends Property {
      * Default constructor.
      */
     public ParticipationStatus() {
-        super(STATUS, new Factory());
+        super(PARTICIPATION_STATUS, new Factory());
     }
 
     /**
      * @param aValue a value string for this component
      */
     public ParticipationStatus(final String aValue) {
-        super(STATUS, new Factory());
+        super(PARTICIPATION_STATUS, new Factory());
         this.value = aValue;
     }
 
@@ -123,7 +123,7 @@ public class ParticipationStatus extends Property {
      * @param aValue a value string for this component
      */
     public ParticipationStatus(final ParameterList aList, final String aValue) {
-        super(STATUS, aList, new Factory());
+        super(PARTICIPATION_STATUS, aList, new Factory());
         this.value = aValue;
     }
 
@@ -152,7 +152,7 @@ public class ParticipationStatus extends Property {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(STATUS);
+            super(PARTICIPATION_STATUS);
         }
 
         @Override

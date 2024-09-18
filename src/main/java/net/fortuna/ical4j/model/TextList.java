@@ -35,6 +35,7 @@ import net.fortuna.ical4j.util.Strings;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -83,7 +84,11 @@ public class TextList implements Serializable, Iterable<String> {
     public TextList(String[] textValues) {
         texts = Arrays.asList(textValues);
     }
-    
+
+    public List<String> asList() {
+       return Collections.unmodifiableList(texts);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -126,7 +131,15 @@ public class TextList implements Serializable, Iterable<String> {
      * @see List#remove(java.lang.Object)
      */
     public final boolean remove(final String text) {
-        return texts.remove(text);
+        int i = 0;
+        for (final String s: texts) {
+            if (s.equalsIgnoreCase(text)) {
+                texts.remove(i);
+                return true;
+            }
+            i++;
+        }
+        return false;
     }
 
     /**

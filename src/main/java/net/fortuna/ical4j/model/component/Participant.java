@@ -157,7 +157,9 @@ public class Participant extends Component implements ComponentContainer<Compone
                                       property, getProperties()));
 
         Arrays.asList(CALENDAR_ADDRESS, CREATED, DESCRIPTION,
-                      DTSTAMP, GEO, LAST_MODIFIED, PRIORITY, SEQUENCE,
+                      GEO, KIND, LAST_MODIFIED, NAME,
+                      PARTICIPATION_STATUS, PRIORITY,
+                      SCHEDULING_DTSTAMP, SEQUENCE,
                       STATUS, SUMMARY, URL).forEach(
                               property -> PropertyValidator
                                       .assertOneOrLess(
@@ -191,8 +193,16 @@ public class Participant extends Component implements ComponentContainer<Compone
     /**
      * @return the optional date-stamp property
      */
-    public final DtStamp getDateStamp() {
-        return getProperty(DTSTAMP);
+    public final DtStamp getSchedulingDtStamp() {
+        return getProperty(SCHEDULING_DTSTAMP);
+    }
+
+    /**
+     * Returns the optional name property.
+     * @return the NAME property or null if not specified
+     */
+    public final Name getNameProperty() {
+        return getProperty(NAME);
     }
 
     /**
@@ -204,10 +214,25 @@ public class Participant extends Component implements ComponentContainer<Compone
     }
 
     /**
-     * @return the optional last-modified property for an event
+     * @return the optional kind property
+     */
+    public final Kind getKind() {
+        return getProperty(KIND);
+    }
+
+    /**
+     * @return the optional last-modified property
      */
     public final LastModified getLastModified() {
         return getProperty(LAST_MODIFIED);
+    }
+
+    /**
+     * Returns the mandatory PARTICIPANT-TYPE property.
+     * @return the PARTICIPANT-TYPE property or null if not specified
+     */
+    public ParticipationStatus getParticipationStatus() {
+        return getProperty(PARTICIPATION_STATUS);
     }
 
     /**
@@ -226,7 +251,7 @@ public class Participant extends Component implements ComponentContainer<Compone
     }
 
     /**
-     * @return the optional sequence number property for an event
+     * @return the optional sequence number property
      */
     public final Sequence getSequence() {
         return getProperty(SEQUENCE);
@@ -245,6 +270,14 @@ public class Participant extends Component implements ComponentContainer<Compone
      */
     public final Summary getSummary() {
         return getProperty(SUMMARY);
+    }
+
+    /**
+     * Returns the optional email property.
+     * @return the EMAIL property or null if not specified
+     */
+    public final EmailAddress getEmail() {
+        return getProperty(EMAIL_ADDRESS);
     }
 
     /**
