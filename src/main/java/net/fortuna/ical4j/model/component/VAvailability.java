@@ -147,23 +147,6 @@ public class VAvailability extends CalendarComponent implements ComponentContain
      * {@inheritDoc}
      */
     @Override
-    public final String toString() {
-        return BEGIN +
-                ':' +
-                getName() +
-                Strings.LINE_SEPARATOR +
-                getProperties() +
-                getAvailable() +
-                END +
-                ':' +
-                getName() +
-                Strings.LINE_SEPARATOR;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public final void validate(final boolean recurse)
             throws ValidationException {
 

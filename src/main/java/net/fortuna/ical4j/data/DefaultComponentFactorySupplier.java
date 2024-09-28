@@ -17,6 +17,7 @@ import net.fortuna.ical4j.model.component.VResource;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.component.VVenue;
+import net.fortuna.ical4j.model.component.Vote;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +54,9 @@ public class DefaultComponentFactorySupplier implements Supplier<List<ComponentF
                         new VResource.Factory());
 
         final List<ComponentFactory<? extends Component>> vpollDraft =
-                Collections.singletonList(new VPoll.Factory());
+                Arrays.asList(
+                        new Vote.Factory(),
+                        new VPoll.Factory());
 
         final List<ComponentFactory<? extends Component>> vvenueDraft =
                 Collections.singletonList(new VVenue.Factory());

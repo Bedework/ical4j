@@ -128,7 +128,7 @@ public class SchedulingStatus extends Property {
         private static final long serialVersionUID = 1L;
 
         public Factory() {
-            super(STATUS);
+            super(SCHEDULING_STATUS);
         }
 
         @Override

@@ -28,10 +28,13 @@ import net.fortuna.ical4j.model.property.Due;
 import net.fortuna.ical4j.model.property.Duration;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.ExRule;
+import net.fortuna.ical4j.model.property.ExpectReply;
 import net.fortuna.ical4j.model.property.ExtendedAddress;
 import net.fortuna.ical4j.model.property.FreeBusy;
 import net.fortuna.ical4j.model.property.Geo;
 import net.fortuna.ical4j.model.property.Image;
+import net.fortuna.ical4j.model.property.InvitedBy;
+import net.fortuna.ical4j.model.property.Kind;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.Link;
 import net.fortuna.ical4j.model.property.Locality;
@@ -41,6 +44,9 @@ import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Name;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.ParticipantType;
+import net.fortuna.ical4j.model.property.ParticipationDelegatedFrom;
+import net.fortuna.ical4j.model.property.ParticipationDelegatedTo;
+import net.fortuna.ical4j.model.property.ParticipationStatus;
 import net.fortuna.ical4j.model.property.PercentComplete;
 import net.fortuna.ical4j.model.property.PollCompletion;
 import net.fortuna.ical4j.model.property.PollItemId;
@@ -62,6 +68,11 @@ import net.fortuna.ical4j.model.property.RequestStatus;
 import net.fortuna.ical4j.model.property.ResourceType;
 import net.fortuna.ical4j.model.property.Resources;
 import net.fortuna.ical4j.model.property.Response;
+import net.fortuna.ical4j.model.property.SchedulingAgent;
+import net.fortuna.ical4j.model.property.SchedulingDtStamp;
+import net.fortuna.ical4j.model.property.SchedulingForceSend;
+import net.fortuna.ical4j.model.property.SchedulingSequence;
+import net.fortuna.ical4j.model.property.SchedulingStatus;
 import net.fortuna.ical4j.model.property.Sequence;
 import net.fortuna.ical4j.model.property.Source;
 import net.fortuna.ical4j.model.property.Status;
@@ -171,6 +182,21 @@ public class DefaultPropertyFactorySupplier implements Supplier<List<PropertyFac
                         new Tel.Factory()
                 );
 
+        final List<PropertyFactory<? extends Property>> iTipDraft =
+                Arrays.asList(
+                        new ExpectReply.Factory(),
+                        new InvitedBy.Factory(),
+                        new Kind.Factory(),
+                        new Method.Factory(),
+                        new ParticipationDelegatedFrom.Factory(),
+                        new ParticipationDelegatedTo.Factory(),
+                        new ParticipationStatus.Factory(),
+                        new SchedulingDtStamp.Factory(),
+                        new SchedulingForceSend.Factory(),
+                        new SchedulingSequence.Factory(),
+                        new SchedulingStatus.Factory()
+                );
+
         final List<PropertyFactory<? extends Property>> vpollDraft =
                 Arrays.asList(
                         new AcceptResponse.Factory(),
@@ -180,7 +206,8 @@ public class DefaultPropertyFactorySupplier implements Supplier<List<PropertyFac
                         new PollProperties.Factory(),
                         new PollWinner.Factory(),
                         new ReplyUrl.Factory(),
-                        new Response.Factory());
+                        new Response.Factory(),
+                        new SchedulingAgent.Factory());
 
         final List<PropertyFactory<? extends Property>> relationsDraft =
                 Arrays.asList(
@@ -209,6 +236,7 @@ public class DefaultPropertyFactorySupplier implements Supplier<List<PropertyFac
         factories.addAll(rfc7986);
         factories.addAll(relationsDraft);
         factories.addAll(rfc9073);
+        factories.addAll(iTipDraft);
         factories.addAll(vpollDraft);
         // factories.addAll(vvenue);
 

@@ -35,6 +35,7 @@ import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.validate.ValidationException;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 
@@ -50,6 +51,7 @@ import java.text.ParseException;
  */
 public class ParticipantType extends Property {
 
+    @Serial
     private static final long serialVersionUID = 7753849118575885600L;
 
     public static final String VALUE_OWNER = "OWNER";
@@ -84,14 +86,14 @@ public class ParticipantType extends Property {
 
     public static final String VALUE_VOTER = "VOTER";
 
-    private TextList types;
+    private TextSet types;
 
     /**
      * Default constructor.
      */
     public ParticipantType() {
         super(PARTICIPANT_TYPE, new ParameterList(), new Factory());
-        types = new TextList();
+        types = new TextSet();
     }
 
     /**
@@ -114,13 +116,13 @@ public class ParticipantType extends Property {
      * {@inheritDoc}
      */
     public final void setValue(final String aValue) {
-        types = new TextList(aValue);
+        types = new TextSet(aValue);
     }
 
     /**
      * @return Returns the types.
      */
-    public final TextList getTypes() {
+    public final TextSet getTypes() {
         return types;
     }
 
@@ -137,6 +139,7 @@ public class ParticipantType extends Property {
     }
 
     public static class Factory extends Content.Factory implements PropertyFactory<ParticipantType> {
+        @Serial
         private static final long serialVersionUID = 1L;
 
         public Factory() {

@@ -160,23 +160,6 @@ public class VTimeZone extends CalendarComponent implements ComponentContainer<O
      * {@inheritDoc}
      */
     @Override
-    public final String toString() {
-        return BEGIN +
-                ':' +
-                getName() +
-                Strings.LINE_SEPARATOR +
-                getProperties() +
-                getObservances() +
-                END +
-                ':' +
-                getName() +
-                Strings.LINE_SEPARATOR;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public final void validate(final boolean recurse)
             throws ValidationException {
 

@@ -183,7 +183,7 @@ public abstract class Component implements Serializable, PropertyContainer {
                 ':' +
                 getName() +
                 Strings.LINE_SEPARATOR +
-                getProperties() +
+                getProperties() + components +
                 END +
                 ':' +
                 getName() +

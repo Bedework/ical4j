@@ -340,26 +340,6 @@ public class VPoll extends CalendarComponent implements
     /**
      * {@inheritDoc}
      */
-    public final String toString() {
-        final StringBuilder buffer = new StringBuilder();
-        buffer.append(BEGIN);
-        buffer.append(':');
-        buffer.append(getName());
-        buffer.append(Strings.LINE_SEPARATOR);
-        buffer.append(getProperties());
-        buffer.append(getAlarms());
-        buffer.append(getParticipants());
-        buffer.append(getCandidates());
-        buffer.append(END);
-        buffer.append(':');
-        buffer.append(getName());
-        buffer.append(Strings.LINE_SEPARATOR);
-        return buffer.toString();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public final void validate(final boolean recurse)
             throws ValidationException {
 

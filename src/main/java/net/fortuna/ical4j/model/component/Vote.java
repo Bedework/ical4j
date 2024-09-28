@@ -31,13 +31,16 @@
  */
 package net.fortuna.ical4j.model.component;
 
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentFactory;
+import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.property.Comment;
 import net.fortuna.ical4j.model.property.DtStamp;
 import net.fortuna.ical4j.model.property.PollItemId;
 import net.fortuna.ical4j.model.property.Response;
 import net.fortuna.ical4j.util.CompatibilityHints;
-import net.fortuna.ical4j.util.Strings;
 import net.fortuna.ical4j.validate.PropertyValidator;
 import net.fortuna.ical4j.validate.ValidationException;
 
@@ -75,23 +78,6 @@ public class Vote extends Component {
      */
     public Vote(final PropertyList properties) {
         super(VOTE, properties);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final String toString() {
-        final StringBuilder buffer = new StringBuilder();
-        buffer.append(BEGIN);
-        buffer.append(':');
-        buffer.append(getName());
-        buffer.append(Strings.LINE_SEPARATOR);
-        buffer.append(getProperties());
-        buffer.append(END);
-        buffer.append(':');
-        buffer.append(getName());
-        buffer.append(Strings.LINE_SEPARATOR);
-        return buffer.toString();
     }
 
     /**

@@ -306,23 +306,6 @@ public class VToDo extends CalendarComponent implements ComponentContainer<Compo
      * {@inheritDoc}
      */
     @Override
-    public final String toString() {
-        return BEGIN +
-                ':' +
-                getName() +
-                Strings.LINE_SEPARATOR +
-                getProperties() +
-                getAlarms() +
-                END +
-                ':' +
-                getName() +
-                Strings.LINE_SEPARATOR;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public final void validate(final boolean recurse)
             throws ValidationException {
 
