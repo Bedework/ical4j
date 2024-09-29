@@ -35,11 +35,10 @@ import net.fortuna.ical4j.util.Strings;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -60,7 +59,7 @@ public class TextSet implements Serializable, Iterable<String> {
      * Default constructor.
      */
     public TextSet() {
-        texts = new CopyOnWriteArraySet<>();
+        texts = new TreeSet<>();
     }
 
     /**
@@ -68,7 +67,7 @@ public class TextSet implements Serializable, Iterable<String> {
      * @param aValue a string representation of a list of categories
      */
     public TextSet(final String aValue) {
-        texts = new CopyOnWriteArraySet<>();
+        texts = new TreeSet<>();
 
         final Pattern pattern = Pattern.compile("(?:\\\\.|[^\\\\,]++)+");
 
@@ -83,11 +82,11 @@ public class TextSet implements Serializable, Iterable<String> {
      * @param textValues an array of text values
      */
     public TextSet(final String[] textValues) {
-        texts = new CopyOnWriteArraySet<>(Arrays.asList(textValues));
+        texts = new TreeSet<>(Arrays.asList(textValues));
     }
 
     public Set<String> asSet() {
-       return Collections.unmodifiableSet(texts);
+       return Set.copyOf(texts);
     }
 
     /**

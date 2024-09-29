@@ -193,7 +193,7 @@ public class Participant extends Component implements ComponentContainer<Compone
     /**
      * @return the optional date-stamp property
      */
-    public final DtStamp getSchedulingDtStamp() {
+    public final SchedulingDtStamp getSchedulingDtStamp() {
         return getProperty(SCHEDULING_DTSTAMP);
     }
 
