@@ -228,8 +228,8 @@ public class Participant extends Component implements ComponentContainer<Compone
     }
 
     /**
-     * Returns the mandatory PARTICIPANT-TYPE property.
-     * @return the PARTICIPANT-TYPE property or null if not specified
+     * Returns the optional PARTICIPATION-STATUS property.
+     * @return the PARTICIPATION-STATUS property or null if not specified
      */
     public ParticipationStatus getParticipationStatus() {
         return getProperty(PARTICIPATION_STATUS);
