@@ -74,6 +74,10 @@ public final class ImmutableMethod extends Method implements ImmutableProperty {
    */
   public static final Method REFRESH = new ImmutableMethod(VALUE_REFRESH);
   /**
+   * The Status method is used by an "Owner" to provide the latest status of scheduling.
+   */
+  public static final Method STATUS = new ImmutableMethod(VALUE_STATUS);
+  /**
    * The Counter method is used by an "Attendee" to negotiate a change in the calendar entry. Examples include the
    * request to change a proposed Event time or change the due date for a VTODO. [RFC 2446]
    */

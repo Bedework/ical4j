@@ -69,6 +69,7 @@ public class Method extends Property {
     public static final String VALUE_ADD = "ADD";
     public static final String VALUE_CANCEL = "CANCEL";
     public static final String VALUE_REFRESH = "REFRESH";
+    public static final String VALUE_STATUS = "STATUS";
     public static final String VALUE_COUNTER = "COUNTER";
     public static final String VALUE_DECLINECOUNTER = "DECLINECOUNTER";
 
@@ -138,6 +139,7 @@ public class Method extends Property {
                     case VALUE_ADD: return ADD;
                     case VALUE_CANCEL: return CANCEL;
                     case VALUE_REFRESH: return REFRESH;
+                    case VALUE_STATUS: return net.fortuna.ical4j.model.property.immutable.ImmutableMethod.STATUS;
                     case VALUE_COUNTER: return COUNTER;
                     case VALUE_DECLINECOUNTER: return DECLINE_COUNTER;
                 }
