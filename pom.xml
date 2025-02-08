@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.bedework</groupId>
     <artifactId>bedework-parent</artifactId>
-    <version>94</version>
+    <version>200-SNAPSHOT</version>
   </parent>
 
   <groupId>org.bedework.ical4j</groupId>
   <artifactId>ical4j</artifactId>
-  <version>3.0.23-SNAPSHOT</version>
+  <version>3.0.24-SNAPSHOT</version>
 
   <name>ical4j</name>
   <description>
@@ -78,14 +78,15 @@
     </dependency>
 
     <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>angus-mail</artifactId>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>javax.cache</groupId>
       <artifactId>cache-api</artifactId>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
