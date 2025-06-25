@@ -206,7 +206,7 @@ public class DefaultContentHandler implements ContentHandler {
                     } else if (property instanceof DateListProperty) {
                         ((DateListProperty) property).setTimeZone(timezone);
                     } else {
-                        LOG.warn("Property [%s] doesn't support parameter [%s]", property.getName(), tzParam.getName());
+                        LOG.warn("Property {0} doesn't support parameter {1}", property.getName(), tzParam.getName());
                     }
 
                     // Reset value
